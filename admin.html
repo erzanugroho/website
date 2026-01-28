@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html class="dark" lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Admin Panel - HASTMA CUP #3 2026">
+  <title>Admin Panel - HASTMA CUP #3 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="dark">
+  <!-- Mobile Floating Action Button (FAB) -->
+  <div class="fab-container" id="fabContainer"
+    style="position: fixed !important; bottom: 2rem !important; right: 1.5rem !important; z-index: 9999 !important;">
+    <div class="fab-menu" id="fabMenu"
+      style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1rem; align-items: flex-end;">
+      <button class="fab-action-btn" onclick="switchSection('dashboard', this); toggleFab()">
+        <span class="material-symbols-outlined">dashboard</span>
+        <span class="fab-label">Dashboard</span>
+      </button>
+      <button class="fab-action-btn active" onclick="switchSection('matches', this); toggleFab()">
+        <span class="material-symbols-outlined">sports_soccer</span>
+        <span class="fab-label">Matches</span>
+      </button>
+      <button class="fab-action-btn" onclick="switchSection('schedule', this); toggleFab()">
+        <span class="material-symbols-outlined">calendar_month</span>
+        <span class="fab-label">Schedule</span>
+      </button>
+      <button class="fab-action-btn" onclick="switchSection('players', this); toggleFab()">
+        <span class="material-symbols-outlined">groups</span>
+        <span class="fab-label">Players</span>
+      </button>
+      <button class="fab-action-btn" onclick="switchSection('teams', this); toggleFab()">
+        <span class="material-symbols-outlined">palette</span>
+        <span class="fab-label">Teams</span>
+      </button>
+      <button class="fab-action-btn" onclick="switchSection('results', this); toggleFab()">
+        <span class="material-symbols-outlined">fact_check</span>
+        <span class="fab-label">Result</span>
+      </button>
+      <button class="fab-action-btn" onclick="switchSection('history', this); toggleFab()">
+        <span class="material-symbols-outlined">history</span>
+        <span class="fab-label">History</span>
+      </button>
+      <button class="fab-action-btn" onclick="if(window.logout) window.logout(); toggleFab()"
+        style="background: rgba(239, 68, 68, 0.2); border-color: var(--admin-danger);">
+        <span class="material-symbols-outlined" style="color: var(--admin-danger);">logout</span>
+        <span class="fab-label" style="color: var(--admin-danger);">Logout</span>
+      </button>
+    </div>
+    <button class="fab-main-btn" onclick="toggleFab()" aria-label="Menu">
+      <span class="material-symbols-outlined fab-icon-open">menu</span>
+      <span class="material-symbols-outlined fab-icon-close">close</span>
+    </button>
+  </div>
+  <div class="page-wrapper">
+    <!-- Admin Header -->
+    <header class="admin-header">
+      <div class="admin-header-inner">
+        <div class="admin-logo">
+          <div class="admin-logo-icon">
+            <img src="logo.png" alt="HASTMA CUP #3 Logo">
+          </div>
+          <h1>HASTMA CUP #3 <span style="color: var(--admin-primary);">ADMIN</span></h1>
+        </div>
+
+        <nav class="admin-nav">
+          <a href="#" class="nav-link" data-section="dashboard" onclick="switchSection(event, 'dashboard')">
+            <span class="material-symbols-outlined" style="font-size: 1.25rem;">dashboard</span>
+            <span>DASHBOARD</span>
+          </a>
+          <a href="#" class="nav-link active" data-section="matches" onclick="switchSection(event, 'matches')">
+            <span class="material-symbols-outlined" style="font-size: 1.25rem;">sports_soccer</span>
+            <span>MATCHES</span>
+          </a>
+          <a href="#" class="nav-link" data-section="schedule" onclick="switchSection(event, 'schedule')">
+            <span class="material-symbols-outlined" style="font-size: 1.25rem;">calendar_month</span>
+            <span>SCHEDULE</span>
+          </a>
+          <a href="#" class="nav-link" data-section="players" onclick="switchSection(event, 'players')">
+            <span class="material-symbols-outlined" style="font-size: 1.25rem;">groups</span>
+            <span>PLAYERS</span>
+          </a>
+          <a href="#" class="nav-link" data-section="teams" onclick="switchSection(event, 'teams')">
+            <span class="material-symbols-outlined" style="font-size: 1.25rem;">palette</span>
+            <span>TEAMS</span>
+          </a>
+          <a href="#" class="nav-link" data-section="results" onclick="switchSection(event, 'results')">
+            <span class="material-symbols-outlined" style="font-size: 1.25rem;">fact_check</span>
+            <span>RESULT</span>
+          </a>
+          <a href="#" class="nav-link" data-section="history" onclick="switchSection(event, 'history')">
+            <span class="material-symbols-outlined" style="font-size: 1.25rem;">history</span>
+            <span>HISTORY</span>
+          </a>
+
+          <div style="height: 1px; background: rgba(255,255,255,0.1); margin: 0.5rem 1rem;"></div>
+
+          <a href="#" class="nav-link" onclick="if(window.logout) window.logout(); return false;"
+            style="color: var(--admin-danger); margin-top: auto;">
+            <span class="material-symbols-outlined" style="font-size: 1.25rem;">logout</span>
+            <span>LOGOUT</span>
+          </a>
+        </nav>
+
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+
+          <a href="./" class="btn-premium btn-premium-primary">
+            <span class="material-symbols-outlined">exit_to_app</span>
+            Exit
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+      <!-- Dashboard Section -->
+      <section class="admin-section" id="section-dashboard">
+        <div class="admin-grid-3col" style="margin-bottom: 2rem;">
+          <div class="admin-glass-card stat-card">
+            <span class="material-symbols-outlined stat-icon">timer</span>
+            <div class="stat-value" id="stat-progress">0%</div>
+            <div class="stat-label">TOURNAMENT PROGRESS</div>
+          </div>
+          <div class="admin-glass-card stat-card">
+            <span class="material-symbols-outlined stat-icon">sports_soccer</span>
+            <div class="stat-value" id="stat-goals">0</div>
+            <div class="stat-label">TOTAL GOALS</div>
+          </div>
+          <div class="admin-glass-card stat-card">
+            <span class="material-symbols-outlined stat-icon">style</span>
+            <div class="stat-value" id="stat-cards">0</div>
+            <div class="stat-label">TOTAL CARDS</div>
+          </div>
+        </div>
+
+        <div class="admin-grid-2col">
+          <div class="admin-left-column">
+            <div class="admin-glass-card">
+              <h3 style="font-size: 1.125rem; font-weight: 800; margin-bottom: 1.5rem;">GOLDEN BOOT (TOP SCORERS)</h3>
+              <div id="topScorerList">
+                <!-- Rendered via JS -->
+              </div>
+            </div>
+          </div>
+          <div class="admin-right-column">
+            <div class="admin-glass-card">
+              <h3 style="font-size: 1.125rem; font-weight: 800; margin-bottom: 1.5rem;">FAIR PLAY RANKING</h3>
+              <div id="fairPlayList">
+                <!-- Rendered via JS -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Matches Section -->
+      <section class="admin-section active" id="section-matches">
+        <div class="admin-grid-2col">
+          <!-- Left Column: Match Selection & Timeline -->
+          <div class="admin-left-column">
+            <div class="admin-glass-card" style="margin-bottom: 2rem;">
+              <div class="admin-input-group">
+                <label class="admin-label">Focus Match</label>
+                <select class="admin-select" id="matchSelector" onchange="loadMatchForEdit()">
+                  <!-- Dynamic options -->
+                </select>
+              </div>
+            </div>
+
+            <!-- Match Events -->
+            <div class="admin-glass-card">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h3 style="font-size: 1.125rem; font-weight: 800; display: flex; align-items: center; gap: 0.5rem;">
+                  <span class="material-symbols-outlined" style="color: var(--admin-accent);">history_edu</span>
+                  MATCH TIMELINE
+                </h3>
+              </div>
+
+              <!-- Add Event Form (Always Visible) -->
+              <div id="eventForm"
+                style="position: relative; margin-bottom: 2rem; padding: 1.25rem; background: rgba(0,0,0,0.2); border-radius: 1rem; border: 1px solid var(--admin-card-border);">
+                <!-- Lock Overlay -->
+                <div id="eventFormLockOverlay"
+                  style="display: none; position: absolute; inset: 0; background: rgba(0,0,0,0.4); border-radius: 1rem; z-index: 10; align-items: center; justify-content: center; backdrop-filter: blur(2px);">
+                  <div
+                    style="text-align: center; background: var(--admin-bg-body); padding: 1rem 1.5rem; border-radius: 1rem; border: 1px solid var(--admin-card-border); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                    <span class="material-symbols-outlined"
+                      style="font-size: 2rem; color: var(--admin-primary); margin-bottom: 0.5rem; display: block;">lock</span>
+                    <p style="font-weight: 800; font-size: 0.875rem;">SET STATUS TO LIVE</p>
+                    <p style="font-size: 0.75rem; color: var(--admin-text-muted);">To start recording match events</p>
+                  </div>
+                </div>
+                <div class="admin-form-grid" style="display: grid; gap: 1rem; grid-template-columns: 1fr;">
+                  <div class="admin-input-group">
+                    <label class="admin-label">Event Type</label>
+                    <div class="admin-event-type-grid">
+                      <div class="admin-event-type-btn active" onclick="setEventType('goal', this)">
+                        <span class="type-icon">⚽</span>
+                        <span class="hide-mobile">Goal</span>
+                      </div>
+                      <div class="admin-event-type-btn" onclick="setEventType('yellow', this)">
+                        <span class="type-icon">🟨</span>
+                        <span class="hide-mobile">Yel</span>
+                      </div>
+                      <div class="admin-event-type-btn" onclick="setEventType('red', this)">
+                        <span class="type-icon">🟥</span>
+                        <span class="hide-mobile">Red</span>
+                      </div>
+                    </div>
+                    <input type="hidden" id="eventType" value="goal">
+                  </div>
+
+                  <div class="admin-input-group">
+                    <label class="admin-label">Minute</label>
+                    <div
+                      style="display: flex; align-items: stretch; width: 100%; max-width: 140px; background: rgba(255,255,255,0.05); border-radius: 0.5rem; overflow: hidden; border: 1px solid var(--admin-card-border);">
+
+                      <input class="admin-input" type="number" id="eventMinute" min="0" max="150" value="0"
+                        style="border: none; flex: 1; text-align: center; font-size: 1.5rem; font-weight: 800; background: transparent; padding: 0;">
+
+                      <div
+                        style="display: flex; flex-direction: column; width: 2.5rem; border-left: 1px solid var(--admin-card-border);">
+                        <button onclick="adjustEventMinute(1)" class="btn-premium btn-icon"
+                          style="flex: 1; border-radius: 0; border: none; border-bottom: 1px solid var(--admin-card-border); background: rgba(255,255,255,0.02);">
+                          <span class="material-symbols-outlined" style="font-size: 1.25rem;">keyboard_arrow_up</span>
+                        </button>
+                        <button onclick="adjustEventMinute(-1)" class="btn-premium btn-icon"
+                          style="flex: 1; border-radius: 0; border: none; background: rgba(255,255,255,0.02);">
+                          <span class="material-symbols-outlined" style="font-size: 1.25rem;">keyboard_arrow_down</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="admin-input-group">
+                    <label class="admin-label">Focus Team</label>
+                    <div id="eventTeamButtons" class="admin-selection-grid-2col">
+                      <!-- Rendered via JS -->
+                    </div>
+                    <input type="hidden" id="eventTeam" value="">
+                  </div>
+                  <div class="admin-input-group">
+                    <label class="admin-label">Player Selection</label>
+                    <div id="eventPlayerButtons" class="admin-selection-grid-players">
+                      <p
+                        style="grid-column: 1/-1; text-align: center; padding: 1rem; color: var(--admin-text-muted); font-size: 0.75rem;">
+                        Select team first</p>
+                    </div>
+                    <input type="hidden" id="eventPlayerNumber" value="">
+                    <input type="hidden" id="eventPlayerName" value="">
+                  </div>
+                </div>
+                <div style="margin-top: 1.5rem;">
+                  <button class="btn-premium btn-premium-primary" onclick="addEvent()" style="width: 100%;">Register
+                    Event</button>
+                </div>
+              </div>
+
+              <div class="event-list" id="eventList">
+                <!-- Dynamic content -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Score Board & Settings -->
+          <div class="admin-right-column">
+            <div class="admin-glass-card" style="position: sticky; top: 6.5rem;">
+              <div style="text-align: center; margin-bottom: 2rem;">
+                <h2 id="matchTitle" style="font-size: 1.5rem; font-weight: 900; letter-spacing: -0.05em;">Select a Match
+                </h2>
+              </div>
+
+              <!-- Score Control Grid -->
+              <div class="admin-score-card" style="margin-bottom: 2rem;">
+                <!-- Home Team -->
+                <div class="admin-score-group">
+                  <span class="admin-label" id="homeTeamLabel">Home</span>
+                  <div class="admin-score-display" id="homeScoreDisplay">0</div>
+                  <div class="admin-score-actions">
+                    <button class="admin-score-btn" onclick="adjustScore('home', -1)">-</button>
+                    <button class="admin-score-btn" onclick="adjustScore('home', 1)">+</button>
+                  </div>
+                </div>
+
+                <div style="font-size: 2rem; font-weight: 900; color: var(--admin-text-muted); opacity: 0.3;">:</div>
+
+                <!-- Away Team -->
+                <div class="admin-score-group">
+                  <span class="admin-label" id="awayTeamLabel">Away</span>
+                  <div class="admin-score-display" id="awayScoreDisplay">0</div>
+                  <div class="admin-score-actions">
+                    <button class="admin-score-btn" onclick="adjustScore('away', -1)">-</button>
+                    <button class="admin-score-btn" onclick="adjustScore('away', 1)">+</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Quick Status & Info -->
+              <div class="admin-form-grid" style="grid-template-columns: 1fr; gap: 1.25rem;">
+                <div class="admin-input-group">
+                  <label class="admin-label">Match Status</label>
+                  <select class="admin-select" id="matchStatus" onchange="syncMatchStatus()">
+                    <option value="scheduled">Scheduled</option>
+                    <option value="live">Live</option>
+                  </select>
+                </div>
+
+                <div id="finishMatchControl" style="display: none; margin-top: 0.5rem;">
+                  <button class="btn-finish" onclick="finishMatch()">
+                    <span class="material-symbols-outlined">check_circle</span>
+                    Match Selesai
+                  </button>
+                </div>
+
+              </div>
+            </div>
+
+            <div style="margin-top: 2.5rem; display: flex; flex-direction: column; gap: 1rem;">
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 0 0.5rem;">
+                <span style="font-size: 0.75rem; color: var(--admin-text-muted);">Real-time Sync: Enabled</span>
+                <span id="lastUpdated"
+                  style="font-size: 0.75rem; color: var(--admin-text-muted); font-weight: 700;">-</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Schedule Section -->
+      <section class="admin-section" id="section-schedule">
+        <div class="admin-grid-2col">
+          <!-- Match List Column -->
+          <div class="admin-left-column">
+            <div class="admin-glass-card">
+              <div style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                  <h3 style="font-size: 1.125rem; font-weight: 800;">TOURNAMENT HUB</h3>
+                  <p style="font-size: 0.75rem; color: var(--admin-text-muted);">Manage upcoming matches and venues.</p>
+                </div>
+                <button class="btn-premium btn-premium-primary btn-sm" onclick="prepareNewMatch()">
+                  <span class="material-symbols-outlined" style="font-size: 1.125rem;">add_circle</span>
+                  Register Match
+                </button>
+              </div>
+
+              <div id="adminScheduleList" class="admin-list-scrollable">
+                <!-- Rendered via JS -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Edit Form Column -->
+          <div class="admin-right-column">
+            <div class="admin-glass-card" style="position: sticky; top: 6.5rem;">
+              <h3 id="scheduleFormTitle"
+                style="font-size: 1.125rem; font-weight: 800; margin-bottom: 2rem; border-bottom: 1px solid var(--admin-card-border); padding-bottom: 1rem;">
+                MATCH CONFIGURATION</h3>
+
+              <div class="admin-form-grid" style="grid-template-columns: 1fr; gap: 1.5rem;">
+                <div class="admin-input-group">
+                  <label class="admin-label">ID Reference</label>
+                  <input class="admin-input" type="text" id="scheduleMatchId" placeholder="e.g. M13" disabled>
+                </div>
+
+                <div class="admin-input-group">
+                  <label class="admin-label">Match Stage</label>
+                  <select class="admin-select" id="scheduleStage">
+                    <option value="group">Group Stage</option>
+                    <option value="semi">Semi Final</option>
+                    <option value="3rd_place">3rd Place Match</option>
+                    <option value="final">Final</option>
+                  </select>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                  <div class="admin-input-group">
+                    <label class="admin-label">Home Team</label>
+                    <select class="admin-select" id="scheduleHomeTeam">
+                      <option value="">-- TBD --</option>
+                    </select>
+                  </div>
+                  <div class="admin-input-group">
+                    <label class="admin-label">Away Team</label>
+                    <select class="admin-select" id="scheduleAwayTeam">
+                      <option value="">-- TBD --</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="admin-input-group">
+                  <label class="admin-label">Scheduled Date</label>
+                  <input class="admin-input" type="date" id="scheduleDate">
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                  <div class="admin-input-group">
+                    <label class="admin-label">Kick Off</label>
+                    <input class="admin-input" type="time" id="scheduleTime">
+                  </div>
+                  <div class="admin-input-group">
+                    <label class="admin-label">Expected End</label>
+                    <input class="admin-input" type="time" id="scheduleEndTime">
+                  </div>
+                </div>
+
+                <div class="admin-input-group">
+                  <label class="admin-label">Assigned Venue</label>
+                  <input class="admin-input" id="scheduleVenue" placeholder="MS Arena">
+                </div>
+              </div>
+
+              <!-- Edit Actions -->
+              <div id="scheduleEditActions" style="display: flex; gap: 1rem; margin-top: 2.5rem;">
+                <button class="btn-premium btn-premium-primary" onclick="saveScheduleChanges()" style="flex: 3;">
+                  <span class="material-symbols-outlined">verified</span>
+                  COMMIT DATA
+                </button>
+                <button class="btn-premium btn-premium-secondary" onclick="resetMatchForm()" style="flex: 1;">
+                  <span class="material-symbols-outlined">restart_alt</span>
+                </button>
+              </div>
+
+              <!-- Add Actions -->
+              <div id="scheduleAddActions" style="display: none; gap: 1rem; margin-top: 2.5rem;">
+                <button class="btn-premium btn-premium-primary" onclick="createNewMatch()"
+                  style="flex: 3; background: var(--admin-success); box-shadow: 0 4px 14px 0 rgba(16, 185, 129, 0.3);">
+                  <span class="material-symbols-outlined">add_task</span>
+                  INITIALIZE MATCH
+                </button>
+                <button class="btn-premium btn-premium-secondary" onclick="resetMatchForm()" style="flex: 1;">
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Players Management Section -->
+      <section class="admin-section" id="section-players">
+        <div class="admin-grid-2col">
+          <!-- Left Column: Team Selection & List -->
+          <div class="admin-left-column">
+            <div class="admin-glass-card" style="margin-bottom: 2rem;">
+              <div class="admin-input-group">
+                <label class="admin-label">Focus Team</label>
+                <select class="admin-select" id="playerTeamSelector" onchange="loadPlayersForTeam()">
+                  <!-- Dynamic options -->
+                </select>
+              </div>
+            </div>
+
+            <div class="admin-glass-card">
+              <h3
+                style="font-size: 1.125rem; font-weight: 800; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                <span class="material-symbols-outlined" style="color: var(--admin-primary);">badge</span>
+                PLAYER ROSTER
+              </h3>
+              <div id="playerList" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                <!-- Rendered via JS -->
+                <p class="text-secondary" style="text-align: center; padding: 2rem;">Select a team to view players.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Player Editor -->
+          <div class="admin-right-column">
+            <div id="playerEditor" class="admin-glass-card" style="display: none; position: sticky; top: 6.5rem;">
+              <h3 style="font-size: 1.125rem; font-weight: 800; margin-bottom: 1.5rem;">REGISTER NEW PLAYER</h3>
+              <div class="admin-form-grid" style="grid-template-columns: 1fr 3fr; gap: 1rem;">
+                <div class="admin-input-group">
+                  <label class="admin-label">Number</label>
+                  <input class="admin-input" type="number" id="newPlayerNumber" min="0" max="99" placeholder="0">
+                  <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem; line-height: 1.2;">
+                    *Beri angka 0 jika tidak ada nomor punggung
+                  </p>
+                </div>
+                <div class="admin-input-group">
+                  <label class="admin-label">Full Name</label>
+                  <input class="admin-input" type="text" id="newPlayerName" placeholder="e.g. Cristiano Ronaldo">
+                </div>
+              </div>
+              <button class="btn-premium btn-premium-primary" onclick="addPlayer()"
+                style="width: 100%; margin-top: 1.5rem;">
+                <span class="material-symbols-outlined">person_add</span>
+                CONFIRM REGISTER
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Teams & Data Section -->
+      <section class="admin-section" id="section-teams">
+        <div class="admin-grid-2col" style="grid-template-columns: 1fr 1fr;">
+          <div class="admin-glass-card">
+            <h3 style="font-size: 1.125rem; font-weight: 800; margin-bottom: 1.5rem;">TEAM BRANDING</h3>
+            <div class="team-color-grid" id="teamColorGrid"
+              style="display: grid; grid-template-columns: 1fr; gap: 1rem;">
+              <!-- Dynamic content -->
+            </div>
+          </div>
+
+          <div class="admin-glass-card">
+            <h3 style="font-size: 1.125rem; font-weight: 800; margin-bottom: 1.5rem;">SYSTEM OPERATIONS</h3>
+            <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem;">
+              <div
+                style="background: rgba(255,255,255,0.03); padding: 1.25rem; border-radius: 1rem; border: 1px solid var(--admin-card-border);">
+                <p class="admin-label" style="margin-bottom: 0.75rem;">Backup & Restore</p>
+                <div style="display: flex; gap: 0.75rem;">
+                  <button class="btn-premium btn-premium-primary" onclick="exportData()" style="flex: 1;">
+                    <span class="material-symbols-outlined">download</span> Export
+                  </button>
+                  <button class="btn-premium btn-premium-secondary"
+                    onclick="document.getElementById('importFile').click()" style="flex: 1;">
+                    <span class="material-symbols-outlined">upload</span> Import
+                  </button>
+                  <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importData(event)">
+                </div>
+              </div>
+
+              <div
+                style="background: rgba(239, 68, 68, 0.05); padding: 1.25rem; border-radius: 1rem; border: 1px solid rgba(239, 68, 68, 0.2);">
+                <p class="admin-label" style="margin-bottom: 0.75rem; color: var(--admin-danger);">Danger Zone</p>
+                <button class="btn-premium" onclick="resetData()"
+                  style="width: 100%; background: var(--admin-danger); color: white;">
+                  <span class="material-symbols-outlined">refresh</span>
+                  HARD RESET FACTORY DATA
+                </button>
+                <p
+                  style="font-size: 0.75rem; color: var(--admin-danger); margin-top: 0.5rem; text-align: center; opacity: 0.7;">
+                  This action clears all session storage and local data.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Results Section -->
+      <section class="admin-section" id="section-results">
+        <div class="admin-grid-2col">
+          <div class="admin-left-column">
+            <div class="admin-glass-card" style="margin-bottom: 2rem;">
+              <div
+                style="display:flex; justify-content: space-between; align-items:center; gap: 1rem; flex-wrap: wrap;">
+                <div>
+                  <h3 style="font-size: 1.125rem; font-weight: 800;">RESULT CENTER</h3>
+                  <p style="font-size: 0.75rem; color: var(--admin-text-muted);">Finished matches. Edit results, events,
+                    or unfinish.</p>
+                </div>
+                <div class="admin-input-group" style="min-width: 220px;">
+                  <label class="admin-label">Stage Filter</label>
+                  <select class="admin-select" id="resultStageFilter" onchange="renderAdminResults()">
+                    <option value="all">All Stages</option>
+                    <option value="group">Group Stage</option>
+                    <option value="semi">Semi Final</option>
+                    <option value="final">Final</option>
+                    <option value="3rd_place">3rd Place</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="admin-glass-card">
+              <div id="adminResultsList" class="admin-match-list-scrollable">
+                <!-- Rendered via JS -->
+              </div>
+            </div>
+          </div>
+
+          <div class="admin-right-column">
+            <div class="admin-glass-card" style="position: sticky; top: 6.5rem;">
+              <h3 style="font-size: 1.125rem; font-weight: 800; margin-bottom: 1rem;">RESULT EDITOR</h3>
+              <p class="text-secondary" style="font-size: 0.75rem; color: var(--admin-text-muted);">
+                Select a match from the list to edit its final result.
+              </p>
+              <div id="adminResultEditor" style="margin-top: 1.5rem;"></div>
+
+              <!-- Add Result Event Form (Mirrors Match events) -->
+              <div id="resultEventForm"
+                style="display:none; margin-top: 2rem; padding: 1.25rem; background: rgba(0,0,0,0.2); border-radius: 1rem; border: 1px solid var(--admin-card-border);">
+                <div style="margin-bottom: 1rem; font-weight: 800; font-size: 0.875rem; color: var(--admin-primary);">
+                  REGISTER NEW EVENT</div>
+                <div class="admin-form-grid" style="display: grid; gap: 1rem; grid-template-columns: 1fr;">
+                  <div class="admin-input-group">
+                    <label class="admin-label">Event Type</label>
+                    <div class="admin-event-type-grid">
+                      <div class="admin-event-type-btn result-type-btn goal active"
+                        onclick="setResultEventType('goal', this)">
+                        <span class="type-icon">⚽</span>
+                        <span class="hide-mobile">Goal</span>
+                      </div>
+                      <div class="admin-event-type-btn result-type-btn yellow"
+                        onclick="setResultEventType('yellow', this)">
+                        <span class="type-icon">🟨</span>
+                        <span class="hide-mobile">Yel</span>
+                      </div>
+                      <div class="admin-event-type-btn result-type-btn red" onclick="setResultEventType('red', this)">
+                        <span class="type-icon">🟥</span>
+                        <span class="hide-mobile">Red</span>
+                      </div>
+                    </div>
+                    <input type="hidden" id="resultEventType" value="goal">
+                  </div>
+
+                  <div class="admin-input-group">
+                    <label class="admin-label">Minute</label>
+                    <div
+                      style="display: flex; align-items: stretch; width: 100%; max-width: 140px; background: rgba(255,255,255,0.05); border-radius: 0.5rem; overflow: hidden; border: 1px solid var(--admin-card-border);">
+
+                      <input class="admin-input" type="number" id="resultEventMinute" min="0" max="150" value="0"
+                        style="border: none; flex: 1; text-align: center; font-size: 1.5rem; font-weight: 800; background: transparent; padding: 0;">
+
+                      <div
+                        style="display: flex; flex-direction: column; width: 2.5rem; border-left: 1px solid var(--admin-card-border);">
+                        <button onclick="adjustEventMinute(1, 'resultEventMinute')" class="btn-premium btn-icon"
+                          style="flex: 1; border-radius: 0; border: none; border-bottom: 1px solid var(--admin-card-border); background: rgba(255,255,255,0.02);">
+                          <span class="material-symbols-outlined" style="font-size: 1.25rem;">keyboard_arrow_up</span>
+                        </button>
+                        <button onclick="adjustEventMinute(-1, 'resultEventMinute')" class="btn-premium btn-icon"
+                          style="flex: 1; border-radius: 0; border: none; background: rgba(255,255,255,0.02);">
+                          <span class="material-symbols-outlined" style="font-size: 1.25rem;">keyboard_arrow_down</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="admin-input-group">
+                    <label class="admin-label">Focus Team</label>
+                    <div id="resultEventTeamButtons" class="admin-selection-grid-2col">
+                      <!-- Rendered via JS -->
+                    </div>
+                    <input type="hidden" id="resultEventTeam" value="">
+                  </div>
+                  <div class="admin-input-group" style="grid-column: span 2;">
+                    <label class="admin-label">Player Selection</label>
+                    <div id="resultEventPlayerButtons" class="admin-selection-grid-players">
+                      <p
+                        style="grid-column: 1/-1; text-align: center; padding: 1rem; color: var(--admin-text-muted); font-size: 0.75rem;">
+                        Select team first</p>
+                    </div>
+                    <input type="hidden" id="resultEventPlayerNumber" value="">
+                    <input type="hidden" id="resultEventPlayerName" value="">
+                  </div>
+                </div>
+                <div style="margin-top: 1.5rem; display: flex; gap: 0.75rem;">
+                  <button class="btn-premium btn-premium-primary" onclick="addResultEvent()" style="flex: 1;">Register
+                    Event</button>
+                  <button class="btn-premium btn-premium-secondary" onclick="hideResultEventForm()">Cancel</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- History Section -->
+      <section class="admin-section" id="section-history">
+        <div class="admin-glass-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h3 style="font-size: 1.125rem; font-weight: 800;">ADMIN AUDIT LOGS</h3>
+            <button class="btn-premium btn-premium-secondary btn-sm" onclick="clearLogs()">
+              <span class="material-symbols-outlined" style="font-size: 1.125rem;">delete_sweep</span>
+              Clear Logs
+            </button>
+          </div>
+          <div id="auditLogList"
+            style="display: flex; flex-direction: column; gap: 0.5rem; max-height: 600px; overflow-y: auto; padding-right: 0.5rem;">
+            <!-- Rendered via JS -->
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Modal for Adding Team -->
+    <div id="addTeamModal" class="admin-modal"
+      style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center;">
+      <div class="admin-glass-card" style="width: 100%; max-width: 450px; padding: 2rem;">
+        <h3 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 1.5rem;">Add New Team</h3>
+        <div class="admin-form-grid" style="grid-template-columns: 1fr; gap: 1.25rem;">
+          <div class="admin-input-group">
+            <label class="admin-label">Team ID (Unique)</label>
+            <input class="admin-input" type="text" id="newTeamId" placeholder="e.g. TIM10">
+          </div>
+          <div class="admin-input-group">
+            <label class="admin-label">Team Name</label>
+            <input class="admin-input" type="text" id="newTeamName" placeholder="e.g. Tim 2026">
+          </div>
+          <div class="admin-input-group">
+            <label class="admin-label">Group</label>
+            <select class="admin-select" id="newTeamGroup">
+              <option value="A">Group A</option>
+              <option value="B">Group B</option>
+              <option value="C">Group C</option>
+              <option value="D">Group D</option>
+            </select>
+          </div>
+          <div class="admin-input-group">
+            <label class="admin-label">Color</label>
+            <input class="admin-input" type="color" id="newTeamColor" value="#cccccc"
+              style="height: 3rem; cursor: pointer;">
+          </div>
+        </div>
+        <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+          <button class="btn-premium btn-premium-primary" onclick="addNewTeam()" style="flex: 1;">Create Team</button>
+          <button class="btn-premium btn-premium-secondary" onclick="closeAddTeamModal()"
+            style="flex: 1;">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer style="padding: 2.5rem 0; text-align: center; color: var(--text-muted); font-size: 0.875rem;">
+      <p>© 2026 HASTMA CUP #3 - Management Portal</p>
+    </footer>
+  </div>
+
+  <!-- Login Modal -->
+  <div class="modal" id="loginModal">
+    <div class="modal-card">
+      <h2 class="modal-title">Admin Login</h2>
+      <p class="modal-subtitle">Enter password to access the admin panel</p>
+      <form class="modal-form" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <input type="password" class="form-input" id="loginPassword" placeholder="Enter password" required autofocus>
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg">Login</button>
+      </form>
+      <p style="margin-top: 1.5rem; font-size: 0.875rem;">
+        <a href="./" class="text-muted">← Back to public page</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script type="module">
+    import { getTournamentData, saveTournamentData, getCachedTournamentData } from './js/api.js';
+    window.HastmaApi = { getTournamentData, saveTournamentData, getCachedTournamentData };
+  </script>
+  <script src="js/data.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+
+</html>

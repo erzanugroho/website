@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html class="dark" lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="HASTMA CUP #3 2026 - Mini Soccer Tournament">
+  <title>HASTMA CUP #3 2026 - Mini Soccer Tournament</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&family=Noto+Sans:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="dark">
+  <!-- Mobile Floating Action Button (FAB) -->
+  <div class="fab-container" id="fabContainer"
+    style="position: fixed !important; bottom: 2rem !important; right: 1.5rem !important; z-index: 9999 !important;">
+    <div class="fab-menu" id="fabMenu">
+      <a href="#standings" class="fab-action-btn" onclick="toggleFab()">
+        <span class="material-symbols-outlined">leaderboard</span>
+        <span class="fab-label">Standings</span>
+      </a>
+      <a href="#schedule" class="fab-action-btn" onclick="toggleFab()">
+        <span class="material-symbols-outlined">calendar_month</span>
+        <span class="fab-label">Schedule</span>
+      </a>
+      <a href="#bracket" class="fab-action-btn" onclick="toggleFab()">
+        <span class="material-symbols-outlined">account_tree</span>
+        <span class="fab-label">Bracket</span>
+      </a>
+    </div>
+    <button class="fab-main-btn" onclick="toggleFab()" aria-label="Menu">
+      <span class="material-symbols-outlined fab-icon-open">menu</span>
+      <span class="material-symbols-outlined fab-icon-close">close</span>
+    </button>
+  </div>
+
+  <div class="page-wrapper">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-inner">
+        <div class="header-logo">
+          <div class="header-logo-icon">
+            <img src="logo.png" alt="HASTMA CUP #3 Logo">
+          </div>
+          <h1 class="header-title">HASTMA CUP #3 <span style="color: var(--admin-primary);">2026</span></h1>
+        </div>
+        <nav class="header-nav">
+          <a href="#standings">Standings</a>
+          <a href="#schedule">Schedule</a>
+          <a href="#bracket">Bracket</a>
+        </nav>
+        <div class="header-actions">
+          <a href="admin.html" class="admin-link">
+            <span class="material-symbols-outlined" style="font-size: 1.125rem;">admin_panel_settings</span>
+            Admin
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="container">
+        <!-- Page Header (Hero) -->
+        <div class="page-header">
+          <h2 class="page-title">Tournament Dashboard</h2>
+          <p class="page-subtitle" id="eventDate">
+            Saturday, January 31, 2026
+          </p>
+        </div>
+
+        <!-- Hero Live Match -->
+        <div id="heroMatch">
+          <!-- The goal overlay will be injected here during match rendering if needed, 
+               but let's keep it as part of the hero template -->
+        </div>
+
+        <!-- Standings Section -->
+        <section class="section" id="standings">
+          <div class="section-header">
+            <span class="section-indicator"></span>
+            <h3 class="section-title">Group Stage Standings</h3>
+          </div>
+          <div class="standings-grid">
+            <!-- Group A -->
+            <div class="card">
+              <div class="card-header">
+                <span class="card-title">Group A</span>
+              </div>
+              <div class="card-body" style="padding: 0;">
+                <table class="standings-table">
+                  <thead>
+                    <tr>
+                      <th>Team</th>
+                      <th class="text-center">M</th>
+                      <th class="text-center">W</th>
+                      <th class="text-center">D</th>
+                      <th class="text-center">L</th>
+                      <th class="text-center">GF</th>
+                      <th class="text-center">GA</th>
+                      <th class="text-center">Pts</th>
+                    </tr>
+                  </thead>
+                  <tbody id="standingsBodyA">
+                    <!-- Dynamic content -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Group B -->
+            <div class="card">
+              <div class="card-header">
+                <span class="card-title">Group B</span>
+              </div>
+              <div class="card-body" style="padding: 0;">
+                <table class="standings-table">
+                  <thead>
+                    <tr>
+                      <th>Team</th>
+                      <th class="text-center">M</th>
+                      <th class="text-center">W</th>
+                      <th class="text-center">D</th>
+                      <th class="text-center">L</th>
+                      <th class="text-center">GF</th>
+                      <th class="text-center">GA</th>
+                      <th class="text-center">Pts</th>
+                    </tr>
+                  </thead>
+                  <tbody id="standingsBodyB">
+                    <!-- Dynamic content -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Schedule Section -->
+        <section class="section" id="schedule">
+          <div class="section-header">
+            <span class="section-indicator"></span>
+            <h3 class="section-title">Match Schedule</h3>
+          </div>
+          <div class="schedule-grid" id="scheduleGrid">
+            <!-- Live matches will be rendered here -->
+            <div id="liveMatches"></div>
+
+            <!-- Regular match cards -->
+            <div class="match-cards-grid" id="regularMatches">
+              <!-- Dynamic content -->
+            </div>
+          </div>
+        </section>
+
+        <!-- Bracket Section -->
+        <section class="section" id="bracket">
+          <div class="section-header">
+            <span class="section-indicator"></span>
+            <h3 class="section-title">Tournament Bracket</h3>
+          </div>
+          <div class="bracket-section">
+            <div class="bracket-container">
+              <div class="bracket">
+                <!-- Semi Finals -->
+                <div class="bracket-round">
+                  <div class="bracket-match" id="bracketSF1">
+                    <div class="bracket-match-title">Semi Final 1</div>
+                    <div class="bracket-team" data-slot="home">
+                      <span class="bracket-team-name">
+                        <span class="bracket-team-color" style="background: var(--primary);"></span>
+                        <span class="team-name">Winner A</span>
+                      </span>
+                      <span class="bracket-team-score">-</span>
+                    </div>
+                    <div class="bracket-team" data-slot="away">
+                      <span class="bracket-team-name">
+                        <span class="bracket-team-color" style="background: var(--accent-gold);"></span>
+                        <span class="team-name">Runner-up B</span>
+                      </span>
+                      <span class="bracket-team-score">-</span>
+                    </div>
+                  </div>
+                  <div class="bracket-match" id="bracketSF2">
+                    <div class="bracket-match-title">Semi Final 2</div>
+                    <div class="bracket-team" data-slot="home">
+                      <span class="bracket-team-name">
+                        <span class="bracket-team-color" style="background: var(--primary);"></span>
+                        <span class="team-name">Runner-up A</span>
+                      </span>
+                      <span class="bracket-team-score">-</span>
+                    </div>
+                    <div class="bracket-team" data-slot="away">
+                      <span class="bracket-team-name">
+                        <span class="bracket-team-color" style="background: var(--accent-gold);"></span>
+                        <span class="team-name">Winner B</span>
+                      </span>
+                      <span class="bracket-team-score">-</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Connector -->
+                <div class="bracket-connector">
+                  <div class="connector-line"></div>
+                </div>
+
+                <!-- Final & 3rd Place -->
+                <div class="bracket-round">
+                  <div class="bracket-match match-highlight" id="bracketF1">
+                    <div class="bracket-match-title">🏆 Final</div>
+                    <div class="bracket-team" data-slot="home">
+                      <span class="bracket-team-name">
+                        <span class="bracket-team-color" style="background: #22c55e;"></span>
+                        <span class="team-name">Winner SF1</span>
+                      </span>
+                      <span class="bracket-team-score">-</span>
+                    </div>
+                    <div class="bracket-team" data-slot="away">
+                      <span class="bracket-team-name">
+                        <span class="bracket-team-color" style="background: #22c55e;"></span>
+                        <span class="team-name">Winner SF2</span>
+                      </span>
+                      <span class="bracket-team-score">-</span>
+                    </div>
+                  </div>
+
+                  <div class="bracket-match" id="bracketM3RD">
+                    <div class="bracket-match-title">3rd Place Match</div>
+                    <div class="bracket-team" data-slot="home">
+                      <span class="bracket-team-name">
+                        <span class="bracket-team-color" style="background: var(--status-scheduled);"></span>
+                        <span class="team-name">Loser SF1</span>
+                      </span>
+                      <span class="bracket-team-score">-</span>
+                    </div>
+                    <div class="bracket-team" data-slot="away">
+                      <span class="bracket-team-name">
+                        <span class="bracket-team-color" style="background: var(--status-scheduled);"></span>
+                        <span class="team-name">Loser SF2</span>
+                      </span>
+                      <span class="bracket-team-score">-</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p class="footer-text">© 2026 HASTMA CUP #3 - Mini Soccer Tournament</p>
+      <div class="footer-links">
+        <a href="#">Privacy Policy</a>
+        <a href="admin.html">Admin Panel</a>
+        <div class="footer-status">
+          <span class="material-symbols-outlined" style="font-size: 1rem;">settings_input_antenna</span>
+          <span>System Online</span>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script type="module">
+    import { getTournamentData, saveTournamentData, getCachedTournamentData } from './js/api.js';
+    window.HastmaApi = { getTournamentData, saveTournamentData, getCachedTournamentData };
+  </script>
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+
+</html>

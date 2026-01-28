@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Admin Match Management - Hastma Cup #3 2026</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f29040",
+                        "background-light": "#f8f7f6",
+                        "background-dark": "#1a1a2e",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Lexend', sans-serif;
+        }
+        .score-input::-webkit-inner-spin-button, 
+        .score-input::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen">
+<div class="layout-container flex flex-col h-full min-h-screen">
+<!-- Header / Navigation -->
+<header class="border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-[#1a1a2e] sticky top-0 z-50">
+<div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="size-8 bg-primary rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined">sports_soccer</span>
+</div>
+<h1 class="text-xl font-bold tracking-tight">Hastma Cup #3 <span class="text-primary">2026</span></h1>
+</div>
+<nav class="flex items-center gap-8">
+<div class="flex border-b border-transparent">
+<a class="flex flex-col items-center justify-center border-b-2 border-primary text-primary pb-2 px-4 transition-colors" href="#">
+<span class="text-sm font-bold tracking-wide">MATCHES</span>
+</a>
+<a class="flex flex-col items-center justify-center border-b-2 border-transparent text-slate-500 hover:text-primary pb-2 px-4 transition-colors" href="#">
+<span class="text-sm font-bold tracking-wide">TEAMS</span>
+</a>
+<a class="flex flex-col items-center justify-center border-b-2 border-transparent text-slate-500 hover:text-primary pb-2 px-4 transition-colors" href="#">
+<span class="text-sm font-bold tracking-wide">PLAYERS</span>
+</a>
+</div>
+</nav>
+<div class="flex items-center gap-3">
+<button class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="size-9 rounded-full bg-primary/20 border border-primary/40 overflow-hidden">
+<img alt="Admin Profile" class="w-full h-full object-cover" data-alt="Admin user profile avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC_RqLQ5I8P2NrxgttDlZUeddc8-TGkPmFiZilHgtW-OCkgxQqTTgs0e8uwz-pzgmehFtIlXUALDJy2I_9NZufbUZzb4eJZQyT81UhgfKE-k3FuyVFbPflkAPo6ifJUd_5dcLAPk6CinvXhz12fJAdNs97zsl62-dj8Exo7nbmtZxCMIp-ulD8hswp7ArsUEOeXSPNyrpaELwHeJr7mxHXZsejoXCFc2qW6-yHFGh7QRlk3sd1sXmxptSlaeiW6QmSr5BAlQsxZivcr"/>
+</div>
+</div>
+</div>
+</header>
+<main class="flex-1 max-w-4xl mx-auto w-full px-6 py-10">
+<!-- Match Selector -->
+<div class="mb-8">
+<label class="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-2 uppercase tracking-widest">Selected Match</label>
+<div class="relative group">
+<select class="appearance-none w-full bg-white dark:bg-[#252545] border border-slate-200 dark:border-slate-700 rounded-xl px-5 py-4 text-xl font-semibold focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all cursor-pointer">
+<option value="match1">2014 vs U-2011</option>
+<option value="match2">Dragons FC vs Tigers United</option>
+<option value="match3">City Strikers vs Rovers Academy</option>
+</select>
+<div class="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+<span class="material-symbols-outlined">expand_more</span>
+</div>
+</div>
+</div>
+<!-- Management Card -->
+<div class="bg-white dark:bg-[#252545] rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+<div class="p-8 border-b border-slate-100 dark:border-slate-800 text-center">
+<h2 class="text-3xl font-bold mb-8">2014 vs U-2011</h2>
+<!-- Score Input Grid -->
+<div class="flex items-center justify-center gap-12">
+<!-- Home Team -->
+<div class="flex flex-col items-center gap-4">
+<span class="text-sm font-bold text-slate-400 uppercase tracking-widest">Home</span>
+<div class="flex items-center gap-3">
+<button class="size-12 rounded-full border-2 border-primary text-primary hover:bg-primary hover:text-white transition-all flex items-center justify-center font-bold text-2xl">
+<span class="material-symbols-outlined">remove</span>
+</button>
+<div class="w-24 h-24 bg-slate-100 dark:bg-[#1a1a2e] rounded-2xl flex items-center justify-center text-5xl font-bold border border-slate-200 dark:border-slate-700">
+                                    2
+                                </div>
+<button class="size-12 rounded-full bg-primary text-white hover:bg-primary/80 transition-all flex items-center justify-center font-bold text-2xl shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+</div>
+<div class="text-4xl font-light text-slate-300 dark:text-slate-600 self-end pb-4">:</div>
+<!-- Away Team -->
+<div class="flex flex-col items-center gap-4">
+<span class="text-sm font-bold text-slate-400 uppercase tracking-widest">Away</span>
+<div class="flex items-center gap-3">
+<button class="size-12 rounded-full border-2 border-primary text-primary hover:bg-primary hover:text-white transition-all flex items-center justify-center font-bold text-2xl">
+<span class="material-symbols-outlined">remove</span>
+</button>
+<div class="w-24 h-24 bg-slate-100 dark:bg-[#1a1a2e] rounded-2xl flex items-center justify-center text-5xl font-bold border border-slate-200 dark:border-slate-700">
+                                    1
+                                </div>
+<button class="size-12 rounded-full bg-primary text-white hover:bg-primary/80 transition-all flex items-center justify-center font-bold text-2xl shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Match Details Grid -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-6 p-8 bg-slate-50 dark:bg-[#1d1d36]">
+<div class="flex flex-col gap-2">
+<label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Status</label>
+<select class="bg-white dark:bg-[#252545] border border-slate-200 dark:border-slate-700 rounded-lg p-2 text-sm focus:ring-primary focus:border-primary outline-none">
+<option>Scheduled</option>
+<option selected="">Live</option>
+<option>Half Time</option>
+<option>Finished</option>
+</select>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Date</label>
+<input class="bg-white dark:bg-[#252545] border border-slate-200 dark:border-slate-700 rounded-lg p-2 text-sm focus:ring-primary focus:border-primary outline-none" type="date" value="2026-05-15"/>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Time</label>
+<input class="bg-white dark:bg-[#252545] border border-slate-200 dark:border-slate-700 rounded-lg p-2 text-sm focus:ring-primary focus:border-primary outline-none" type="time" value="15:30"/>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Venue</label>
+<input class="bg-white dark:bg-[#252545] border border-slate-200 dark:border-slate-700 rounded-lg p-2 text-sm focus:ring-primary focus:border-primary outline-none" type="text" value="Main Arena"/>
+</div>
+</div>
+<!-- Match Events -->
+<div class="p-8">
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-lg font-bold flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">history</span>
+                            MATCH EVENTS
+                        </h3>
+<button class="text-sm font-bold text-primary hover:underline flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">add_circle</span>
+                            Add Event
+                        </button>
+</div>
+<div class="space-y-3">
+<!-- Goal Event -->
+<div class="flex items-center justify-between p-4 bg-slate-50 dark:bg-[#1d1d36] rounded-xl border border-slate-100 dark:border-slate-800 group">
+<div class="flex items-center gap-4">
+<span class="text-xl">⚽</span>
+<div>
+<p class="font-bold">15' Ahmad <span class="text-xs font-normal text-slate-500 ml-2">(Home)</span></p>
+<p class="text-xs text-slate-400 uppercase">Goal Scored</p>
+</div>
+</div>
+<button class="text-slate-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+<!-- Yellow Card Event -->
+<div class="flex items-center justify-between p-4 bg-slate-50 dark:bg-[#1d1d36] rounded-xl border border-slate-100 dark:border-slate-800 group">
+<div class="flex items-center gap-4">
+<span class="text-xl">🟨</span>
+<div>
+<p class="font-bold">20' Budi <span class="text-xs font-normal text-slate-500 ml-2">(Away)</span></p>
+<p class="text-xs text-slate-400 uppercase">Yellow Card</p>
+</div>
+</div>
+<button class="text-slate-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Footer Action -->
+<div class="p-8 border-t border-slate-100 dark:border-slate-800">
+<button class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-5 rounded-xl shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-3 active:scale-[0.98]">
+<span class="material-symbols-outlined">save</span>
+                        SAVE CHANGES
+                    </button>
+<p class="text-center text-xs text-slate-500 mt-4 italic">Last updated today at 15:42</p>
+</div>
+</div>
+</main>
+<footer class="py-10 text-center text-slate-500 text-sm">
+<p>© 2026 Hastma Cup #3 - Management Portal</p>
+</footer>
+</div>
+</body></html>

@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Hastma Cup #3 2026 Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&amp;family=Noto+Sans:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f29040",
+                        "accent-gold": "#f4a261",
+                        "background-light": "#f8f7f6",
+                        "background-dark": "#1a1a2e",
+                        "card-dark": "#16213e",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"],
+                        "sans": ["Lexend", "Noto Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Lexend', sans-serif;
+        }
+        .pulse-red {
+            box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white min-h-screen">
+<!-- Top Navigation Bar -->
+<header class="sticky top-0 z-50 w-full border-b border-white/10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md">
+<div class="max-w-[1440px] mx-auto px-6 h-16 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="size-8 text-primary">
+<svg fill="currentColor" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M36.7273 44C33.9891 44 31.6043 39.8386 30.3636 33.69C29.123 39.8386 26.7382 44 24 44C21.2618 44 18.877 39.8386 17.6364 33.69C16.3957 39.8386 14.0109 44 11.2727 44C7.25611 44 4 35.0457 4 24C4 12.9543 7.25611 4 11.2727 4C14.0109 4 16.3957 8.16144 17.6364 14.31C18.877 8.16144 21.2618 4 24 4C26.7382 4 29.123 8.16144 30.3636 14.31C31.6043 8.16144 33.9891 4 36.7273 4C40.7439 4 44 12.9543 44 24C44 35.0457 40.7439 44 36.7273 44Z"></path>
+</svg>
+</div>
+<h1 class="text-xl font-bold tracking-tight">Hastma Cup #3 2026</h1>
+</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Standings</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Schedule</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Teams</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Gallery</a>
+</nav>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2 px-3 py-1.5 bg-primary/10 border border-primary/20 rounded-lg">
+<span class="material-symbols-outlined text-primary text-sm">sync</span>
+<span class="text-xs font-bold text-primary uppercase tracking-wider">Refresh in 24s</span>
+</div>
+<div class="size-10 rounded-full bg-slate-200 dark:bg-card-dark flex items-center justify-center border border-white/5 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="User avatar placeholder" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCnPErCwzGwgPJmp8lczKd70gfX4130jPadbLyYpFUrzZWQVM38PGRhied4nX2EerriMEm6jx2yMhGEVFBXU5umL7nkUAzjtg4_U_h1DziziujAPXQFUJJtpY5zezsCU7nQvM4wkJcOZG6RmjWiwtp3JbnJ2ffGFxxZwnf_tzGWAhuboUxsmKqhL61uP-tLy_ssPhIpXF9efqVB3vjmFkIpP8mnMMhiRW00Hr6OFPHIzdZhg2fQKxKJKnPa3z6vpIJI_KQKpDOLoSP5"/>
+</div>
+</div>
+</div>
+</header>
+<main class="max-w-[1440px] mx-auto px-6 py-8 space-y-8">
+<!-- Page Heading -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div class="space-y-1">
+<h2 class="text-4xl font-black tracking-tight">Tournament Dashboard</h2>
+<p class="text-slate-500 dark:text-slate-400 font-medium">Saturday, August 15, 2026 • <span class="text-primary">Live Updates Active</span></p>
+</div>
+<div class="flex gap-2">
+<button class="px-4 py-2 bg-card-dark border border-white/10 rounded-lg text-sm font-bold flex items-center gap-2 hover:bg-slate-800 transition-colors">
+<span class="material-symbols-outlined text-sm">filter_list</span> Filter Age
+                </button>
+<button class="px-4 py-2 bg-primary text-background-dark rounded-lg text-sm font-bold flex items-center gap-2 hover:bg-accent-gold transition-colors">
+<span class="material-symbols-outlined text-sm">download</span> Export PDF
+                </button>
+</div>
+</div>
+<!-- Group Standings Section -->
+<section>
+<div class="flex items-center gap-2 mb-6">
+<span class="w-1.5 h-6 bg-primary rounded-full"></span>
+<h3 class="text-2xl font-bold">Group Stage Standings</h3>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+<!-- Group A Table -->
+<div class="bg-card-dark rounded-xl border border-white/5 overflow-hidden shadow-2xl">
+<div class="bg-white/5 px-6 py-4 border-b border-white/10 flex justify-between items-center">
+<span class="text-lg font-bold text-accent-gold">Group A</span>
+<span class="text-xs text-slate-400">U-14 Division</span>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="text-slate-400 text-[11px] uppercase tracking-widest border-b border-white/5">
+<th class="px-6 py-4 font-semibold">Team</th>
+<th class="px-3 py-4 font-semibold text-center">M</th>
+<th class="px-3 py-4 font-semibold text-center">W</th>
+<th class="px-3 py-4 font-semibold text-center">D</th>
+<th class="px-3 py-4 font-semibold text-center">L</th>
+<th class="px-3 py-4 font-semibold text-center">GF</th>
+<th class="px-3 py-4 font-semibold text-center">GA</th>
+<th class="px-6 py-4 font-bold text-primary text-center">Pts</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-white/5">
+<tr class="hover:bg-white/5 transition-colors">
+<td class="px-6 py-4 font-bold">Team 2014</td>
+<td class="px-3 py-4 text-center text-slate-300">3</td>
+<td class="px-3 py-4 text-center text-slate-300">2</td>
+<td class="px-3 py-4 text-center text-slate-300">1</td>
+<td class="px-3 py-4 text-center text-slate-300">0</td>
+<td class="px-3 py-4 text-center text-slate-300">5</td>
+<td class="px-3 py-4 text-center text-slate-300">2</td>
+<td class="px-6 py-4 text-center"><span class="px-3 py-1 bg-primary/20 text-primary rounded-lg font-black">7</span></td>
+</tr>
+<tr class="hover:bg-white/5 transition-colors">
+<td class="px-6 py-4 font-bold">Team 2017</td>
+<td class="px-3 py-4 text-center text-slate-300">3</td>
+<td class="px-3 py-4 text-center text-slate-300">1</td>
+<td class="px-3 py-4 text-center text-slate-300">1</td>
+<td class="px-3 py-4 text-center text-slate-300">1</td>
+<td class="px-3 py-4 text-center text-slate-300">4</td>
+<td class="px-3 py-4 text-center text-slate-300">4</td>
+<td class="px-6 py-4 text-center"><span class="px-3 py-1 bg-white/10 text-white rounded-lg font-black">4</span></td>
+</tr>
+<tr class="hover:bg-white/5 transition-colors">
+<td class="px-6 py-4 font-bold">U-2011</td>
+<td class="px-3 py-4 text-center text-slate-300">3</td>
+<td class="px-3 py-4 text-center text-slate-300">1</td>
+<td class="px-3 py-4 text-center text-slate-300">0</td>
+<td class="px-3 py-4 text-center text-slate-300">2</td>
+<td class="px-3 py-4 text-center text-slate-300">3</td>
+<td class="px-3 py-4 text-center text-slate-300">5</td>
+<td class="px-6 py-4 text-center"><span class="px-3 py-1 bg-white/10 text-white rounded-lg font-black">3</span></td>
+</tr>
+<tr class="hover:bg-white/5 transition-colors">
+<td class="px-6 py-4 font-bold">Hastma FC</td>
+<td class="px-3 py-4 text-center text-slate-300">3</td>
+<td class="px-3 py-4 text-center text-slate-300">0</td>
+<td class="px-3 py-4 text-center text-slate-300">2</td>
+<td class="px-3 py-4 text-center text-slate-300">1</td>
+<td class="px-3 py-4 text-center text-slate-300">2</td>
+<td class="px-3 py-4 text-center text-slate-300">3</td>
+<td class="px-6 py-4 text-center"><span class="px-3 py-1 bg-white/10 text-white rounded-lg font-black">2</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Group B Table -->
+<div class="bg-card-dark rounded-xl border border-white/5 overflow-hidden shadow-2xl">
+<div class="bg-white/5 px-6 py-4 border-b border-white/10 flex justify-between items-center">
+<span class="text-lg font-bold text-accent-gold">Group B</span>
+<span class="text-xs text-slate-400">U-14 Division</span>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="text-slate-400 text-[11px] uppercase tracking-widest border-b border-white/5">
+<th class="px-6 py-4 font-semibold">Team</th>
+<th class="px-3 py-4 font-semibold text-center">M</th>
+<th class="px-3 py-4 font-semibold text-center">W</th>
+<th class="px-3 py-4 font-semibold text-center">D</th>
+<th class="px-3 py-4 font-semibold text-center">L</th>
+<th class="px-3 py-4 font-semibold text-center">GF</th>
+<th class="px-3 py-4 font-semibold text-center">GA</th>
+<th class="px-6 py-4 font-bold text-primary text-center">Pts</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-white/5">
+<tr class="hover:bg-white/5 transition-colors">
+<td class="px-6 py-4 font-bold">Youth Elite</td>
+<td class="px-3 py-4 text-center text-slate-300">3</td>
+<td class="px-3 py-4 text-center text-slate-300">3</td>
+<td class="px-3 py-4 text-center text-slate-300">0</td>
+<td class="px-3 py-4 text-center text-slate-300">0</td>
+<td class="px-3 py-4 text-center text-slate-300">8</td>
+<td class="px-3 py-4 text-center text-slate-300">1</td>
+<td class="px-6 py-4 text-center"><span class="px-3 py-1 bg-primary/20 text-primary rounded-lg font-black">9</span></td>
+</tr>
+<tr class="hover:bg-white/5 transition-colors">
+<td class="px-6 py-4 font-bold">Strikers FC</td>
+<td class="px-3 py-4 text-center text-slate-300">3</td>
+<td class="px-3 py-4 text-center text-slate-300">2</td>
+<td class="px-3 py-4 text-center text-slate-300">0</td>
+<td class="px-3 py-4 text-center text-slate-300">1</td>
+<td class="px-3 py-4 text-center text-slate-300">6</td>
+<td class="px-3 py-4 text-center text-slate-300">3</td>
+<td class="px-6 py-4 text-center"><span class="px-3 py-1 bg-white/10 text-white rounded-lg font-black">6</span></td>
+</tr>
+<tr class="hover:bg-white/5 transition-colors">
+<td class="px-6 py-4 font-bold">Rising Stars</td>
+<td class="px-3 py-4 text-center text-slate-300">3</td>
+<td class="px-3 py-4 text-center text-slate-300">0</td>
+<td class="px-3 py-4 text-center text-slate-300">1</td>
+<td class="px-3 py-4 text-center text-slate-300">2</td>
+<td class="px-3 py-4 text-center text-slate-300">2</td>
+<td class="px-3 py-4 text-center text-slate-300">6</td>
+<td class="px-6 py-4 text-center"><span class="px-3 py-1 bg-white/10 text-white rounded-lg font-black">1</span></td>
+</tr>
+<tr class="hover:bg-white/5 transition-colors">
+<td class="px-6 py-4 font-bold">City United</td>
+<td class="px-3 py-4 text-center text-slate-300">3</td>
+<td class="px-3 py-4 text-center text-slate-300">0</td>
+<td class="px-3 py-4 text-center text-slate-300">1</td>
+<td class="px-3 py-4 text-center text-slate-300">2</td>
+<td class="px-3 py-4 text-center text-slate-300">1</td>
+<td class="px-3 py-4 text-center text-slate-300">7</td>
+<td class="px-6 py-4 text-center"><span class="px-3 py-1 bg-white/10 text-white rounded-lg font-black">1</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<!-- Match Schedule Section -->
+<section>
+<div class="flex items-center gap-2 mb-6">
+<span class="w-1.5 h-6 bg-primary rounded-full"></span>
+<h3 class="text-2xl font-bold">Match Schedule</h3>
+</div>
+<div class="grid grid-cols-1 gap-6">
+<!-- LIVE MATCH CARD -->
+<div class="bg-card-dark border-2 border-primary/50 rounded-xl overflow-hidden shadow-[0_0_30px_rgba(242,144,64,0.15)]">
+<div class="flex flex-col">
+<div class="flex items-center justify-between px-6 py-3 bg-primary/10 border-b border-primary/20">
+<div class="flex items-center gap-3">
+<div class="size-2 rounded-full bg-red-500 pulse-red"></div>
+<span class="text-xs font-black text-red-500 uppercase tracking-widest">Live Now • 78'</span>
+</div>
+<span class="text-xs font-medium text-slate-400">Pitch 1 • U-14 Group A Match 4</span>
+</div>
+<div class="px-6 py-8 flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16">
+<div class="flex flex-col items-center gap-3 w-40">
+<div class="size-20 rounded-xl bg-slate-800 flex items-center justify-center border border-white/5">
+<span class="material-symbols-outlined text-4xl text-accent-gold">shield</span>
+</div>
+<span class="text-xl font-black text-center">Team 2014</span>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="flex items-center gap-6">
+<span class="text-6xl font-black text-primary">2</span>
+<span class="text-2xl font-bold text-slate-500">-</span>
+<span class="text-6xl font-black text-white">1</span>
+</div>
+<div class="px-3 py-1 bg-white/5 rounded-full">
+<span class="text-xs font-medium text-slate-400 uppercase tracking-tighter">Second Half</span>
+</div>
+</div>
+<div class="flex flex-col items-center gap-3 w-40">
+<div class="size-20 rounded-xl bg-slate-800 flex items-center justify-center border border-white/5">
+<span class="material-symbols-outlined text-4xl text-white">shield</span>
+</div>
+<span class="text-xl font-black text-center text-slate-400">Hastma FC</span>
+</div>
+</div>
+<!-- Expanded details (Timeline) -->
+<div class="bg-black/20 px-6 py-6 border-t border-white/5">
+<div class="flex items-center gap-3 mb-4">
+<span class="material-symbols-outlined text-sm text-primary">sports_soccer</span>
+<h4 class="text-sm font-bold uppercase tracking-widest text-slate-300">Goal Timeline</h4>
+</div>
+<div class="space-y-4 relative before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-px before:bg-white/10">
+<div class="flex items-center gap-6 relative">
+<div class="size-6 rounded-full bg-primary flex items-center justify-center z-10">
+<span class="material-symbols-outlined text-[14px] text-background-dark font-bold">sports_soccer</span>
+</div>
+<div class="flex flex-col">
+<span class="text-sm font-bold text-white">Rizky <span class="text-primary ml-2">5'</span></span>
+<span class="text-xs text-slate-500">Team 2014 • Header from corner</span>
+</div>
+</div>
+<div class="flex items-center gap-6 relative">
+<div class="size-6 rounded-full bg-primary flex items-center justify-center z-10">
+<span class="material-symbols-outlined text-[14px] text-background-dark font-bold">sports_soccer</span>
+</div>
+<div class="flex flex-col">
+<span class="text-sm font-bold text-white">Dimas <span class="text-primary ml-2">12'</span></span>
+<span class="text-xs text-slate-500">Team 2014 • Long range strike</span>
+</div>
+</div>
+<div class="flex items-center gap-6 relative">
+<div class="size-6 rounded-full bg-slate-500 flex items-center justify-center z-10">
+<span class="material-symbols-outlined text-[14px] text-background-dark font-bold">sports_soccer</span>
+</div>
+<div class="flex flex-col">
+<span class="text-sm font-bold text-slate-400">Aris <span class="text-slate-500 ml-2">44'</span></span>
+<span class="text-xs text-slate-500">Hastma FC • Penalty kick</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Regular Match Cards (Vertical list) -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Card 1 -->
+<div class="bg-card-dark border border-white/5 rounded-xl p-6 flex items-center justify-between group hover:border-primary/30 transition-all">
+<div class="flex flex-col gap-1">
+<span class="text-[10px] font-black uppercase text-primary/70 tracking-tighter">Starts in 15m</span>
+<div class="flex items-center gap-4">
+<span class="font-bold text-lg">Youth Elite</span>
+<span class="text-xs font-medium text-slate-500">VS</span>
+<span class="font-bold text-lg text-slate-400">Strikers FC</span>
+</div>
+</div>
+<div class="flex flex-col items-end gap-1">
+<span class="text-sm font-bold bg-white/5 px-3 py-1 rounded-md">15:30</span>
+<span class="text-[10px] text-slate-500">Pitch 2</span>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-card-dark border border-white/5 rounded-xl p-6 flex items-center justify-between group hover:border-primary/30 transition-all">
+<div class="flex flex-col gap-1">
+<span class="text-[10px] font-black uppercase text-slate-500 tracking-tighter">Scheduled</span>
+<div class="flex items-center gap-4">
+<span class="font-bold text-lg">Team 2017</span>
+<span class="text-xs font-medium text-slate-500">VS</span>
+<span class="font-bold text-lg text-slate-400">U-2011</span>
+</div>
+</div>
+<div class="flex flex-col items-end gap-1">
+<span class="text-sm font-bold bg-white/5 px-3 py-1 rounded-md">16:15</span>
+<span class="text-[10px] text-slate-500">Pitch 1</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Footer Info -->
+<footer class="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-slate-500 text-sm">
+<p>© 2026 Hastma Cup Tournament Management. All rights reserved.</p>
+<div class="flex gap-6">
+<a class="hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="hover:text-primary transition-colors" href="#">Contact Support</a>
+<div class="flex items-center gap-2 text-primary font-bold">
+<span class="material-symbols-outlined text-sm">settings_input_antenna</span>
+<span>System Online</span>
+</div>
+</div>
+</footer>
+</main>
+</body></html>
