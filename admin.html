@@ -742,22 +742,27 @@
   <!-- Toast Container -->
   <div class="toast-container" id="toastContainer"></div>
 
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script type="module">
     import { getTournamentData, saveTournamentData, getCachedTournamentData } from './js/api.js';
     window.HastmaApi = { getTournamentData, saveTournamentData, getCachedTournamentData };
   </script>
   <!-- Share Card Overlay -->
-  <div id="shareOverlay" class="share-overlay" style="display: none;">
-    <div class="share-card-container">
+  <div id="shareOverlay" class="share-overlay" style="display: none;" onclick="closeShareCard()">
+    <div class="share-card-container" onclick="event.stopPropagation()">
       <div id="shareCard" class="share-card">
         <!-- Content dynamic via JS -->
       </div>
-      <div class="share-actions">
-        <button class="btn btn-primary btn-lg" onclick="closeShareCard()">
-          <span class="material-symbols-outlined">close</span> Close
+      <div class="share-actions-buttons">
+        <button class="btn-premium btn-premium-primary" onclick="downloadResultCard()" style="flex: 1;">
+          <span class="material-symbols-outlined">download</span> Download
         </button>
-        <p style="margin-top: 1rem; color: white; opacity: 0.7; font-size: 0.8rem;">Screenshot this to share!</p>
+        <button class="btn-premium btn-premium-secondary" id="nativeShareBtn" onclick="shareResultCard()"
+          style="flex: 1; display: none;">
+          <span class="material-symbols-outlined">share</span> Share Sosmed
+        </button>
       </div>
+      <button class="btn-close-overlay" onclick="closeShareCard()">Tutup</button>
     </div>
   </div>
 

@@ -788,6 +788,8 @@ function showShareCard(matchId) {
   const card = document.getElementById('shareCard');
   if (!overlay || !card) return;
 
+  overlay.querySelector('.share-card-container').dataset.matchId = matchId;
+
   // Format goal scorers
   const homeGoals = (match.events || []).filter(e => e.type === 'goal' && e.teamId === match.homeTeam);
   const awayGoals = (match.events || []).filter(e => e.type === 'goal' && e.teamId === match.awayTeam);
@@ -833,9 +835,100 @@ function showShareCard(matchId) {
   `;
 
   overlay.style.display = 'flex';
+
+  // Check Web Share API support
+  const shareBtn = document.getElementById('nativeShareBtn');
+  if (shareBtn) {
+    if (navigator.share && navigator.canShare && navigator.canShare({ files: [new File([], 'test.png', { type: 'image/png' })] })) {
+      shareBtn.style.display = 'flex';
+    } else {
+      shareBtn.style.display = 'none';
+    }
+  }
+}
+
+/**
+ * Generate Image Blob from Share Card
+ */
+async function generateImageBlob() {
+  const card = document.getElementById('shareCard');
+  if (!card) return null;
+
+  try {
+    // scale 2 for better quality
+    const canvas = await html2canvas(card, {
+      scale: 2,
+      backgroundColor: '#0f172a', // Match theme background
+      useCORS: true,
+      logging: false,
+      allowTaint: true
+    });
+
+    return new Promise(resolve => {
+      canvas.toBlob(blob => resolve(blob), 'image/png', 1.0);
+    });
+  } catch (err) {
+    console.error('Failed to generate image:', err);
+    return null;
+  }
+}
+
+/**
+ * Download Result Card as Image
+ */
+async function downloadResultCard() {
+  const matchId = document.querySelector('#shareOverlay [data-match-id]')?.dataset.matchId || 'match-result';
+  showToast('Generating image...', 'info');
+
+  const blob = await generateImageBlob();
+  if (!blob) {
+    showToast('Failed to generate image', 'danger');
+    return;
+  }
+
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `hastmacup-${matchId}.png`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  showToast('Image downloaded!', 'success');
+}
+
+/**
+ * Share Result Card via Native Share API
+ */
+async function shareResultCard() {
+  const matchId = document.querySelector('#shareOverlay [data-match-id]')?.dataset.matchId || 'match-result';
+  const blob = await generateImageBlob();
+  if (!blob) {
+    showToast('Failed to generate image', 'danger');
+    return;
+  }
+
+  const file = new File([blob], `hastmacup-${matchId}.png`, { type: 'image/png' });
+
+  try {
+    await navigator.share({
+      files: [file],
+      title: 'HASTMA CUP #3 - Match Result',
+      text: 'Cek hasil pertandingan HASTMA CUP #3 2026!'
+    });
+    showToast('Shared successfully!', 'success');
+  } catch (err) {
+    if (err.name !== 'AbortError') {
+      console.error('Share failed:', err);
+      showToast('Share failed', 'danger');
+    }
+  }
 }
 
 window.showShareCard = showShareCard;
+window.downloadResultCard = downloadResultCard;
+window.shareResultCard = shareResultCard;
 window.closeShareCard = () => {
   const overlay = document.getElementById('shareOverlay');
   if (overlay) overlay.style.display = 'none';

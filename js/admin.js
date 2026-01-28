@@ -807,6 +807,8 @@ function showShareCard(matchId) {
   const card = document.getElementById('shareCard');
   if (!overlay || !card) return;
 
+  overlay.querySelector('.share-card-container').dataset.matchId = matchId;
+
   // Format goal scorers
   const homeGoals = (match.events || []).filter(e => e.type === 'goal' && e.teamId === match.homeTeam);
   const awayGoals = (match.events || []).filter(e => e.type === 'goal' && e.teamId === match.awayTeam);
@@ -852,9 +854,78 @@ function showShareCard(matchId) {
   `;
 
   overlay.style.display = 'flex';
+
+  // Check Web Share API support
+  const shareBtn = document.getElementById('nativeShareBtn');
+  if (shareBtn) {
+    if (navigator.share && navigator.canShare && navigator.canShare({ files: [new File([], 'test.png', { type: 'image/png' })] })) {
+      shareBtn.style.display = 'flex';
+    } else {
+      shareBtn.style.display = 'none';
+    }
+  }
+}
+
+/**
+ * Generate Image Blob from Share Card
+ */
+async function generateImageBlob() {
+  const card = document.getElementById('shareCard');
+  if (!card) return null;
+
+  try {
+    const canvas = await html2canvas(card, {
+      scale: 2,
+      backgroundColor: '#0f172a',
+      useCORS: true,
+      logging: false
+    });
+
+    return new Promise(resolve => {
+      canvas.toBlob(blob => resolve(blob), 'image/png', 1.0);
+    });
+  } catch (err) {
+    console.error('Failed to generate image:', err);
+    return null;
+  }
+}
+
+async function downloadResultCard() {
+  showToast('Preparing image...', 'info');
+  const blob = await generateImageBlob();
+  if (!blob) return;
+
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `match-report.png`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('Image saved!', 'success');
+}
+
+async function shareResultCard() {
+  const blob = await generateImageBlob();
+  if (!blob) return;
+
+  const file = new File([blob], `match-report.png`, { type: 'image/png' });
+
+  try {
+    await navigator.share({
+      files: [file],
+      title: 'HASTMA CUP #3',
+      text: 'Official Match Result'
+    });
+  } catch (err) {
+    if (err.name !== 'AbortError') showToast('Share failed', 'danger');
+  }
 }
 
 window.showShareCard = showShareCard;
+window.downloadResultCard = downloadResultCard;
+window.shareResultCard = shareResultCard;
 window.closeShareCard = () => {
   const overlay = document.getElementById('shareOverlay');
   if (overlay) overlay.style.display = 'none';
@@ -1511,6 +1582,10 @@ function generateMatchReport(matchId) {
   const awayTeam = getTeam(match.awayTeam);
   const events = match.events || [];
 
+  // Sort players by number
+  const homePlayers = (homeTeam?.players || []).sort((a, b) => a.number - b.number);
+  const awayPlayers = (awayTeam?.players || []).sort((a, b) => a.number - b.number);
+
   // Create a hidden print window
   const printWindow = window.open('', '_blank');
 
@@ -1531,6 +1606,15 @@ function generateMatchReport(matchId) {
         .score { font-size: 64px; font-weight: 900; }
         .divider { font-size: 32px; color: #ccc; }
         .section-title { font-size: 16px; font-weight: 900; border-bottom: 1px solid #eee; padding-bottom: 8px; margin-bottom: 15px; margin-top: 30px; text-transform: uppercase; letter-spacing: 1px; }
+        
+        /* Lineup Styles */
+        .lineup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+        .lineup-list { list-style: none; padding: 0; margin: 0; }
+        .lineup-item { font-size: 13px; display: flex; gap: 10px; padding: 4px 0; border-bottom: 1px solid #f5f5f5; }
+        .lineup-number { font-weight: 700; width: 25px; color: #666; }
+        .captain-tag { font-weight: 900; color: #d97706; margin-left: 5px; font-size: 11px; }
+        .manager-info { font-size: 13px; margin-top: 15px; font-weight: 700; color: #444; }
+
         .event-list { list-style: none; padding: 0; }
         .event-item { display: flex; gap: 15px; padding: 8px 0; border-bottom: 1px solid #f9f9f9; font-size: 14px; }
         .event-min { font-weight: 700; width: 40px; color: #666; }
@@ -1540,8 +1624,9 @@ function generateMatchReport(matchId) {
         @media print { .no-print { display: none; } }
       </style>
     </head>
-    <body onload="window.print()">
+    <body onload="setTimeout(() => window.print(), 800)">
       <div class="header">
+        <img src="logo.png" style="height: 60px; margin-bottom: 10px;" alt="Logo">
         <h1 class="match-title">HASTMA CUP #3</h1>
         <div class="match-info">Official Match Report • ${match.stage.toUpperCase()} • ${match.date} ${match.time}</div>
       </div>
@@ -1555,6 +1640,32 @@ function generateMatchReport(matchId) {
         <div class="team-box">
           <div class="team-name">${awayTeam?.name || 'AWAY'}</div>
           <div class="score">${match.awayScore}</div>
+        </div>
+      </div>
+
+      <div class="section-title">Team Lineups</div>
+      <div class="lineup-grid">
+        <div>
+          <ul class="lineup-list">
+            ${homePlayers.map(p => `
+              <li class="lineup-item">
+                <span class="lineup-number">${p.number}</span>
+                <span>${p.name}${p.isCaptain ? '<span class="captain-tag">(C)</span>' : ''}</span>
+              </li>
+            `).join('')}
+          </ul>
+          <div class="manager-info">Manager: ${homeTeam?.manager || '-'}</div>
+        </div>
+        <div>
+          <ul class="lineup-list">
+            ${awayPlayers.map(p => `
+              <li class="lineup-item">
+                <span class="lineup-number">${p.number}</span>
+                <span>${p.name}${p.isCaptain ? '<span class="captain-tag">(C)</span>' : ''}</span>
+              </li>
+            `).join('')}
+          </ul>
+          <div class="manager-info">Manager: ${awayTeam?.manager || '-'}</div>
         </div>
       </div>
 
@@ -1852,24 +1963,53 @@ function loadPlayerList(teamId) {
     return;
   }
 
-  container.innerHTML = team.players.map((player, index) => `
-    <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; background: rgba(255,255,255,0.02); border: 1px solid var(--admin-card-border); border-radius: 0.875rem;">
-      <div style="display: flex; align-items: center; gap: 1rem;">
-        <div style="width: 2.25rem; height: 2.25rem; border-radius: 0.75rem; background: var(--admin-primary); display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 0.875rem; color: white;">
-          ${player.number}
+  container.innerHTML = team.players.map((player, index) => {
+    const isCaptain = player.isCaptain === true;
+    return `
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; background: rgba(255,255,255,0.02); border: 1px solid var(--admin-card-border); border-radius: 0.875rem;">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+          <div style="width: 2.25rem; height: 2.25rem; border-radius: 0.75rem; background: ${isCaptain ? 'var(--admin-warning)' : 'var(--admin-primary)'}; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 0.875rem; color: white; position: relative;" title="${isCaptain ? 'Captain' : 'Player'}">
+            ${player.number}
+            ${isCaptain ? '<div style="position: absolute; bottom: -4px; right: -4px; background: #fff; color: #000; font-size: 8px; font-weight: 900; width: 14px; height: 14px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid #000;">C</div>' : ''}
+          </div>
+          <div>
+            <div style="font-weight: 700; color: var(--admin-text-main);">${player.name}${isCaptain ? ' (C)' : ''}</div>
+          </div>
         </div>
-        <span style="font-weight: 700; color: var(--admin-text-main);">${player.name}</span>
+        <div style="display: flex; gap: 0.5rem;">
+          <button class="btn-premium ${isCaptain ? 'btn-premium-primary' : 'btn-premium-secondary'}" style="padding: 0.5rem;" onclick="toggleCaptain('${teamId}', ${index})" title="Set as Captain">
+            <span class="material-symbols-outlined" style="font-size: 1rem;">star</span>
+          </button>
+          <button class="btn-premium btn-premium-secondary" style="padding: 0.5rem;" onclick="editPlayer('${teamId}', ${index})">
+            <span class="material-symbols-outlined" style="font-size: 1rem;">edit</span>
+          </button>
+          <button class="btn-premium btn-premium-secondary" style="padding: 0.5rem; color: var(--admin-danger);" onclick="deletePlayer('${teamId}', ${index})">
+            <span class="material-symbols-outlined" style="font-size: 1rem;">delete</span>
+          </button>
+        </div>
       </div>
-      <div style="display: flex; gap: 0.5rem;">
-        <button class="btn-premium btn-premium-secondary" style="padding: 0.5rem;" onclick="editPlayer('${teamId}', ${index})">
-          <span class="material-symbols-outlined" style="font-size: 1rem;">edit</span>
-        </button>
-        <button class="btn-premium btn-premium-secondary" style="padding: 0.5rem; color: var(--admin-danger);" onclick="deletePlayer('${teamId}', ${index})">
-          <span class="material-symbols-outlined" style="font-size: 1rem;">delete</span>
-        </button>
-      </div>
-    </div>
-  `).join('');
+    `;
+  }).join('');
+}
+
+function toggleCaptain(teamId, playerIndex) {
+  const team = getTeam(teamId);
+  if (!team || !team.players) return;
+
+  // Toggle selected player
+  const player = team.players[playerIndex];
+  const newState = !player.isCaptain;
+
+  // Rule: Only one captain per team (optional, but professional)
+  if (newState) {
+    team.players.forEach(p => p.isCaptain = false);
+  }
+
+  player.isCaptain = newState;
+
+  saveData();
+  loadPlayerList(teamId);
+  showToast(newState ? `${player.name} is now Captain!` : 'Captain tag removed', 'info');
 }
 
 /**
@@ -1972,6 +2112,10 @@ function loadTeamColors() {
           <label class="admin-label">Team Name</label>
           <input type="text" class="admin-input" value="${team.name}" onchange="updateTeamName('${team.id}', this.value)">
         </div>
+        <div class="admin-input-group" style="grid-column: span 2;">
+          <label class="admin-label">Manager / Official</label>
+          <input type="text" class="admin-input" placeholder="Nama Manager" value="${team.manager || ''}" onchange="updateTeamManager('${team.id}', this.value)">
+        </div>
         <div class="admin-input-group">
           <label class="admin-label">Group</label>
           <select class="admin-select" onchange="updateTeamGroup('${team.id}', this.value)">
@@ -1991,6 +2135,15 @@ function loadTeamColors() {
       </div>
     </div>
   `).join('');
+}
+
+function updateTeamManager(teamId, manager) {
+  const team = getTeam(teamId);
+  if (team) {
+    team.manager = manager.trim();
+    saveData();
+    showToast('Manager updated!', 'success');
+  }
 }
 
 function updateTeamName(teamId, name) {

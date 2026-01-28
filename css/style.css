@@ -3005,6 +3005,29 @@ tbody tr.qualifier-runnerup .team-name-cell::after {
   }
 }
 
+.share-actions-buttons {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+  margin-top: 1.5rem;
+}
+
+.btn-close-overlay {
+  margin-top: 1.5rem;
+  background: transparent;
+  border: none;
+  color: white;
+  opacity: 0.5;
+  font-size: 0.8rem;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0.5rem 1rem;
+}
+
+.btn-close-overlay:hover {
+  opacity: 1;
+}
+
 /* Confetti Particles (CSS Only) */
 .confetti-container {
   position: absolute;
