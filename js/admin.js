@@ -10,6 +10,7 @@ let tournamentData = null;
 let isLoggedIn = false;
 let currentSession = null;
 let currentMatchId = null;
+let activeAdminSection = 'dashboard'; // Track current active tab for selective rendering
 
 // ================================================
 // Authentication
@@ -92,7 +93,8 @@ function hideLoginModal() {
  */
 async function showAdminPanel() {
   hideLoginModal();
-  await initData();
+  // loadData already handles fetching from Cloud + LocalStorage fallback
+  await loadData();
   loadAllAdminData();
 }
 
@@ -112,6 +114,8 @@ function switchSection(eventOrSection, element) {
     clickedElement = eventOrSection.currentTarget;
   }
 
+  activeAdminSection = sectionId; // Update global tracking
+
   // Update nav links
   document.querySelectorAll('.admin-nav a, .admin-nav-item, .nav-link, .fab-action-btn').forEach(link => {
     link.classList.remove('active');
@@ -126,6 +130,8 @@ function switchSection(eventOrSection, element) {
   const targetSection = document.getElementById(`section-${sectionId}`);
   if (targetSection) {
     targetSection.classList.add('active');
+    // Lazy render when switching
+    refreshActiveSection();
   } else {
     console.error(`Section section-${sectionId} not found`);
   }
@@ -230,40 +236,62 @@ function autoCalculateEndTime(startTime) {
 // ================================================
 
 /**
- * Load all admin sections data
+ * Load all admin sections data - Optimized for performance
  */
 function loadAllAdminData() {
-  // Check if data is stale (simple check: if Match A1 is still 08:00)
+  // Check if data is stale
   if (tournamentData.matches && tournamentData.matches[0].time === '08:00') {
     console.log('Detected old default data, resetting to new schedule...');
     resetData();
   }
 
   updateLastUpdated();
-  renderAdminSchedule();
-  renderAdminResults();
+
+  // Always update global selectors/dropdowns (relatively cheap)
   loadMatchSelector();
   loadPlayerTeamSelector();
-  loadTeamColors();
   loadScheduleTeamSelectors();
-  renderDashboard();
-  renderAuditLogs();
 
-  // Refresh active editor if a match is focused
-  if (currentMatchId) {
-    // Only refresh UI parts that won't disrupt user input
+  // ONLY render the section the user is actually looking at
+  refreshActiveSection();
+}
+
+/**
+ * Helper to only render what's visible
+ */
+function refreshActiveSection() {
+  console.log(`Refreshing active section: ${activeAdminSection}`);
+
+  switch (activeAdminSection) {
+    case 'dashboard':
+      renderDashboard();
+      break;
+    case 'schedule':
+      renderAdminSchedule();
+      break;
+    case 'results':
+      renderAdminResults();
+      break;
+    case 'players':
+      // loadPlayerTeamSelector already called
+      break;
+    case 'teams':
+      loadTeamColors();
+      break;
+    case 'logs':
+      renderAuditLogs();
+      break;
+  }
+
+  // Always refresh active match editor if it's currently showing in match config
+  if (activeAdminSection === 'match-config' && currentMatchId) {
     const match = getMatch(currentMatchId);
     if (match) {
       const hDisp = document.getElementById('homeScoreDisplay');
       const aDisp = document.getElementById('awayScoreDisplay');
       if (hDisp) hDisp.textContent = match.homeScore;
       if (aDisp) aDisp.textContent = match.awayScore;
-
-      // Also refresh event list
       loadMatchEvents(match);
-
-      // Update status select if it hasn't changed locally? 
-      // For now, let's keep it simple and just refresh read-only stats
     }
   }
 }
