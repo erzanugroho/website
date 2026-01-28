@@ -26,14 +26,15 @@ async function initData() {
     const res = await fetch(API_URL);
     if (res.ok) {
       const cloudData = await res.json();
-      if (cloudData) {
+      // Ensure cloud data is valid (has teams)
+      if (cloudData && cloudData.teams && cloudData.teams.length > 0) {
         tournamentData = cloudData;
         updateTeamColorVariables();
         return;
       }
     }
   } catch (e) {
-    console.warn('API fetch failed, falling back to local/default', e);
+    console.warn('API fetch failed or empty, falling back to local/default', e);
   }
 
   // 2. Fallback to LocalStorage or Default

@@ -143,25 +143,35 @@ const API_URL = '/api/tournament';
  */
 async function loadData() {
   try {
+    console.log('Fetching data from Vercel KV...');
     const res = await fetch(API_URL);
-    if (!res.ok) throw new Error('API Error');
+    console.log('KV Response Status:', res.status);
+
+    if (!res.ok) throw new Error(`API Error ${res.status}`);
 
     const cloudData = await res.json();
+    console.log('KV Data Received:', cloudData ? 'Yes' : 'Null');
 
-    if (cloudData) {
+    if (cloudData && cloudData.teams && cloudData.teams.length > 0) {
       tournamentData = cloudData;
-      console.log('✅ Loaded from Vercel KV');
+      console.log('✅ Loaded VALID data from Vercel KV');
     } else {
-      console.log('⚠️ KV empty, using defaults');
-      tournamentData = { ...DEFAULT_TOURNAMENT_DATA };
-      saveData();
+      console.warn('⚠️ KV returned empty/null data! Falling back to defaults.');
+      // Only overwrite if we really have nothing
+      if (!tournamentData) {
+        tournamentData = { ...DEFAULT_TOURNAMENT_DATA };
+        saveData();
+      }
     }
   } catch (err) {
-    console.warn('❌ API Error, using LocalStorage', err);
+    console.error('❌ API Error, using LocalStorage/Default', err);
+    // Fallback logic
     const local = localStorage.getItem('hastmaCupData');
     if (local) {
+      console.log('Reverting to LocalStorage backup');
       tournamentData = JSON.parse(local);
     } else {
+      console.log('Reverting to Hardcoded Defaults');
       tournamentData = { ...DEFAULT_TOURNAMENT_DATA };
     }
   }
