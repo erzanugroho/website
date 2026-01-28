@@ -3,7 +3,7 @@
  * Falls back to localStorage if API is unreachable.
  */
 
-const STORAGE_KEY = 'hastmaTournamentData';
+const STORAGE_KEY = 'hastmaCupData';
 
 function safeJsonParse(raw) {
   try {
@@ -72,7 +72,7 @@ export async function saveTournamentData(data) {
   // Try to persist to server
   try {
     return await fetchJson('/api/tournament', {
-      method: 'PUT',
+      method: 'POST',
       body: JSON.stringify(data)
     });
   } catch (e) {
