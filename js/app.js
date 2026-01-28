@@ -828,7 +828,18 @@ function showShareCard(matchId) {
           ${awayGoals.map(g => `<div class="share-scorer-item">⚽ ${g.playerName} (${g.minute}')</div>`).join('')}
         </div>
       </div>
-      <p style="margin-top: 1.5rem; font-size: 0.7rem; opacity: 0.5; letter-spacing: 0.1em; font-weight: 800;">
+      
+      <div class="share-sponsors">
+        <img src="sponsor/IMG-20240107-WA0109 - Diedit.png" class="share-sponsor-logo">
+        <img src="sponsor/IMG-20260119-WA0006 - Diedit.png" class="share-sponsor-logo">
+        <img src="sponsor/Salinan Dari Amazing Grotesk - 1.png" class="share-sponsor-logo">
+        <img src="sponsor/WhatsApp Image 2026-01-10 at 18.06.42 - Diedit.png" class="share-sponsor-logo">
+        <img src="sponsor/WhatsApp Image 2026-01-21 at 16.51.59 - Diedit.png" class="share-sponsor-logo">
+        <img src="sponsor/WhatsApp Image 2026-01-21 at 16.51.59d - Diedit.png" class="share-sponsor-logo">
+        <img src="sponsor/fdn nusantara - Diedit.png" class="share-sponsor-logo">
+      </div>
+
+      <p style="margin-top: 1rem; font-size: 0.6rem; opacity: 0.4; letter-spacing: 0.1em; font-weight: 800;">
         HASTMA CUP #3 • MINI SOCCER TOURNAMENT 2026
       </p>
     </div>
