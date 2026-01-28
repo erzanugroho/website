@@ -1607,93 +1607,196 @@ function generateMatchReport(matchId) {
       <title>Match Report - ${homeTeam?.name || 'Home'} vs ${awayTeam?.name || 'Away'}</title>
       <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-        body { font-family: 'Inter', sans-serif; color: #1a1a1a; padding: 40px; line-height: 1.5; }
-        .header { text-align: center; border-bottom: 2px solid #eee; padding-bottom: 20px; margin-bottom: 30px; }
-        .match-title { font-size: 24px; font-weight: 900; margin: 0; }
-        .match-info { color: #666; font-size: 14px; margin-top: 5px; }
-        .score-row { display: flex; justify-content: center; align-items: center; gap: 40px; margin: 40px 0; }
-        .team-box { text-align: center; flex: 1; }
-        .team-name { font-size: 20px; font-weight: 700; margin-bottom: 10px; }
-        .score { font-size: 64px; font-weight: 900; }
-        .divider { font-size: 32px; color: #ccc; }
-        .section-title { font-size: 16px; font-weight: 900; border-bottom: 1px solid #eee; padding-bottom: 8px; margin-bottom: 15px; margin-top: 30px; text-transform: uppercase; letter-spacing: 1px; }
         
-        /* Lineup Styles */
-        .lineup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
-        .lineup-list { list-style: none; padding: 0; margin: 0; }
-        .lineup-item { font-size: 13px; display: flex; gap: 10px; padding: 4px 0; border-bottom: 1px solid #f5f5f5; }
-        .lineup-number { font-weight: 700; width: 25px; color: #666; }
-        .captain-tag { font-weight: 900; color: #d97706; margin-left: 5px; font-size: 11px; }
-        .manager-info { font-size: 13px; margin-top: 15px; font-weight: 700; color: #444; }
+        @page {
+          size: A4;
+          margin: 10mm;
+        }
 
-        .event-list { list-style: none; padding: 0; }
-        .event-item { display: flex; gap: 15px; padding: 8px 0; border-bottom: 1px solid #f9f9f9; font-size: 14px; }
-        .event-min { font-weight: 700; width: 40px; color: #666; }
-        .event-type { width: 100px; font-weight: 700; }
+        body { 
+          font-family: 'Inter', sans-serif; 
+          color: #1a1a1a; 
+          padding: 0; 
+          margin: 0;
+          line-height: 1.3;
+          font-size: 12px;
+        }
+
+        .report-container {
+          max-width: 190mm;
+          margin: 0 auto;
+        }
+
+        .header { 
+          text-align: center; 
+          border-bottom: 2px solid #eee; 
+          padding-bottom: 10px; 
+          margin-bottom: 15px; 
+        }
+
+        .match-title { font-size: 20px; font-weight: 900; margin: 0; }
+        .match-info { color: #666; font-size: 12px; margin-top: 2px; }
+        
+        .score-row { 
+          display: flex; 
+          justify-content: center; 
+          align-items: center; 
+          gap: 30px; 
+          margin: 15px 0;
+          background: #fcfcfc;
+          padding: 10px;
+          border-radius: 8px;
+        }
+
+        .team-box { text-align: center; flex: 1; }
+        .team-name { font-size: 16px; font-weight: 700; margin-bottom: 5px; }
+        .score { font-size: 44px; font-weight: 900; line-height: 1; }
+        .divider { font-size: 24px; color: #ccc; font-weight: 900; }
+        
+        .section-title { 
+          font-size: 13px; 
+          font-weight: 900; 
+          border-bottom: 1px solid #eee; 
+          padding-bottom: 5px; 
+          margin-bottom: 10px; 
+          margin-top: 15px; 
+          text-transform: uppercase; 
+          letter-spacing: 1px;
+          color: #444;
+        }
+        
+        .lineup-grid { 
+          display: grid; 
+          grid-template-columns: 1fr 1fr; 
+          gap: 20px; 
+        }
+
+        .lineup-list { 
+          list-style: none; 
+          padding: 0; 
+          margin: 0;
+          display: grid;
+          grid-template-columns: 1fr 1fr; /* Two columns for players to save space */
+          gap: 0 10px;
+        }
+
+        .lineup-item { 
+          font-size: 11px; 
+          display: flex; 
+          gap: 6px; 
+          padding: 2px 0; 
+          border-bottom: 1px solid #f9f9f9; 
+        }
+
+        .lineup-number { font-weight: 700; width: 18px; color: #666; }
+        .captain-tag { font-weight: 900; color: #d97706; margin-left: 3px; font-size: 9px; }
+        .manager-info { font-size: 11px; margin-top: 8px; font-weight: 700; color: #666; font-style: italic; }
+
+        .events-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 20px;
+        }
+
+        .event-list { list-style: none; padding: 0; margin: 0; }
+        .event-item { 
+          display: flex; 
+          gap: 10px; 
+          padding: 4px 0; 
+          border-bottom: 1px solid #fcfcfc; 
+          font-size: 11px; 
+        }
+        .event-min { font-weight: 700; width: 25px; color: #666; }
+        .event-type { width: 70px; font-weight: 700; text-transform: uppercase; font-size: 10px; }
         .event-player { flex: 1; }
-        .footer { margin-top: 60px; text-align: center; font-size: 12px; color: #999; border-top: 1px solid #eee; padding-top: 20px; }
-        @media print { .no-print { display: none; } }
+
+        .footer { 
+          margin-top: 20px; 
+          text-align: center; 
+          font-size: 10px; 
+          color: #999; 
+          border-top: 1px solid #eee; 
+          padding-top: 10px; 
+        }
+
+        @media print { 
+          .no-print { display: none; }
+          body { -webkit-print-color-adjust: exact; }
+        }
       </style>
     </head>
     <body onload="setTimeout(() => window.print(), 800)">
-      <div class="header">
-        <img src="logo.png" style="height: 60px; margin-bottom: 10px;" alt="Logo">
-        <h1 class="match-title">HASTMA CUP #3</h1>
-        <div class="match-info">Official Match Report • ${match.stage.toUpperCase()} • ${match.date} ${match.time}</div>
-      </div>
+      <div class="report-container">
+        <div class="header">
+          <img src="logo.png" style="height: 40px; margin-bottom: 5px;" alt="Logo">
+          <h1 class="match-title">HASTMA CUP #3</h1>
+          <div class="match-info">Official Match Report • ${match.stage.toUpperCase()} • ${match.date} ${match.time}</div>
+        </div>
 
-      <div class="score-row">
-        <div class="team-box">
-          <div class="team-name">${homeTeam?.name || 'HOME'}</div>
-          <div class="score">${match.homeScore}</div>
-        </div>
-        <div class="divider">VS</div>
-        <div class="team-box">
-          <div class="team-name">${awayTeam?.name || 'AWAY'}</div>
-          <div class="score">${match.awayScore}</div>
-        </div>
-      </div>
-
-      <div class="section-title">Team Lineups</div>
-      <div class="lineup-grid">
-        <div>
-          <ul class="lineup-list">
-            ${homePlayers.map(p => `
-              <li class="lineup-item">
-                <span class="lineup-number">${p.number}</span>
-                <span>${p.name}${p.isCaptain ? '<span class="captain-tag">(C)</span>' : ''}</span>
-              </li>
-            `).join('')}
-          </ul>
-          <div class="manager-info">Manager: ${homeTeam?.manager || '-'}</div>
-        </div>
-        <div>
-          <ul class="lineup-list">
-            ${awayPlayers.map(p => `
-              <li class="lineup-item">
-                <span class="lineup-number">${p.number}</span>
-                <span>${p.name}${p.isCaptain ? '<span class="captain-tag">(C)</span>' : ''}</span>
-              </li>
-            `).join('')}
-          </ul>
-          <div class="manager-info">Manager: ${awayTeam?.manager || '-'}</div>
-        </div>
-      </div>
-
-      <div class="section-title">Match Events</div>
-      <div class="event-list">
-        ${events.length === 0 ? '<p style="color:#999">No events recorded.</p>' :
-      events.sort((a, b) => a.minute - b.minute).map(e => `
-          <div class="event-item">
-            <div class="event-min">${e.minute}'</div>
-            <div class="event-type">${e.type.toUpperCase()}</div>
-            <div class="event-player">${e.playerName} (#${e.playerNumber})</div>
+        <div class="score-row">
+          <div class="team-box">
+            <div class="team-name">${homeTeam?.name || 'HOME'}</div>
+            <div class="score">${match.homeScore}</div>
           </div>
-        `).join('')}
-      </div>
+          <div class="divider">VS</div>
+          <div class="team-box">
+            <div class="team-name">${awayTeam?.name || 'AWAY'}</div>
+            <div class="score">${match.awayScore}</div>
+          </div>
+        </div>
 
-      <div class="footer">
-        Generated on ${new Date().toLocaleString()} • Hastma Cup #3 Management Portal
+        <div class="section-title">Team Lineups</div>
+        <div class="lineup-grid">
+          <div>
+            <ul class="lineup-list">
+              ${homePlayers.map(p => `
+                <li class="lineup-item">
+                  <span class="lineup-number">${p.number}</span>
+                  <span>${p.name}${p.isCaptain ? '<span class="captain-tag">(C)</span>' : ''}</span>
+                </li>
+              `).join('')}
+            </ul>
+            <div class="manager-info">Manager: ${homeTeam?.manager || '-'}</div>
+          </div>
+          <div>
+            <ul class="lineup-list">
+              ${awayPlayers.map(p => `
+                <li class="lineup-item">
+                  <span class="lineup-number">${p.number}</span>
+                  <span>${p.name}${p.isCaptain ? '<span class="captain-tag">(C)</span>' : ''}</span>
+                </li>
+              `).join('')}
+            </ul>
+            <div class="manager-info">Manager: ${awayTeam?.manager || '-'}</div>
+          </div>
+        </div>
+
+        <div class="section-title">Match Events</div>
+        <div class="events-grid">
+          <div class="event-list">
+            ${events.length === 0 ? '<p style="color:#999;font-size:11px;">No events recorded.</p>' :
+      events.sort((a, b) => a.minute - b.minute).slice(0, Math.ceil(events.length / 2)).map(e => `
+              <div class="event-item">
+                <div class="event-min">${e.minute}'</div>
+                <div class="event-type">${e.type}</div>
+                <div class="event-player">${e.playerName} (#${e.playerNumber})</div>
+              </div>
+            `).join('')}
+          </div>
+          <div class="event-list">
+            ${events.length > 1 ? events.sort((a, b) => a.minute - b.minute).slice(Math.ceil(events.length / 2)).map(e => `
+              <div class="event-item">
+                <div class="event-min">${e.minute}'</div>
+                <div class="event-type">${e.type}</div>
+                <div class="event-player">${e.playerName} (#${e.playerNumber})</div>
+              </div>
+            `).join('') : ''}
+          </div>
+        </div>
+
+        <div class="footer">
+          Generated on ${new Date().toLocaleString()} • Hastma Cup #3 Management Portal
+        </div>
       </div>
     </body>
     </html>
