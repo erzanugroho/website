@@ -9,6 +9,7 @@
 let tournamentData = null;
 let lastHeroScore = { home: 0, away: 0, matchId: null, eventsCount: 0 };
 let expandedMatchIds = new Set();
+let syncTimer = null; // Holds the polling interval reference
 
 // ================================================
 // Data Management
@@ -1316,6 +1317,47 @@ function showToast(message, type = 'info') {
 // ================================================
 
 /**
+ * Smart synchronization: Adjusts polling frequency based on live status and tab visibility
+ */
+async function manageSyncFrequency() {
+  if (syncTimer) clearInterval(syncTimer);
+
+  // If page is hidden, stop polling altogether to save user data/battery
+  if (document.hidden) {
+    console.log('Sync paused (Tab is hidden)');
+    return;
+  }
+
+  // Determine frequency: 5s for live matches, 30s otherwise (Idle mode)
+  const hasLiveMatch = tournamentData.matches.some(m => m.status === 'live' || m.status === 'halftime');
+  const intervalMs = hasLiveMatch ? 5000 : 30000;
+
+  console.log(`Sync mode: ${hasLiveMatch ? '⚡ HIGH' : '💤 IDLE'} (${intervalMs / 1000}s)`);
+
+  syncTimer = setInterval(async () => {
+    try {
+      if (window.HastmaApi?.getTournamentData) {
+        const newData = await window.HastmaApi.getTournamentData();
+
+        // Use JSON comparison to check for changes before re-rendering everything
+        if (JSON.stringify(newData) !== JSON.stringify(tournamentData)) {
+          console.log('Sync: Data received, refreshing UI...');
+          tournamentData = newData;
+          updateTeamColorVariables();
+          refreshAll();
+
+          // Re-evaluate frequency if match status changed (e.g., match went live or ended)
+          const newHasLive = tournamentData.matches.some(m => m.status === 'live' || m.status === 'halftime');
+          if (newHasLive !== hasLiveMatch) manageSyncFrequency();
+        }
+      }
+    } catch (e) {
+      console.warn('Sync poll failed:', e);
+    }
+  }, intervalMs);
+}
+
+/**
  * Initialize the app
  */
 async function init() {
@@ -1323,21 +1365,28 @@ async function init() {
   refreshAll();
   setupInstantSync();
 
-  // Multi-device sync: poll server periodically (lightweight)
-  // If API unavailable, keep showing cached/local data.
-  setInterval(async () => {
-    try {
-      if (window.HastmaApi?.getTournamentData) {
-        tournamentData = await window.HastmaApi.getTournamentData();
-        updateTeamColorVariables();
-        refreshAll();
-      }
-    } catch {
-      // ignore
-    }
-  }, 15000);
+  // Start the smart sync logic
+  manageSyncFrequency();
 
-  console.log('HASTMA CUP #3 2026 - App initialized (Instant Sync + Polling enabled)');
+  // Handle tab visibility changes to pause/resume polling
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) {
+      // Immediate sync when user returns to tab
+      if (window.HastmaApi?.getTournamentData) {
+        window.HastmaApi.getTournamentData().then(data => {
+          if (JSON.stringify(data) !== JSON.stringify(tournamentData)) {
+            tournamentData = data;
+            refreshAll();
+          }
+          manageSyncFrequency();
+        });
+      }
+    } else {
+      manageSyncFrequency();
+    }
+  });
+
+  console.log('HASTMA CUP #3 2026 - App initialized with Smart Sync');
 }
 
 // Start the app when DOM is ready
