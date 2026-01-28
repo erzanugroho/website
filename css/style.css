@@ -1087,6 +1087,32 @@ tbody tr.qualifier-runnerup .team-name-cell::after {
   color: var(--text-muted);
 }
 
+.btn-quick-share {
+  background: var(--admin-primary);
+  color: white;
+  border: none;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-bottom: 0.5rem;
+  box-shadow: 0 4px 12px var(--admin-primary-glow);
+}
+
+.btn-quick-share:hover {
+  transform: scale(1.1) rotate(5deg);
+  filter: brightness(1.1);
+  box-shadow: 0 6px 16px var(--admin-primary-glow);
+}
+
+.btn-quick-share .material-symbols-outlined {
+  font-size: 1.25rem;
+}
+
 /* Expanded Match Details */
 .match-details-expanded {
   display: none;

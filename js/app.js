@@ -760,6 +760,11 @@ function renderRegularMatchCard(match) {
         </div>
       </div>
       <div class="match-card-right">
+        ${isFinished ? `
+          <button class="btn-quick-share" onclick="event.stopPropagation(); showShareCard('${match.id}')" title="Bagikan Hasil">
+            <span class="material-symbols-outlined">share</span>
+          </button>
+        ` : ''}
         <span class="match-time-badge">${timeDisplay}</span>
         <span class="match-venue">${match.venue}</span>
       </div>
@@ -846,7 +851,7 @@ function showShareCard(matchId) {
       </div>
 
       <p style="margin-top: 1rem; font-size: 0.6rem; opacity: 0.4; letter-spacing: 0.1em; font-weight: 800;">
-        HASTMA CUP #3 • MINI SOCCER TOURNAMENT 2026
+        HASTMA CUP #3 • TOURNAMENT 2026
       </p>
     </div>
   `;
