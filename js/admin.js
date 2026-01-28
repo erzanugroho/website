@@ -210,6 +210,7 @@ async function saveData() {
  * Get team by ID
  */
 function getTeam(teamId) {
+  if (!teamId) return null;
   return tournamentData.teams.find(t => t.id === teamId) || null;
 }
 
@@ -643,6 +644,10 @@ function finishMatch() {
 
     saveData();
     updateLastUpdated();
+
+    // Auto-advance bracket logic
+    checkAndAdvanceBracket();
+
     renderAdminSchedule();
     renderAdminResults();
     loadMatchForEdit(); // Reload to update UI state
@@ -650,6 +655,210 @@ function finishMatch() {
   }
 }
 
+// ================================================
+// Bracket Automation
+// ================================================
+
+/**
+ * Orchestrate automatic team advancement to knockout stages
+ */
+function checkAndAdvanceBracket() {
+  const standingsA = calculateAdminStandings('A');
+  const standingsB = calculateAdminStandings('B');
+
+  const groupAFinished = isGroupFinished('A');
+  const groupBFinished = isGroupFinished('B');
+
+  let updated = false;
+
+  // SF1: Winner A vs Runner-up B
+  const sf1 = getMatch('SF1');
+  if (sf1 && sf1.status === 'scheduled') {
+    const winnerA = groupAFinished ? standingsA[0]?.team.id : null;
+    const runnerupB = groupBFinished ? standingsB[1]?.team.id : null;
+
+    if (winnerA && sf1.homeTeam !== winnerA) { sf1.homeTeam = winnerA; updated = true; }
+    if (runnerupB && sf1.awayTeam !== runnerupB) { sf1.awayTeam = runnerupB; updated = true; }
+  }
+
+  // SF2: Winner B vs Runner-up A (matching index.html bracket)
+  const sf2 = getMatch('SF2');
+  if (sf2 && sf2.status === 'scheduled') {
+    const winnerB = groupBFinished ? standingsB[0]?.team.id : null;
+    const runnerupA = groupAFinished ? standingsA[1]?.team.id : null;
+
+    if (runnerupA && sf2.homeTeam !== runnerupA) { sf2.homeTeam = runnerupA; updated = true; }
+    if (winnerB && sf2.awayTeam !== winnerB) { sf2.awayTeam = winnerB; updated = true; }
+  }
+
+  // Final & 3rd Place: Winners/Losers of SF1 and SF2
+  const sf1Finished = sf1 && sf1.status === 'finished';
+  const sf2Finished = sf2 && sf2.status === 'finished';
+
+  if (sf1Finished && sf2Finished) {
+    const f1 = getMatch('F1');
+    const m3rd = getMatch('M3RD');
+
+    if (f1 && f1.status === 'scheduled') {
+      const sf1Winner = sf1.homeScore > sf1.awayScore ? sf1.homeTeam : sf1.awayTeam;
+      const sf2Winner = sf2.homeScore > sf2.awayScore ? sf2.homeTeam : sf2.awayTeam;
+
+      if (sf1Winner && f1.homeTeam !== sf1Winner) { f1.homeTeam = sf1Winner; updated = true; }
+      if (sf2Winner && f1.awayTeam !== sf2Winner) { f1.awayTeam = sf2Winner; updated = true; }
+    }
+
+    if (m3rd && m3rd.status === 'scheduled') {
+      const sf1Loser = sf1.homeScore > sf1.awayScore ? sf1.awayTeam : sf1.homeTeam;
+      const sf2Loser = sf2.homeScore > sf2.awayScore ? sf2.awayTeam : sf2.homeTeam;
+
+      if (sf1Loser && m3rd.homeTeam !== sf1Loser) { m3rd.homeTeam = sf1Loser; updated = true; }
+      if (sf2Loser && m3rd.awayTeam !== sf2Loser) { m3rd.awayTeam = sf2Loser; updated = true; }
+    }
+  }
+
+  if (updated) {
+    console.log('🏆 Bracket auto-updated with newly qualified teams!');
+    saveData();
+  }
+}
+
+/**
+ * Helper to check if group is finished
+ */
+function isGroupFinished(group) {
+  const groupMatches = tournamentData.matches.filter(m => m.stage === 'group' && m.group === group);
+  return groupMatches.length > 0 && groupMatches.every(m => m.status === 'finished');
+}
+
+/**
+ * Internal Admin Standings Logic (Copied from app.js)
+ */
+function calculateAdminStandings(group) {
+  const groupTeams = tournamentData.teams.filter(t => t.group === group);
+  const groupMatches = tournamentData.matches.filter(
+    m => m.stage === 'group' && m.group === group && m.status === 'finished'
+  );
+
+  const standings = groupTeams.map(team => ({
+    team: team,
+    played: 0, won: 0, drawn: 0, lost: 0,
+    goalsFor: 0, goalsAgainst: 0, points: 0, fairPlayPoints: 0
+  }));
+
+  groupMatches.forEach(match => {
+    const homeTeam = standings.find(s => s.team.id === match.homeTeam);
+    const awayTeam = standings.find(s => s.team.id === match.awayTeam);
+    if (!homeTeam || !awayTeam) return;
+
+    homeTeam.played++; awayTeam.played++;
+    homeTeam.goalsFor += match.homeScore; homeTeam.goalsAgainst += match.awayScore;
+    awayTeam.goalsFor += match.awayScore; awayTeam.goalsAgainst += match.homeScore;
+
+    const events = match.events || [];
+    for (const e of events) {
+      if (!e || !e.teamId) continue;
+      const teamRow = standings.find(s => s.team.id === e.teamId);
+      if (teamRow) {
+        if (e.type === 'yellow') teamRow.fairPlayPoints += 1;
+        if (e.type === 'red') teamRow.fairPlayPoints += 2;
+      }
+    }
+
+    if (match.homeScore > match.awayScore) {
+      homeTeam.won++; homeTeam.points += 3; awayTeam.lost++;
+    } else if (match.homeScore < match.awayScore) {
+      awayTeam.won++; awayTeam.points += 3; homeTeam.lost++;
+    } else {
+      homeTeam.drawn++; awayTeam.drawn++; homeTeam.points += 1; awayTeam.points += 1;
+    }
+  });
+
+  standings.sort((a, b) => {
+    if (b.points !== a.points) return b.points - a.points;
+    const aGD = a.goalsFor - a.goalsAgainst;
+    const bGD = b.goalsFor - b.goalsAgainst;
+    if (bGD !== aGD) return bGD - aGD;
+    if (b.goalsFor !== a.goalsFor) return b.goalsFor - a.goalsFor;
+    if (a.goalsAgainst !== b.goalsAgainst) return a.goalsAgainst - b.goalsAgainst;
+    if ((a.fairPlayPoints ?? 0) !== (b.fairPlayPoints ?? 0)) return (a.fairPlayPoints ?? 0) - (b.fairPlayPoints ?? 0);
+    return a.team.name.localeCompare(b.team.name);
+  });
+
+  return standings;
+}
+
+/**
+ * Share Result Card
+ */
+function shareResult(matchId) {
+  showShareCard(matchId);
+}
+
+function showShareCard(matchId) {
+  const match = getMatch(matchId);
+  if (!match) return;
+
+  const homeTeam = getTeam(match.homeTeam);
+  const awayTeam = getTeam(match.awayTeam);
+  const homeName = homeTeam?.name || 'TBD';
+  const awayName = awayTeam?.name || 'TBD';
+
+  const overlay = document.getElementById('shareOverlay');
+  const card = document.getElementById('shareCard');
+  if (!overlay || !card) return;
+
+  // Format goal scorers
+  const homeGoals = (match.events || []).filter(e => e.type === 'goal' && e.teamId === match.homeTeam);
+  const awayGoals = (match.events || []).filter(e => e.type === 'goal' && e.teamId === match.awayTeam);
+
+  card.innerHTML = `
+    <div class="share-card-header">
+      <img src="logo.png" class="share-card-logo">
+      <span class="share-card-stage">${getStageLabel(match)} MATCH RESULT</span>
+    </div>
+    <div class="share-card-body">
+      <div class="share-teams-grid">
+        <div class="share-team-box" style="--team-color: ${homeTeam?.color || '#fff'}">
+          <div class="share-team-shield">
+            <span class="material-symbols-outlined">shield</span>
+          </div>
+          <span class="share-team-name">${homeName}</span>
+        </div>
+        <div class="share-score-box">
+          <div class="share-score-text">${match.homeScore} - ${match.awayScore}</div>
+          <div class="share-vs">FULL TIME</div>
+        </div>
+        <div class="share-team-box" style="--team-color: ${awayTeam?.color || '#fff'}">
+          <div class="share-team-shield">
+            <span class="material-symbols-outlined">shield</span>
+          </div>
+          <span class="share-team-name">${awayName}</span>
+        </div>
+      </div>
+    </div>
+    <div class="share-card-footer">
+      <div class="share-goal-scorers">
+        <div class="share-scorer-column">
+          ${homeGoals.map(g => `<div class="share-scorer-item">⚽ ${g.playerName} (${g.minute}')</div>`).join('')}
+        </div>
+        <div class="share-scorer-column text-right">
+          ${awayGoals.map(g => `<div class="share-scorer-item">⚽ ${g.playerName} (${g.minute}')</div>`).join('')}
+        </div>
+      </div>
+      <p style="margin-top: 1.5rem; font-size: 0.7rem; opacity: 0.5; letter-spacing: 0.1em; font-weight: 800;">
+        HASTMA CUP #3 • MANAGEMENT PORTAL 2026
+      </p>
+    </div>
+  `;
+
+  overlay.style.display = 'flex';
+}
+
+window.showShareCard = showShareCard;
+window.closeShareCard = () => {
+  const overlay = document.getElementById('shareOverlay');
+  if (overlay) overlay.style.display = 'none';
+};
 /**
  * Save schedule changes
  */
@@ -827,10 +1036,16 @@ function renderResultEditor(matchId) {
             <div style="font-weight: 900; font-size: 1rem;">${homeName} vs ${awayName}</div>
             <div style="font-size: 0.75rem; color: var(--admin-text-muted);">${getStageLabel(match)} • ${match.date || ''} • ${match.time || ''}</div>
           </div>
-          <button class="btn-premium btn-premium-secondary" style="color: var(--admin-danger);" onclick="unfinishResult('${match.id}')">
-            <span class="material-symbols-outlined" style="font-size: 1rem;">undo</span>
-            Unfinish
-          </button>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="share-btn" onclick="showShareCard('${match.id}')">
+              <span class="material-symbols-outlined" style="font-size: 1rem;">share</span>
+              Bagikan
+            </button>
+            <button class="btn-premium btn-premium-secondary" style="color: var(--admin-danger);" onclick="unfinishResult('${match.id}')">
+              <span class="material-symbols-outlined" style="font-size: 1rem;">undo</span>
+              Unfinish
+            </button>
+          </div>
         </div>
       </div>
 

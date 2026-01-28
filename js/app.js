@@ -59,7 +59,7 @@ function saveData() {
   tournamentData.metadata.lastUpdated = new Date().toISOString();
 
   // Always keep local cache updated
-  localStorage.setItem('hastmaTournamentData', JSON.stringify(tournamentData));
+  localStorage.setItem('hastmaCupData', JSON.stringify(tournamentData));
 
   // Fire-and-forget server save (multi-device)
   const saver = window.HastmaApi?.saveTournamentData;
@@ -759,10 +759,87 @@ function renderRegularMatchCard(match) {
       </div>
       <div class="match-details-expanded" id="details-${match.id}">
         ${eventsHtml}
+        <div class="match-card-actions">
+          ${isFinished ? `
+            <button class="share-btn" onclick="event.stopPropagation(); showShareCard('${match.id}')">
+              <span class="material-symbols-outlined" style="font-size: 1.1rem;">share</span>
+              Bagikan Hasil
+            </button>
+          ` : ''}
+        </div>
       </div>
     </div>
   `;
 }
+
+/**
+ * Show Shareable Match Card
+ */
+function showShareCard(matchId) {
+  const match = tournamentData.matches.find(m => m.id === matchId);
+  if (!match) return;
+
+  const homeTeam = tournamentData.teams.find(t => t.id === match.homeTeam);
+  const awayTeam = tournamentData.teams.find(t => t.id === match.awayTeam);
+  const homeName = homeTeam?.name || 'TBD';
+  const awayName = awayTeam?.name || 'TBD';
+
+  const overlay = document.getElementById('shareOverlay');
+  const card = document.getElementById('shareCard');
+  if (!overlay || !card) return;
+
+  // Format goal scorers
+  const homeGoals = (match.events || []).filter(e => e.type === 'goal' && e.teamId === match.homeTeam);
+  const awayGoals = (match.events || []).filter(e => e.type === 'goal' && e.teamId === match.awayTeam);
+
+  card.innerHTML = `
+    <div class="share-card-header">
+      <img src="logo.png" class="share-card-logo">
+      <span class="share-card-stage">${getStageLabel(match)} MATCH RESULT</span>
+    </div>
+    <div class="share-card-body">
+      <div class="share-teams-grid">
+        <div class="share-team-box" style="--team-color: ${homeTeam?.color || '#fff'}">
+          <div class="share-team-shield">
+            <span class="material-symbols-outlined">shield</span>
+          </div>
+          <span class="share-team-name">${homeName}</span>
+        </div>
+        <div class="share-score-box">
+          <div class="share-score-text">${match.homeScore} - ${match.awayScore}</div>
+          <div class="share-vs">FULL TIME</div>
+        </div>
+        <div class="share-team-box" style="--team-color: ${awayTeam?.color || '#fff'}">
+          <div class="share-team-shield">
+            <span class="material-symbols-outlined">shield</span>
+          </div>
+          <span class="share-team-name">${awayName}</span>
+        </div>
+      </div>
+    </div>
+    <div class="share-card-footer">
+      <div class="share-goal-scorers">
+        <div class="share-scorer-column">
+          ${homeGoals.map(g => `<div class="share-scorer-item">⚽ ${g.playerName} (${g.minute}')</div>`).join('')}
+        </div>
+        <div class="share-scorer-column text-right">
+          ${awayGoals.map(g => `<div class="share-scorer-item">⚽ ${g.playerName} (${g.minute}')</div>`).join('')}
+        </div>
+      </div>
+      <p style="margin-top: 1.5rem; font-size: 0.7rem; opacity: 0.5; letter-spacing: 0.1em; font-weight: 800;">
+        HASTMA CUP #3 • MINI SOCCER TOURNAMENT 2026
+      </p>
+    </div>
+  `;
+
+  overlay.style.display = 'flex';
+}
+
+window.showShareCard = showShareCard;
+window.closeShareCard = () => {
+  const overlay = document.getElementById('shareOverlay');
+  if (overlay) overlay.style.display = 'none';
+};
 
 /**
  * Render match events
@@ -920,7 +997,7 @@ function updateBracketMatch(matchId, homeTeam, awayTeam, homePlaceholder = 'TBD'
     }
   }
 
-  saveData();
+  // saveData(); // REMOVED: Public view should not trigger server saves
 }
 
 /**
@@ -972,7 +1049,7 @@ function updateFinalBracket() {
     m3rdMatch.awayTeam = sf2Loser.id;
   }
 
-  saveData();
+  // saveData(); // REMOVED: Public view should not trigger server saves
 
   // Update Final UI
   updateBracketUI(finalEl, sf1Winner, sf2Winner, finalMatch, 'Winner SF1', 'Winner SF2');
@@ -1050,7 +1127,7 @@ function updateLastUpdated() {
  */
 function refreshAll() {
   // Re-read from localStorage in case it was updated by admin
-  const stored = localStorage.getItem('hastmaTournamentData');
+  const stored = localStorage.getItem('hastmaCupData');
   if (stored) {
     try {
       tournamentData = JSON.parse(stored);
@@ -1075,7 +1152,7 @@ function refreshAll() {
  */
 function setupInstantSync() {
   window.addEventListener('storage', (event) => {
-    if (event.key === 'hastmaTournamentData') {
+    if (event.key === 'hastmaCupData') {
       console.log('Detected storage change, refreshing UI...');
       refreshAll();
     }
