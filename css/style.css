@@ -3728,6 +3728,183 @@ button.fab-action-btn {
 }
 
 /* ================================================
+   MOBILE RESPONSIVENESS (FINAL PRO MAX POLISH)
+   Targeting iQOO 11, iPhone Pro, and modern narrow viewports
+   ================================================ */
+
+@media (max-width: 600px) {
+
+  /* 1. Header & Base */
+  .container {
+    padding: 0 1rem;
+  }
+
+  .header-inner {
+    padding: 0 1rem;
+    height: 3.5rem;
+  }
+
+  .header-title {
+    font-size: 1rem;
+  }
+
+  .header-logo-icon {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .admin-link {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
+    gap: 0.25rem;
+  }
+
+  .page-header {
+    padding: 5rem 1rem 1rem;
+  }
+
+  .page-title {
+    font-size: 2.25rem;
+  }
+
+  .page-subtitle {
+    font-size: 0.9rem;
+  }
+
+  /* 2. Hero Match Section */
+  .hero-live-card {
+    padding: 1.5rem 1rem;
+  }
+
+  .hero-match-teams {
+    gap: 0.5rem !important;
+    margin: 1rem 0;
+  }
+
+  .hero-team {
+    width: 30% !important;
+  }
+
+  .hero-team-logo span {
+    font-size: 2.5rem !important;
+  }
+
+  .hero-team-name {
+    font-size: 0.85rem !important;
+    line-height: 1.1;
+    margin-top: 0.5rem;
+  }
+
+  .hero-score {
+    font-size: 2.5rem !important;
+    gap: 0.75rem !important;
+  }
+
+  .hero-vs {
+    font-size: 1rem !important;
+  }
+
+  /* 3. Timeline (ht-row) - THE BIG FIX */
+  .ht-container {
+    margin-top: 2rem;
+  }
+
+  .ht-row {
+    grid-template-columns: 1fr 3rem 1fr !important;
+    /* Narrower time pill */
+    gap: 0.5rem !important;
+    margin-bottom: 1.25rem !important;
+  }
+
+  .ht-time {
+    font-size: 0.75rem !important;
+    min-width: 2.5rem !important;
+    padding: 0.2rem 0 !important;
+  }
+
+  .ht-card {
+    padding: 0.5rem 0.625rem !important;
+    gap: 0.5rem !important;
+    border-radius: 0.75rem !important;
+  }
+
+  .ht-player {
+    font-size: 0.8rem !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 85px;
+    /* Prevent push-out */
+  }
+
+  .ht-meta {
+    font-size: 0.65rem !important;
+  }
+
+  .ht-icon {
+    width: 1.75rem !important;
+    height: 1.75rem !important;
+    font-size: 1rem !important;
+  }
+
+  /* 4. Standings Table Styles */
+  .standings-table th,
+  .standings-table td {
+    padding: 0.75rem 0.5rem !important;
+    font-size: 0.75rem;
+  }
+
+  .standings-table th:first-child,
+  .standings-table td:first-child {
+    padding-left: 0.75rem !important;
+  }
+
+  .standings-table th:last-child,
+  .standings-table td:last-child {
+    padding-right: 0.75rem !important;
+  }
+
+  .team-name-cell {
+    font-size: 0.8rem;
+    max-width: 100px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* 5. Bracket Scaling */
+  .bracket-section {
+    padding: 1.5rem 1rem;
+  }
+
+  .bracket-match {
+    width: 12rem;
+  }
+}
+
+@media (max-width: 380px) {
+
+  /* Ultra-narrow fixes */
+  .hero-team-name {
+    font-size: 0.75rem !important;
+  }
+
+  .hero-score {
+    font-size: 2rem !important;
+  }
+
+  .ht-player {
+    max-width: 65px;
+  }
+
+  .standings-table th,
+  .standings-table td {
+    padding: 0.5rem 0.25rem !important;
+    font-size: 0.7rem;
+  }
+}
+
+/* ================================================
    Admin Timeline Container (Fix for Line Overflow)
    ================================================ */
 .timeline-container {
