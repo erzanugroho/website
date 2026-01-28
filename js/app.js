@@ -849,6 +849,8 @@ function showShareCard(matchId) {
         <img src="sponsor/WhatsApp Image 2026-01-21 at 16.51.59 - Diedit.png" class="share-sponsor-logo">
         <img src="sponsor/WhatsApp Image 2026-01-21 at 16.51.59d - Diedit.png" class="share-sponsor-logo">
         <img src="sponsor/fdn nusantara - Diedit.png" class="share-sponsor-logo">
+        <img src="sponsor/jiimy1.png" class="share-sponsor-logo">
+        <img src="sponsor/jimmy2.png" class="share-sponsor-logo">
       </div>
 
       <p style="margin-top: 1rem; font-size: 0.6rem; opacity: 0.4; letter-spacing: 0.1em; font-weight: 800;">
