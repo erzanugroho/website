@@ -894,6 +894,8 @@ tbody tr.qualifier-runnerup .team-name-cell::after {
   border-radius: 1.25rem;
   padding: 1.25rem 1.5rem;
   display: flex;
+  flex-wrap: wrap;
+  /* Critical: Allows expansion to wrap instead of pushing out */
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
@@ -1040,6 +1042,31 @@ tbody tr.qualifier-runnerup .team-name-cell::after {
   color: var(--text-muted);
 }
 
+.match-score-badge {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 0.25rem 0.625rem;
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-weight: 950;
+  font-size: 1.125rem;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  border: 1px solid rgba(242, 144, 64, 0.2);
+}
+
+.score-num {
+  min-width: 1ch;
+  text-align: center;
+}
+
+.score-sep {
+  opacity: 0.4;
+  font-weight: 400;
+  font-size: 0.8rem;
+}
+
 .match-card-right {
   display: flex;
   flex-direction: column;
@@ -1063,9 +1090,15 @@ tbody tr.qualifier-runnerup .team-name-cell::after {
 /* Expanded Match Details */
 .match-details-expanded {
   display: none;
-  padding: 1rem 1.5rem;
+  padding: 1.5rem;
   border-top: 1px solid var(--border-dark-alt);
   background: var(--card-dark-hover);
+  width: 100%;
+  /* Ensure it spans the full container */
+  margin: 0 calc(-1.5rem);
+  /* Counteract parent padding for full-bleed look */
+  margin-top: 1.25rem;
+  padding-bottom: 0.5rem;
 }
 
 .match-card-regular.expanded .match-details-expanded {
@@ -3826,6 +3859,38 @@ button.fab-action-btn {
    ================================================ */
 
 @media (max-width: 600px) {
+  .match-card-regular {
+    padding: 1rem;
+    gap: 0.75rem;
+  }
+
+  .match-card-left {
+    width: 65%;
+  }
+
+  .match-card-right {
+    width: 30%;
+    align-items: flex-end;
+  }
+
+  .match-teams {
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .match-team-name {
+    font-size: 0.95rem;
+  }
+
+  .match-score-badge {
+    font-size: 1rem;
+    padding: 0.2rem 0.5rem;
+  }
+
+  .match-details-expanded {
+    margin: 1rem -1rem -1rem -1rem;
+    padding: 1rem;
+  }
 
   /* 1. Header & Base */
   .container {

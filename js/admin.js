@@ -1730,7 +1730,11 @@ function generateMatchReport(matchId) {
         <div class="header">
           <img src="logo.png" style="height: 40px; margin-bottom: 5px;" alt="Logo">
           <h1 class="match-title">HASTMA CUP #3</h1>
-          <div class="match-info">Official Match Report • ${match.stage.toUpperCase()} • ${match.date} ${match.time}</div>
+          <div class="match-info">
+            Match #${tournamentData.matches.findIndex(m => m.id === match.id) + 1} • 
+            ${getStageLabel(match)} • 
+            ${match.date} ${match.time}
+          </div>
         </div>
 
         <div class="score-row">

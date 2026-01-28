@@ -749,7 +749,13 @@ function renderRegularMatchCard(match) {
         </div>
         <div class="match-teams">
           <span class="match-team-name ${homeWinnerClass}">${homeName}</span>
-          <span class="match-vs">VS</span>
+          ${isFinished || isLive ? `
+            <div class="match-score-badge">
+              <span class="score-num">${match.homeScore}</span>
+              <span class="score-sep">:</span>
+              <span class="score-num">${match.awayScore}</span>
+            </div>
+          ` : '<span class="match-vs">VS</span>'}
           <span class="match-team-name away ${awayWinnerClass}">${awayName}</span>
         </div>
       </div>
