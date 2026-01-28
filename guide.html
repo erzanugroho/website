@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html class="dark" lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Guide - HASTMA CUP #3 2026</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&family=Noto+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .guide-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 4rem 1.5rem;
+        }
+
+        .guide-section {
+            margin-bottom: 4rem;
+            animation: slideUp 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        .guide-section:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .guide-section:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        .guide-section:nth-child(4) {
+            animation-delay: 0.3s;
+        }
+
+        .guide-card {
+            background: var(--admin-card-bg);
+            backdrop-filter: var(--admin-glass);
+            border: 1px solid var(--admin-card-border);
+            border-radius: 2rem;
+            padding: 2.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .guide-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 15rem;
+            height: 15rem;
+            background: radial-gradient(circle at top right, rgba(242, 144, 64, 0.05), transparent 70%);
+            pointer-events: none;
+        }
+
+        .step-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.5rem;
+            height: 2.5rem;
+            background: var(--admin-primary);
+            color: white;
+            border-radius: 0.75rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 12px var(--admin-primary-glow);
+        }
+
+        .guide-h2 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            color: var(--admin-text-main);
+        }
+
+        .guide-p {
+            color: var(--admin-text-muted);
+            line-height: 1.7;
+            margin-bottom: 2rem;
+        }
+
+        .guide-list {
+            list-style: none;
+            padding: 0;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .guide-list {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .guide-item {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 1.25rem;
+            border-radius: 1.25rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            gap: 1rem;
+            transition: all 0.2s;
+        }
+
+        .guide-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: var(--admin-primary);
+            transform: translateY(-2px);
+        }
+
+        .guide-item-icon {
+            color: var(--admin-primary);
+        }
+
+        .guide-item-text {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--admin-text-main);
+        }
+
+        .guide-tip {
+            background: rgba(242, 144, 64, 0.1);
+            border-radius: 1rem;
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 2rem;
+            border: 1px dashed var(--admin-primary);
+        }
+
+        .guide-tip-icon {
+            color: var(--admin-primary);
+        }
+
+        .guide-tip-text {
+            font-size: 0.8125rem;
+            font-weight: 600;
+            color: var(--admin-primary);
+        }
+
+        .guide-back-btn {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            padding: 0.75rem 1.5rem;
+            border-radius: 1rem;
+            color: var(--admin-text-main);
+            text-decoration: none;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: 1px solid var(--admin-card-border);
+            transition: all 0.2s;
+        }
+
+        .guide-back-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(-4px);
+        }
+
+        @media (max-width: 768px) {
+            .guide-back-btn {
+                top: 1rem;
+                left: 1rem;
+                padding: 0.5rem 1rem;
+                font-size: 0.875rem;
+            }
+        }
+    </style>
+</head>
+
+<body class="dark">
+    <div class="page-wrapper">
+        <a href="admin.html" class="guide-back-btn">
+            <span class="material-symbols-outlined">arrow_back</span>
+            Kembali ke Admin
+        </a>
+
+        <div class="guide-container">
+            <header style="text-align: center; margin-bottom: 5rem;">
+                <img src="logo.png" alt="Logo" style="height: 5rem; margin-bottom: 1.5rem;">
+                <h1 style="font-size: 3rem; font-weight: 900; letter-spacing: -0.05em; margin-bottom: 0.5rem;">Admin
+                    <span style="color: var(--admin-primary);">Guide</span></h1>
+                <p style="color: var(--admin-text-muted); font-weight: 500;">Panduan Pengoperasian Portal HASTMA CUP #3
+                    2026</p>
+            </header>
+
+            <!-- Section 1 -->
+            <section class="guide-section">
+                <div class="guide-card">
+                    <div class="step-badge">1</div>
+                    <h2 class="guide-h2">Mangelola Live Score</h2>
+                    <p class="guide-p">Update skor dan kejadian pertandingan secara real-time. Perubahan akan muncul di
+                        website penonton dalam waktu 5 detik.</p>
+                    <div class="guide-list">
+                        <div class="guide-item">
+                            <span class="material-symbols-outlined guide-item-icon">check_circle</span>
+                            <span class="guide-item-text">Pilih Pertandingan di tab <strong>Matches</strong>.</span>
+                        </div>
+                        <div class="guide-item">
+                            <span class="material-symbols-outlined guide-item-icon">check_circle</span>
+                            <span class="guide-item-text">Gunakan tombol <strong>+ / -</strong> untuk update
+                                skor.</span>
+                        </div>
+                        <div class="guide-item">
+                            <span class="material-symbols-outlined guide-item-icon">check_circle</span>
+                            <span class="guide-item-text">Input Gol/Kartu via tombol <strong>Quick
+                                    Event</strong>.</span>
+                        </div>
+                        <div class="guide-item">
+                            <span class="material-symbols-outlined guide-item-icon">check_circle</span>
+                            <span class="guide-item-text">Set status ke <strong>Finished</strong> setelah pertandingan
+                                usai.</span>
+                        </div>
+                    </div>
+                    <div class="guide-tip">
+                        <span class="material-symbols-outlined guide-tip-icon">lightbulb</span>
+                        <span class="guide-tip-text">Tips: Selalu cek status koneksi internet untuk sinkronisasi
+                            lancar.</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 2 -->
+            <section class="guide-section">
+                <div class="guide-card">
+                    <div class="step-badge">2</div>
+                    <h2 class="guide-h2">Match Report & Share</h2>
+                    <p class="guide-p">Berikan pengalaman profesional kepada peserta dengan laporan resmi dan poster
+                        skor estetik.</p>
+                    <div class="guide-list">
+                        <div class="guide-item">
+                            <span class="material-symbols-outlined guide-item-icon">share</span>
+                            <span class="guide-item-text">Gunakan <strong>Share Card</strong> untuk update
+                                WhatsApp/IG.</span>
+                        </div>
+                        <div class="guide-item">
+                            <span class="material-symbols-outlined guide-item-icon">picture_as_pdf</span>
+                            <span class="guide-item-text">Download <strong>Match Report (PDF)</strong> untuk arsip
+                                resmi.</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 3 -->
+            <section class="guide-section">
+                <div class="guide-card">
+                    <div class="step-badge">3</div>
+                    <h2 class="guide-h2">Branding & Tim</h2>
+                    <p class="guide-p">Kelola identitas tim agar portal terlihat berwarna dan profesional.</p>
+                    <div class="guide-list">
+                        <div class="guide-item">
+                            <span class="material-symbols-outlined guide-item-icon">palette</span>
+                            <span class="guide-item-text">Update <strong>Warna Tim</strong> di tab Teams.</span>
+                        </div>
+                        <div class="guide-item">
+                            <span class="material-symbols-outlined guide-item-icon">groups</span>
+                            <span class="guide-item-text">Kelola daftar pemain dan nama manager per tim.</span>
+                        </div>
+                    </div>
+                    <div class="guide-tip">
+                        <span class="material-symbols-outlined guide-tip-icon">visibility</span>
+                        <span class="guide-tip-text">Warna tim akan secara otomatis mengubah tampilan formulir
+                            admin!</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 4 -->
+            <section class="guide-section" style="text-align: center;">
+                <h2 class="guide-h2">Siap untuk Kick Off?</h2>
+                <p class="guide-p">Pastikan semua data tim sudah benar sebelum pertandingan pertama dimulai.</p>
+                <a href="admin.html" class="btn-premium btn-premium-primary">
+                    <span class="material-symbols-outlined">dashboard</span>
+                    Mulai Kelola Turnamen
+                </a>
+            </section>
+
+            <footer
+                style="margin-top: 10rem; text-align: center; color: var(--admin-text-muted); font-size: 0.75rem; letter-spacing: 0.1em; font-weight: 700; text-transform: uppercase;">
+                HASTMA CUP #3 • MANAGEMENT SYSTEM 2026
+            </footer>
+        </div>
+    </div>
+</body>
+
+</html>
