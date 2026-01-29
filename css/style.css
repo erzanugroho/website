@@ -263,6 +263,11 @@ body {
   background: rgba(255, 255, 255, 0.05);
 }
 
+.header-nav a.active {
+  color: var(--primary);
+  background: rgba(255, 255, 255, 0.1);
+}
+
 .header-actions {
   display: flex;
   align-items: center;
