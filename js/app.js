@@ -636,6 +636,103 @@ function renderStandingsTable(containerId, standings) {
 // Schedule Display
 // ================================================
 
+  }
+}
+
+// ================================================
+// Top Scorers Logic
+// ================================================
+
+/**
+ * Calculate Top Scorers
+ * Priority: Total Goals (Desc) -> Earliest Goal Minute (Asc)
+ */
+function calculateTopScorers() {
+  const scorersMap = new Map();
+
+  // 1. Traverse all matches and events
+  tournamentData.matches.forEach(match => {
+    if (!match.events) return;
+
+    match.events.forEach(event => {
+      if (event.type === 'goal' && event.playerName) {
+        // Normalize name key
+        const key = `${event.playerName}-${event.teamId}`;
+
+        if (!scorersMap.has(key)) {
+          scorersMap.set(key, {
+            name: event.playerName,
+            teamId: event.teamId,
+            goals: 0,
+            earliestMinute: 999
+          });
+        }
+
+        const scorer = scorersMap.get(key);
+        scorer.goals += 1;
+        if (event.minute < scorer.earliestMinute) {
+          scorer.earliestMinute = event.minute;
+        }
+      }
+    });
+  });
+
+  // 2. Convert to array and sort
+  const scorers = Array.from(scorersMap.values());
+
+  scorers.sort((a, b) => {
+    // Primary: Goals Descending
+    if (b.goals !== a.goals) return b.goals - a.goals;
+
+    // Secondary: Earliest Minute Ascending
+    return a.earliestMinute - b.earliestMinute;
+  });
+
+  return scorers;
+}
+
+/**
+ * Render Top Scorers Marquee
+ */
+function renderTopScorers() {
+  const container = document.getElementById('topScorersMarquee');
+  const content = document.getElementById('scorersContent');
+  if (!container || !content) return;
+
+  const scorers = calculateTopScorers();
+
+  if (scorers.length === 0) {
+    container.style.display = 'none';
+    return;
+  }
+
+  container.style.display = 'flex';
+
+  // Take top 10 for marquee
+  const topList = scorers.slice(0, 10);
+
+  const html = topList.map((s, index) => {
+    const team = getTeam(s.teamId);
+    const teamNameHtml = team ? `<span class="scorer-team">${team.name}</span>` : '';
+    return `
+      <div class="scorer-item">
+        <span class="scorer-rank">#${index + 1}</span>
+        <div class="scorer-info">
+            <span class="scorer-name">${s.name}</span>
+            ${teamNameHtml}
+        </div>
+        <span class="scorer-goals"><strong>${s.goals}</strong> Goals</span>
+      </div>
+    `;
+  }).join('');
+
+  // Duplicate content for smooth infinite scroll effect if needed, 
+  // or just CSS animation handles it. 
+  // For standard marquee, we might need enough content to fill width.
+  // Let's simple duplicate twice to ensure seamless loop visual
+  content.innerHTML = html + html + html;
+}
+
 /**
  * Render all matches
  */
@@ -1390,7 +1487,16 @@ async function manageSyncFrequency() {
     return;
   }
 
-  // Determine frequency: 5s for live matches, 30s otherwise (Idle mode)
+  function refreshAll() {
+    renderStandings();
+    renderSchedule();
+    renderHeroMatch();
+    renderTopScorers();
+  }
+
+  /**
+   * Smart Sync: Adjustable polling frequency based on match status
+   */
   const hasLiveMatch = tournamentData.matches.some(m => m.status === 'live' || m.status === 'halftime');
   const intervalMs = hasLiveMatch ? 5000 : 30000;
 
@@ -1424,10 +1530,12 @@ async function manageSyncFrequency() {
  */
 async function init() {
   await initData();
-  refreshAll();
-  setupInstantSync();
+  renderStandings();
+  renderSchedule();
+  renderHeroMatch();
+  renderTopScorers();
 
-  // Start the smart sync logic
+  // Initial polling call
   manageSyncFrequency();
 
   // Handle tab visibility changes to pause/resume polling
