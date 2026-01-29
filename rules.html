@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html class="dark" lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="HASTMA CUP #3 2026 - Rules of The Game">
+    <title>Rules - HASTMA CUP #3 2026</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&family=Noto+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .rules-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .rules-title {
+            font-family: 'Lexend', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 2rem;
+            line-height: 1.4;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 1.5rem;
+        }
+
+        .rules-section {
+            margin-bottom: 2.5rem;
+        }
+
+        .rules-header {
+            font-family: 'Lexend', sans-serif;
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--accent-gold);
+            /* Using accent color for headers */
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .rules-list {
+            list-style-type: decimal;
+            padding-left: 1.5rem;
+            color: var(--text-secondary);
+            font-family: 'Noto Sans', sans-serif;
+            line-height: 1.6;
+        }
+
+        .rules-list li {
+            margin-bottom: 0.75rem;
+        }
+
+        .rules-sublist {
+            list-style-type: decimal;
+            padding-left: 1.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .highlight-text {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .rules-card {
+                padding: 1.25rem;
+            }
+
+            .rules-title {
+                font-size: 1.25rem;
+            }
+
+            .rules-header {
+                font-size: 1rem;
+            }
+
+            .rules-list {
+                padding-left: 1.25rem;
+                font-size: 0.95rem;
+            }
+        }
+    </style>
+</head>
+
+<body class="dark">
+    <!-- Mobile Floating Action Button (FAB) -->
+    <div class="fab-container" id="fabContainer"
+        style="position: fixed !important; bottom: 2rem !important; right: 1.5rem !important; z-index: 9999 !important;">
+        <div class="fab-menu" id="fabMenu">
+            <a href="index.html#standings" class="fab-action-btn" onclick="toggleFab()">
+                <span class="material-symbols-outlined">leaderboard</span>
+                <span class="fab-label">Standings</span>
+            </a>
+            <a href="index.html#schedule" class="fab-action-btn" onclick="toggleFab()">
+                <span class="material-symbols-outlined">calendar_month</span>
+                <span class="fab-label">Schedule</span>
+            </a>
+            <a href="index.html#bracket" class="fab-action-btn" onclick="toggleFab()">
+                <span class="material-symbols-outlined">account_tree</span>
+                <span class="fab-label">Bracket</span>
+            </a>
+        </div>
+        <button class="fab-main-btn" onclick="toggleFab()" aria-label="Menu">
+            <span class="material-symbols-outlined fab-icon-open">menu</span>
+            <span class="material-symbols-outlined fab-icon-close">close</span>
+        </button>
+    </div>
+
+    <div class="page-wrapper">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-inner">
+                <div class="header-logo">
+                    <div class="header-logo-icon">
+                        <a href="index.html"><img src="logo.png" alt="HASTMA CUP #3 Logo"></a>
+                    </div>
+                    <h1 class="header-title"><a href="index.html" style="color: inherit; text-decoration: none;">HASTMA
+                            CUP #3 <span style="color: var(--admin-primary);">2026</span></a></h1>
+                </div>
+                <nav class="header-nav">
+                    <a href="index.html#standings">Standings</a>
+                    <a href="index.html#schedule">Schedule</a>
+                    <a href="index.html#bracket">Bracket</a>
+                </nav>
+                <div class="header-actions">
+                    <a href="rules.html" class="active-nav-link"
+                        style="margin-right: 15px; font-weight: 600; color: var(--primary);">Rules</a>
+                    <a href="rundown.html" class=""
+                        style="margin-right: 15px; font-weight: 600; color: var(--text-secondary); text-decoration: none;">Rundown</a>
+                    <a href="admin.html" class="admin-link">
+                        <span class="material-symbols-outlined" style="font-size: 1.125rem;">admin_panel_settings</span>
+                        Admin
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="container">
+                <!-- Page Header -->
+                <div class="page-header">
+                    <h2 class="page-title">Term & Regulation</h2>
+                    <p class="page-subtitle">
+                        Official Rules of The Game
+                    </p>
+                </div>
+
+                <section class="section">
+                    <div class="rules-card">
+                        <h2 class="rules-title">PERATURAN KHUSUS PERTANDINGAN MINI SOCCER<br>HASTMA CUP #3 TAHUN 2026
+                        </h2>
+
+                        <div class="rules-section">
+                            <h3 class="rules-header">A. JENIS PERTANDINGAN</h3>
+                            <p style="color: var(--text-secondary);">Jenis pertandingan adalah Mini Soccer antar
+                                angkatan HASTMA.</p>
+                        </div>
+
+                        <div class="rules-section">
+                            <h3 class="rules-header">B. SISTEM PERTANDINGAN</h3>
+                            <ol class="rules-list">
+                                <li>Pada babak penyisihan menggunakan system setengah kompetisi yang terbagi dalam 2
+                                    (grup) grup A dan B.</li>
+                                <li>Setiap grup diambil juara dan runner up untuk melanjutkan keputaran selanjutnya.
+                                </li>
+                                <li>Pada putaran ke dua (semi final), Juara grup A lawan Runner up grup B dan Runner up
+                                    grup A lawan Juara grup B. Masing-masing pemenang melaju ke babak final dan berhak
+                                    mendapat Juara ke-1 dan 2.</li>
+                                <li>Juara ke-3 diperebutkan oleh tim yang kalah di semifinal.</li>
+                                <li>Peraturan yang digunakan adalah peraturan yang dianut PSSI yang disesuaikan dengan
+                                    kondisi setempat.</li>
+                            </ol>
+                        </div>
+
+                        <div class="rules-section">
+                            <h3 class="rules-header">C. PESERTA</h3>
+                            <ol class="rules-list">
+                                <li>Peserta adalah Anggota per angkatan HASTMA Pengda Anyer - Cilegon - Banten. Tidak
+                                    menutup untuk anggota HASTMA luar daerah jika ingin bergabung.</li>
+                                <li>Perlengkapan dan akomodasi ditanggung oleh masing-masing peserta. Konsumsi/snack
+                                    disediakan oleh panitia.</li>
+                                <li>Setiap tim/angkatan terdiri dari 12 pemain, 7 pemain di lapangan dan 5 pemain
+                                    cadangan. (Kondisional)</li>
+                                <li>Setiap tim didampingi oleh 1 (satu) orang Manajer/Official sebagai komunikator
+                                    panitia.</li>
+                            </ol>
+                        </div>
+
+                        <div class="rules-section">
+                            <h3 class="rules-header">D. PERATURAN PERTANDINGAN</h3>
+                            <ol class="rules-list">
+                                <li>Pertandingan dimulai dari Fase grup sampai Final dilaksanakan di Lapangan Mini
+                                    Soccer MS Arena pada Sabtu, 31 Januari 2026.</li>
+                                <li>Bola yang digunakan disediakan dan ditentukan oleh panitia.</li>
+                                <li>Setiap tim wajib menggunakan jersey yang sama (seragam), kecuali kiper.</li>
+                                <li>Apabila jersey kedua tim warna/corak sama, maka akan dilakukan poin tos untuk
+                                    menentukan tim yang menggunakan rompi.</li>
+                                <li>Setiap tim yang bertanding diharapkan hadir 30 menit sebelum pertandingan dimulai.
+                                </li>
+                                <li>Apabila tim yang akan bertanding tidak hadir di lapangan lebih dari 10 menit dari
+                                    waktu yang telah ditetapkan, tim tersebut dinyatakan kalah WO dengan skor 3-0.</li>
+                                <li>Pergantian pemain tidak dibatasi jumlahnya. Pemain yang sudah keluar diperbolehkan
+                                    masuk kembali.</li>
+                                <li>Di babak Semifinal, Final, dan Perebutan tempat ketiga, jika Pertandingan di babak
+                                    kedua berakhir seri maka dilanjutkan dengan 3 kali tendangan adu penalty oleh pemain
+                                    terakhir yang ada di lapangan. Jika masih imbang juga dilanjutkan dengan 1 kali
+                                    tendangan penalty (sudden death) oleh pemain yang tersisa dilapangan dari masing
+                                    masing tim dengan melakukan koin tos ulang terlebih dahulu. Pemain yang mencetak gol
+                                    dalam sudden death timnya berhak memenangkan pertandingan, namun jika tertepis kiper
+                                    maka tim kiper yang memenangkan pertandingan.</li>
+                                <li>Kiper tidak boleh menangkap bola menggunakan tangan saat rekan setim memberikan
+                                    umpan dari kaki (Backpass).</li>
+                            </ol>
+                        </div>
+
+                        <div class="rules-section">
+                            <h3 class="rules-header">E. PERHITUNGAN KEMENANGAN</h3>
+                            <ol class="rules-list">
+                                <li>Di fase grup, kemenangan ditentukan oleh skor akhir dari setiap pertandingan dengan
+                                    perincian, dalam 1 kali kemenangan (1 partai) setiap tim yang menang mendapatkan
+                                    nilai 3 (tiga) poin, jika imbang/seri 1 Poin dan jika kalah tidak mendapatkan poin
+                                    (nol).</li>
+                                <li>Di fase grup dan semifinal, lama waktu pertandingan adalah 1 x 16 menit (istirahat
+                                    minum) dan diberikan waktu jeda antar match 2 menit (sesi 1) dan 4 menit (sesi 2).
+                                    Babak final dan perebutan tempat ke-3 lama waktu pertandingan adalah 1 x 18 menit.
+                                </li>
+                                <li>Di fase grup, untuk Penentuan juara dan runner up ditentukan secara berurutan :
+                                    <ul class="rules-sublist" style="list-style-type: none; padding-left: 1rem;">
+                                        <li>3.1. Point</li>
+                                        <li>3.2. Selisih gol</li>
+                                        <li>3.3. Jumlah cetak gol</li>
+                                        <li>3.4. Jumlah kebobolan</li>
+                                        <li>3.5. Jumlah kartu paling sedikit (Merah = 2 kartu kuning)</li>
+                                    </ul>
+                                </li>
+                            </ol>
+                        </div>
+
+                        <div class="rules-section">
+                            <h3 class="rules-header">F. PROTES/SANKSI</h3>
+                            <ol class="rules-list">
+                                <li>Setiap pemain/official/penonton harus berperilaku sopan dan fairplay tidak boleh
+                                    berkata kotor atau melakukan tindakan anarkis yang bisa menimbulkan keributan,
+                                    perelahian, kerusakan dll.</li>
+                                <li>Pemain dilarang berperilaku yang dapat memancing emosi para penonoton untuk membuat
+                                    keributan.</li>
+                                <li>Apabila terjadi seperti pada butir 1 dan 2 maka wasit akan langsung memberikan
+                                    peringatan kepada pemain yang melakukan pelanggaran. Jika hal pelanggaran di atas
+                                    masih dilakukan maka akan diberikan sanksi tegas berupa teguran kartu kuning/kartu
+                                    merah atau terkena hukuman drop out dari pertandingan sehingga tim terdiskualifikasi
+                                    (gugur) dan tidak dapat mengikuti pertandingan selanjutnya.</li>
+                                <li>Sanksi kartu merah dan 2 kartu kuning dalam 1 pertandingan adalah larangan bermain
+                                    kepada pemain untuk 1 laga selanjutnya. Sanksi 2 kartu kuning dalam 2 pertandingan
+                                    adalah larangan menjadi starter dan masuk paling cepat menit ke-8 untuk 1 laga
+                                    selanjutnya.</li>
+                                <li>Jika dalam 1 tim ada pemain mendapat kartu merah atau 2 kartu kuning dalam 1
+                                    pertandingan, maka 1 pemain tersebut harus segera keluar dengan sisa pemain 6 orang.
+                                    Pemain pengganti diperbolehkan masuk setelah 2 menit dari kejadian kartu merah, atau
+                                    sebelum 2 menit tim yang memperoleh kartu merah kemasukan gol.</li>
+                                <li>Setiap pemain harus menaati setiap peraturan yang telah ditetapkan panitia.</li>
+                                <li>Setiap pemain maupun tim wajib menjunjung tinggi nilai sportifitas.</li>
+                                <li>Setiap pemain/perwakilan tim/angkatan wajib menandatangani hasil technical meeting.
+                                </li>
+                                <li>Bagi pemain/perwakilan tim/angkatan yang tidak hadir dalam technical meeting
+                                    dianggap setuju dengan peraturan yang telah ditetapkan bersama.</li>
+                                <li>Wasit disiapkan oleh panitia dengan menyewa dari luar/profesional.</li>
+                                <li>Segala keputusan wasit adalah mutlak dan tidak dapat diganggu gugat.</li>
+                                <li>Hal hal yang belum tercantum dalam peraturan ini akan ditentukan kemudian.</li>
+                            </ol>
+                        </div>
+
+                        <div class="rules-section">
+                            <h3 class="rules-header">G. WAKTU DAN TEMPAT</h3>
+                            <ol class="rules-list">
+                                <li>Pertandingan akan dilaksanakan pada Sabtu, 31 Januari 2026 dengan waktu pertandingan
+                                    dimulai:
+                                    <div style="margin-left: 1.5rem; margin-top: 0.5rem; font-weight: 600;">
+                                        <div>Sesi I : Pukul 16.00 WIB - 18.00 WIB.</div>
+                                        <div>Sesi II : Pukul 18.30 WIB - 20.20 WIB.</div>
+                                    </div>
+                                </li>
+                                <li>Tempat pertandingan adalah Lapangan (A) Mini Soccer MS Arena, Jl. Lingkar Selatan
+                                    (JLS), Serdang, Kec. Kramatwatu, Kab. Serang, Banten.</li>
+                            </ol>
+                        </div>
+
+                        <div class="rules-section">
+                            <h3 class="rules-header">H. LAIN-LAIN</h3>
+                            <ol class="rules-list">
+                                <li>Pengundian pembagian grup dilaksanakan pada saat Technical Meeting. Teknis
+                                    pengundian/pengocokan ditentukan oleh panitia.</li>
+                                <li>Hal hal yang tidak tercantum dalam peraturan ini akan ditetapkan selanjutnya oleh
+                                    panitia berdasarkan musyawarah dan mufakat setelah mendapatkan persetujuan dari tim
+                                    penasehat.</li>
+                            </ol>
+                        </div>
+
+                    </div>
+                </section>
+
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p class="footer-text">© 2026 HASTMA CUP #3 - Mini Soccer Tournament</p>
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <a href="admin.html">Admin Panel</a>
+            </div>
+        </footer>
+
+    </div>
+
+    <script>
+        function toggleFab() {
+            const fabContainer = document.getElementById('fabContainer');
+            fabContainer.classList.toggle('active');
+        }
+    </script>
+</body>
+
+</html>
