@@ -366,17 +366,16 @@ function updateHeroCountdown(matchTimeStr, element) {
   // But since this is called frequently, we just calculate instant state
 
   const now = new Date();
-  // Assuming format "HH:mm" - e.g. "16:00"
-  // Also assuming match is TODAY.
+  // Match Time Format "HH:mm" (e.g. "16:00")
+  // Tournament Date: Saturday, Jan 31, 2026
   const [hours, minutes] = matchTimeStr.split(':').map(Number);
-  const matchDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes, 0);
+
+  // Construct Match Date explicitly for Jan 31, 2026
+  const matchDate = new Date(2026, 0, 31, hours, minutes, 0); // Month is 0-indexed (0=Jan)
 
   let diff = matchDate - now;
 
-  // Handle case where match might be tomorrow if time is smaller than now?
-  // For this specific tournament, dates are fixed, but let's stick to simple intral-day logic
   // If diff is negative, it means we passed the time.
-
   if (diff <= 0) {
     element.innerHTML = `
             <div class="countdown-segment"><span class="countdown-val">00</span><span class="countdown-label">HR</span></div>
@@ -386,12 +385,6 @@ function updateHeroCountdown(matchTimeStr, element) {
             <div class="countdown-segment"><span class="countdown-val">00</span><span class="countdown-label">SEC</span></div>
          `;
     element.classList.add('finished');
-    return;
-  }
-
-  // If > 24 hours (unlikely but safe check)
-  if (diff > 86400000) {
-    element.textContent = "Upcoming";
     return;
   }
 
@@ -1460,9 +1453,31 @@ async function init() {
 
 // Start the app when DOM is ready
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', init);
+  document.addEventListener('DOMContentLoaded', () => {
+    init();
+    // High-frequency UI update (every 1 second) for timers/countdown
+    setInterval(() => {
+      const countdownEl = document.getElementById('heroCountdown');
+      if (countdownEl && tournamentData) {
+        const heroData = findHeroMatch();
+        if (heroData && !heroData.isLive && !heroData.isFinal) {
+          updateHeroCountdown(heroData.match.time, countdownEl);
+        }
+      }
+    }, 1000);
+  });
 } else {
   init();
+  // High-frequency UI update (every 1 second) for timers/countdown
+  setInterval(() => {
+    const countdownEl = document.getElementById('heroCountdown');
+    if (countdownEl && tournamentData) {
+      const heroData = findHeroMatch();
+      if (heroData && !heroData.isLive && !heroData.isFinal) {
+        updateHeroCountdown(heroData.match.time, countdownEl);
+      }
+    }
+  }, 1000);
 }
 
 // ================================================
