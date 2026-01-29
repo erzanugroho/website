@@ -636,8 +636,7 @@ function renderStandingsTable(containerId, standings) {
 // Schedule Display
 // ================================================
 
-  }
-}
+
 
 // ================================================
 // Top Scorers Logic
@@ -1415,6 +1414,7 @@ function refreshAll() {
   renderStandings();
   renderSchedule();
   renderHeroMatch();
+  renderTopScorers();
   updateLastUpdated();
 }
 
