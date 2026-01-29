@@ -229,6 +229,7 @@ function renderHeroMatch() {
           <div class="hero-match-info" style="margin-top: 0.5rem; color: var(--admin-text-muted); font-size: 0.875rem;">
             <span id="heroStageLabel">${getStageLabel(match)}</span> • <span id="heroTimeLabel">${match.time}</span>
           </div>
+          ${!isLive && !isFinal ? `<div id="heroCountdown" class="hero-countdown"></div>` : ''}
         </div>
 
         <div class="hero-match-teams">
@@ -278,17 +279,21 @@ function renderHeroMatch() {
     const timelineArea = document.getElementById('heroTimelineArea');
     const liveStatusText = document.getElementById('heroLiveStatusText');
     const matchStatusArea = document.getElementById('heroMatchStatus');
+    const countdownEl = document.getElementById('heroCountdown');
 
     if (homeScoreEl) homeScoreEl.textContent = match.homeScore;
     if (awayScoreEl) awayScoreEl.textContent = match.awayScore;
 
     // Update status badge if status area exists
     if (matchStatusArea) {
+      // Re-render status area if changed, but be careful not to destroy countdown if it exists and we just need to update it
+      // Actually, for simplicity, let's just re-render the status part
       matchStatusArea.innerHTML = `
         ${getBadgeHtml()}
         <div class="hero-match-info" style="margin-top: 0.5rem; color: var(--admin-text-muted); font-size: 0.875rem;">
           <span id="heroStageLabel">${getStageLabel(match)}</span> • <span id="heroTimeLabel">${match.time}</span>
         </div>
+        ${!isLive && !isFinal ? `<div id="heroCountdown" class="hero-countdown"></div>` : ''}
       `;
     }
 
@@ -305,6 +310,14 @@ function renderHeroMatch() {
     if (liveStatusText) {
       liveStatusText.innerHTML = isLive ? `<div style="color: var(--admin-primary); font-weight: 800;">${match.status === 'halftime' ? 'HALF TIME' : "IN PROGRESS"}</div>` : '';
     }
+  }
+
+  // --- COUNTDOWN LOGIC ---
+  const countdownEl = document.getElementById('heroCountdown');
+  if (countdownEl && !isLive && !isFinal) {
+    updateHeroCountdown(match.time, countdownEl);
+  } else if (isLive && countdownEl) {
+    countdownEl.style.display = 'none';
   }
 
   // Detect New Events for Effects (Goals, Cards)
@@ -342,6 +355,60 @@ function renderHeroMatch() {
     matchId: match.id,
     eventsCount: currentEventsCount
   };
+}
+
+let countdownInterval = null;
+
+function updateHeroCountdown(matchTimeStr, element) {
+  if (!element) return;
+
+  // Clear existing interval if setting up new one not needed actually handled by poll
+  // But since this is called frequently, we just calculate instant state
+
+  const now = new Date();
+  // Assuming format "HH:mm" - e.g. "16:00"
+  // Also assuming match is TODAY.
+  const [hours, minutes] = matchTimeStr.split(':').map(Number);
+  const matchDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes, 0);
+
+  let diff = matchDate - now;
+
+  // Handle case where match might be tomorrow if time is smaller than now?
+  // For this specific tournament, dates are fixed, but let's stick to simple intral-day logic
+  // If diff is negative, it means we passed the time.
+
+  if (diff <= 0) {
+    element.innerHTML = `
+            <div class="countdown-segment"><span class="countdown-val">00</span><span class="countdown-label">HR</span></div>
+            <div class="countdown-sep">:</div>
+            <div class="countdown-segment"><span class="countdown-val">00</span><span class="countdown-label">MIN</span></div>
+            <div class="countdown-sep">:</div>
+            <div class="countdown-segment"><span class="countdown-val">00</span><span class="countdown-label">SEC</span></div>
+         `;
+    element.classList.add('finished');
+    return;
+  }
+
+  // If > 24 hours (unlikely but safe check)
+  if (diff > 86400000) {
+    element.textContent = "Upcoming";
+    return;
+  }
+
+  const h = Math.floor(diff / (1000 * 60 * 60));
+  const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  const s = Math.floor((diff % (1000 * 60)) / 1000);
+
+  const pad = (num) => num < 10 ? '0' + num : num;
+
+  element.innerHTML = `
+        <div class="countdown-segment"><span class="countdown-val">${pad(h)}</span><span class="countdown-label">HR</span></div>
+        <div class="countdown-sep">:</div>
+        <div class="countdown-segment"><span class="countdown-val">${pad(m)}</span><span class="countdown-label">MIN</span></div>
+        <div class="countdown-sep">:</div>
+        <div class="countdown-segment"><span class="countdown-val">${pad(s)}</span><span class="countdown-label">SEC</span></div>
+    `;
+  element.classList.remove('finished');
 }
 
 /**
