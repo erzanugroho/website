@@ -15,21 +15,121 @@
         rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <style>
-        .pdf-container {
-            width: 100%;
-            height: 80vh;
+        /* Rundown Specific Styles */
+        .rundown-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
             border-radius: 1rem;
             overflow: hidden;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            border: 1px solid var(--border);
-            background-color: var(--card-bg);
             margin-top: 1.5rem;
         }
 
-        .pdf-embed {
+        .rundown-table {
             width: 100%;
-            height: 100%;
-            border: none;
+            border-collapse: collapse;
+            font-family: 'Noto Sans', sans-serif;
+        }
+
+        .rundown-table th {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 1rem 1.5rem;
+            text-align: left;
+            font-family: 'Lexend', sans-serif;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            font-size: 0.875rem;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .rundown-table td {
+            padding: 0.875rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            vertical-align: middle;
+        }
+
+        .rundown-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .rundown-table tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .time-col {
+            width: 15%;
+            white-space: nowrap;
+            color: var(--primary) !important;
+            font-weight: 600;
+            font-family: 'Lexend', sans-serif;
+        }
+
+        .activity-col {
+            width: 45%;
+            font-weight: 500;
+            color: var(--text-primary) !important;
+        }
+
+        .pic-col {
+            width: 20%;
+            font-size: 0.875rem;
+            color: var(--text-muted) !important;
+        }
+
+        .duration-col {
+            width: 20%;
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* Status Colors based on Screenshot */
+        .row-break {
+            background: rgba(220, 38, 38, 0.15);
+            /* Red tint */
+            border-left: 4px solid #dc2626;
+        }
+
+        .row-match-group {
+            background: rgba(132, 204, 22, 0.1);
+            /* Green tint */
+            border-left: 4px solid #84cc16;
+        }
+
+        .row-ceremony {
+            background: rgba(6, 182, 212, 0.15);
+            /* Blue/Cyan tint */
+            border-left: 4px solid #06b6d4;
+        }
+
+        /* Sub-rows for details */
+        .sub-row {
+            font-size: 0.875rem;
+            background: rgba(255, 255, 255, 0.01);
+        }
+
+        .sub-row .activity-col {
+            padding-left: 3rem;
+            position: relative;
+        }
+
+        .sub-row .activity-col::before {
+            content: '↳';
+            position: absolute;
+            left: 1.5rem;
+            opacity: 0.5;
+        }
+
+        .sub-row.match-item {
+            color: var(--text-primary);
+        }
+
+        .sub-row.break-item {
+            color: #fca5a5;
+            /* Light red text */
+            font-style: italic;
         }
 
         .download-section {
@@ -43,8 +143,9 @@
             align-items: center;
             gap: 0.5rem;
             padding: 0.75rem 1.5rem;
-            background-color: var(--primary);
-            color: white;
+            background-color: var(--card-bg);
+            border: 1px solid var(--primary);
+            color: var(--primary);
             text-decoration: none;
             border-radius: 0.5rem;
             font-weight: 600;
@@ -52,10 +153,99 @@
         }
 
         .btn-download:hover {
-            background-color: var(--primary-hover, #2563EB);
-            /* Fallback if var not defined */
+            background-color: rgba(var(--primary-rgb), 0.1);
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25em 0.5em;
+            font-size: 0.75em;
+            font-weight: 700;
+            line-height: 1;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: 0.25rem;
+            background-color: var(--primary);
+            color: white;
+            margin-right: 0.5rem;
+        }
+
+        .badge-break {
+            background-color: #dc2626;
+        }
+
+        .badge-match {
+            background-color: #84cc16;
+            color: black;
+        }
+
+        .badge-ceremony {
+            background-color: #06b6d4;
+            color: black;
+        }
+
+
+        @media (max-width: 768px) {
+            .rundown-table th {
+                display: none;
+                /* Hide headers on mobile */
+            }
+
+            .rundown-table,
+            .rundown-table tbody,
+            .rundown-table tr,
+            .rundown-table td {
+                display: block;
+                width: 100%;
+            }
+
+            .rundown-table tr {
+                margin-bottom: 0.75rem;
+                border: 1px solid var(--border);
+                border-radius: 0.75rem;
+                padding: 1rem;
+                background: var(--card-bg);
+            }
+
+            .rundown-table td {
+                padding: 0.25rem 0;
+                border: none;
+            }
+
+            .time-col {
+                font-size: 1.1rem;
+                margin-bottom: 0.25rem;
+            }
+
+            .activity-col {
+                font-size: 1rem;
+                margin-bottom: 0.25rem;
+            }
+
+            .pic-col,
+            .duration-col {
+                font-size: 0.85rem;
+                color: var(--text-muted) !important;
+                display: inline-block;
+                width: auto !important;
+                margin-right: 1rem;
+                text-align: left;
+            }
+
+            .duration-col::before {
+                content: 'Duration: ';
+                opacity: 0.7;
+            }
+
+            .sub-row .activity-col {
+                padding-left: 0;
+            }
+
+            .sub-row .activity-col::before {
+                content: '';
+            }
         }
     </style>
 </head>
@@ -118,29 +308,268 @@
                 <div class="page-header">
                     <h2 class="page-title">Tournament Rundown</h2>
                     <p class="page-subtitle">
-                        Schedule of events for HASTMA CUP #3 2026
+                        Sabtu, 31 Januari 2026
                     </p>
                 </div>
 
-                <!-- PDF Section -->
+                <!-- HTML Table Section -->
                 <section class="section">
-                    <div class="pdf-container">
-                        <!-- Using object tag for better PDF embedding compatibility -->
-                        <object class="pdf-embed" data="RUNDOWN HASTMA CUP #3 2026.pdf" type="application/pdf">
-                            <div
-                                style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; text-align: center; padding: 2rem;">
-                                <span class="material-symbols-outlined"
-                                    style="font-size: 4rem; color: var(--text-muted); margin-bottom: 1rem;">picture_as_pdf</span>
-                                <p style="margin-bottom: 1rem;">Your browser does not support displaying PDFs directly.
-                                </p>
-                                <a href="RUNDOWN HASTMA CUP #3 2026.pdf" class="btn-download">Download Rundown PDF</a>
-                            </div>
-                        </object>
+                    <div class="rundown-card">
+                        <table class="rundown-table">
+                            <thead>
+                                <tr>
+                                    <th>Waktu</th>
+                                    <th>Acara / Detail</th>
+                                    <th style="text-align: right;">Durasi</th>
+                                    <th>PIC</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Morning Prep -->
+                                <tr>
+                                    <td class="time-col">08.00 - 10.00</td>
+                                    <td class="activity-col">Prepare Atribut Besar dan Perlengkapan Acara</td>
+                                    <td class="duration-col">120 Menit</td>
+                                    <td class="pic-col">All Panitia</td>
+                                </tr>
+
+                                <!-- Break -->
+                                <tr class="row-break">
+                                    <td class="time-col">10.00 - 13.00</td>
+                                    <td class="activity-col"><span class="badge badge-break">BREAK</span></td>
+                                    <td class="duration-col">180 Menit</td>
+                                    <td class="pic-col"></td>
+                                </tr>
+
+                                <!-- Afternoon Prep -->
+                                <tr>
+                                    <td class="time-col">13.00 - 13.10</td>
+                                    <td class="activity-col">Panitia Berkumpul di Lokasi</td>
+                                    <td class="duration-col">10 Menit</td>
+                                    <td class="pic-col">Ketua Panitia</td>
+                                </tr>
+                                <tr>
+                                    <td class="time-col">13.10 - 15.00</td>
+                                    <td class="activity-col">Prepare Atribut dan Perlengkapan Acara (Finishing)</td>
+                                    <td class="duration-col">110 Menit</td>
+                                    <td class="pic-col">All Panitia</td>
+                                </tr>
+                                <tr>
+                                    <td class="time-col">15.00 - 15.30</td>
+                                    <td class="activity-col">Daftar Ulang</td>
+                                    <td class="duration-col">30 Menit</td>
+                                    <td class="pic-col">Sie Acara</td>
+                                </tr>
+                                <tr>
+                                    <td class="time-col">15.30 - 15.50</td>
+                                    <td class="activity-col">Persiapan Tim</td>
+                                    <td class="duration-col">20 Menit</td>
+                                    <td class="pic-col">Sie Acara</td>
+                                </tr>
+                                <tr>
+                                    <td class="time-col">15.50 - 15.55</td>
+                                    <td class="activity-col">Pembukaan Hastma Cup #3</td>
+                                    <td class="duration-col">5 Menit</td>
+                                    <td class="pic-col">MC</td>
+                                </tr>
+                                <tr>
+                                    <td class="time-col">15.55 - 16.00</td>
+                                    <td class="activity-col">Opening Kick Off</td>
+                                    <td class="duration-col">5 Menit</td>
+                                    <td class="pic-col">Sesepuh Hastma</td>
+                                </tr>
+
+                                <!-- Match Session 1 -->
+                                <tr class="row-match-group">
+                                    <td class="time-col" style="vertical-align: top;">16.00 - 17.46</td>
+                                    <td class="activity-col" colspan="3">
+                                        <div style="font-weight: 700; margin-bottom: 0.5rem;"><span
+                                                class="badge badge-match">MATCH SESI 1</span></div>
+                                    </td>
+                                </tr>
+                                <!-- Sub Rows for Match Sesi 1 -->
+                                <tr class="sub-row">
+                                    <td class="time-col">16.00 - 16.16</td>
+                                    <td class="activity-col">MATCH 1</td>
+                                    <td class="duration-col">16 MNT</td>
+                                    <td class="pic-col">Sie Acara</td>
+                                </tr>
+                                <tr class="sub-row">
+                                    <td class="time-col">16.16 - 16.18</td>
+                                    <td class="activity-col break-item">JEDA PERGANTIAN</td>
+                                    <td class="duration-col">2 MNT</td>
+                                    <td class="pic-col"></td>
+                                </tr>
+                                <tr class="sub-row">
+                                    <td class="time-col">16.18 - 16.34</td>
+                                    <td class="activity-col">MATCH 2</td>
+                                    <td class="duration-col">16 MNT</td>
+                                    <td class="pic-col">Sie Acara</td>
+                                </tr>
+                                <tr class="sub-row">
+                                    <td class="time-col">16.34 - 16.36</td>
+                                    <td class="activity-col break-item">JEDA PERGANTIAN</td>
+                                    <td class="duration-col">2 MNT</td>
+                                    <td class="pic-col"></td>
+                                </tr>
+                                <tr class="sub-row">
+                                    <td class="time-col">16.36 - 16.52</td>
+                                    <td class="activity-col">MATCH 3</td>
+                                    <td class="duration-col">16 MNT</td>
+                                    <td class="pic-col">Sie Acara</td>
+                                </tr>
+                                <tr class="sub-row">
+                                    <td class="time-col">16.52 - 16.54</td>
+                                    <td class="activity-col break-item">JEDA PERGANTIAN</td>
+                                    <td class="duration-col">2 MNT</td>
+                                    <td class="pic-col"></td>
+                                </tr>
+                                <tr class="sub-row">
+                                    <td class="time-col">16.54 - 17.10</td>
+                                    <td class="activity-col">MATCH 4</td>
+                                    <td class="duration-col">16 MNT</td>
+                                    <td class="pic-col">Sie Acara</td>
+                                </tr>
+                                <tr class="sub-row">
+                                    <td class="time-col">17.10 - 17.12</td>
+                                    <td class="activity-col break-item">JEDA PERGANTIAN</td>
+                                    <td class="duration-col">2 MNT</td>
+                                    <td class="pic-col"></td>
+                                </tr>
+                                <tr class="sub-row">
+                                    <td class="time-col">17.12 - 17.28</td>
+                                    <td class="activity-col">MATCH 5</td>
+                                    <td class="duration-col">16 MNT</td>
+                                    <td class="pic-col">Sie Acara</td>
+                                </tr>
+                                <tr class="sub-row">
+                                    <td class="time-col">17.28 - 17.30</td>
+                                    <td class="activity-col break-item">JEDA PERGANTIAN</td>
+                                    <td class="duration-col">2 MNT</td>
+                                    <td class="pic-col"></td>
+                                </tr>
+                                <tr class="sub-row">
+                                    <td class="time-col">17.30 - 17.46</td>
+                                    <td class="activity-col">MATCH 6</td>
+                                    <td class="duration-col">16 MNT</td>
+                                    <td class="pic-col">Sie Acara</td>
+                                </tr>
+
+                                <!-- Intermission -->
+                                <tr>
+                                    <td class="time-col">17.46 - 18.00</td>
+                                    <td class="activity-col">PEMBAGIAN DOORPRIZE</td>
+                                    <td class="duration-col">14 Menit</td>
+                                    <td class="pic-col">Ketua Panitia</td>
+                                </tr>
+
+                                <!-- Break -->
+                                <tr class="row-break">
+                                    <td class="time-col">18.00 - 18.30</td>
+                                    <td class="activity-col"><span class="badge badge-break">BREAK</span></td>
+                                    <td class="duration-col">30 Menit</td>
+                                    <td class="pic-col"></td>
+                                </tr>
+
+                                <!-- Ceremony -->
+                                <tr class="row-ceremony">
+                                    <td class="time-col">18.30 - 18.52</td>
+                                    <td class="activity-col" colspan="3">
+                                        <div style="font-weight: 700; margin-bottom: 0.5rem;"><span
+                                                class="badge badge-ceremony">PEMOTONGAN TUMPENG & SAMBUTAN</span></div>
+                                    </td>
+                                </tr>
+                                <tr class="sub-row">
+                                    <td class="time-col">18.30 - 18.32</td>
+                                    <td class="activity-col">Sambutan Ketua Panitia</td>
+                                    <td class="duration-col">2 Menit</td>
+                                    <td class="pic-col">Ketua Panitia</td>
+                                </tr>
+                                <tr class="sub-row">
+                                    <td class="time-col">18.32 - 18.40</td>
+                                    <td class="activity-col">Sambutan Senior 1</td>
+                                    <td class="duration-col">8 Menit</td>
+                                    <td class="pic-col">Ketua Panitia</td>
+                                </tr>
+                                <tr class="sub-row">
+                                    <td class="time-col">18.40 - 18.48</td>
+                                    <td class="activity-col">Sambutan Senior 2</td>
+                                    <td class="duration-col">8 Menit</td>
+                                    <td class="pic-col">Ketua Panitia</td>
+                                </tr>
+                                <tr class="sub-row">
+                                    <td class="time-col">18.48 - 18.52</td>
+                                    <td class="activity-col">Pemotongan Tumpeng</td>
+                                    <td class="duration-col">4 Menit</td>
+                                    <td class="pic-col">Ketua Panitia</td>
+                                </tr>
+
+                                <!-- Match Session 2 -->
+                                <tr class="row-match-group">
+                                    <td class="time-col" style="vertical-align: top;">18.52 - 20.05</td>
+                                    <td class="activity-col" colspan="3">
+                                        <div style="font-weight: 700; margin-bottom: 0.5rem;"><span
+                                                class="badge badge-match">MATCH SESI 2</span></div>
+                                    </td>
+                                </tr>
+                                <tr class="sub-row">
+                                    <td class="time-col">18.52 - 19.08</td>
+                                    <td class="activity-col">SEMIFINAL 1</td>
+                                    <td class="duration-col">16 MNT</td>
+                                    <td class="pic-col">Sie Acara</td>
+                                </tr>
+                                <tr class="sub-row">
+                                    <td class="time-col">19.08 - 19.10</td>
+                                    <td class="activity-col break-item">JEDA PERGANTIAN</td>
+                                    <td class="duration-col">2 MNT</td>
+                                    <td class="pic-col"></td>
+                                </tr>
+                                <tr class="sub-row">
+                                    <td class="time-col">19.10 - 19.26</td>
+                                    <td class="activity-col">SEMIFINAL 2</td>
+                                    <td class="duration-col">16 MNT</td>
+                                    <td class="pic-col">Sie Acara</td>
+                                </tr>
+                                <tr class="sub-row">
+                                    <td class="time-col">19.26 - 19.31</td>
+                                    <td class="activity-col break-item">JEDA PERGANTIAN</td>
+                                    <td class="duration-col">5 MNT</td>
+                                    <td class="pic-col"></td>
+                                </tr>
+                                <tr class="sub-row">
+                                    <td class="time-col">19.31 - 19.47</td>
+                                    <td class="activity-col">JUARA 3</td>
+                                    <td class="duration-col">16 MNT</td>
+                                    <td class="pic-col">Sie Acara</td>
+                                </tr>
+                                <tr class="sub-row">
+                                    <td class="time-col">19.47 - 19.49</td>
+                                    <td class="activity-col break-item">JEDA PERGANTIAN</td>
+                                    <td class="duration-col">2 MNT</td>
+                                    <td class="pic-col"></td>
+                                </tr>
+                                <tr class="sub-row">
+                                    <td class="time-col">19.49 - 20.05</td>
+                                    <td class="activity-col">FINAL PARTY</td>
+                                    <td class="duration-col">16 MNT</td>
+                                    <td class="pic-col">Sie Acara</td>
+                                </tr>
+
+                                <!-- Closing -->
+                                <tr>
+                                    <td class="time-col">20.05 - 20.20</td>
+                                    <td class="activity-col">Closing Ceremony/Penyerahan Hadiah</td>
+                                    <td class="duration-col">15 Menit</td>
+                                    <td class="pic-col">MC & Ketua Panitia</td>
+                                </tr>
+
+                            </tbody>
+                        </table>
                     </div>
 
                     <div class="download-section">
                         <a href="RUNDOWN HASTMA CUP #3 2026.pdf" class="btn-download" download>
-                            <span class="material-symbols-outlined">download</span> Download Rundown PDF
+                            <span class="material-symbols-outlined">download</span> Download Original PDF
                         </a>
                     </div>
                 </section>
@@ -160,7 +589,6 @@
     </div>
 
     <script>
-        // Simple FAB toggle script since we don't need the full app.js logic for this static page
         function toggleFab() {
             const fabContainer = document.getElementById('fabContainer');
             fabContainer.classList.toggle('active');
