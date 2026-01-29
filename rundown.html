@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html class="dark" lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="HASTMA CUP #3 2026 - Tournament Rundown">
+    <title>Rundown - HASTMA CUP #3 2026</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&family=Noto+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .pdf-container {
+            width: 100%;
+            height: 80vh;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 1px solid var(--border);
+            background-color: var(--card-bg);
+            margin-top: 1.5rem;
+        }
+
+        .pdf-embed {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .download-section {
+            margin-top: 1.5rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .btn-download {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-download:hover {
+            background-color: var(--primary-hover, #2563EB);
+            /* Fallback if var not defined */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+    </style>
+</head>
+
+<body class="dark">
+    <!-- Mobile Floating Action Button (FAB) -->
+    <div class="fab-container" id="fabContainer"
+        style="position: fixed !important; bottom: 2rem !important; right: 1.5rem !important; z-index: 9999 !important;">
+        <div class="fab-menu" id="fabMenu">
+            <a href="index.html#standings" class="fab-action-btn" onclick="toggleFab()">
+                <span class="material-symbols-outlined">leaderboard</span>
+                <span class="fab-label">Standings</span>
+            </a>
+            <a href="index.html#schedule" class="fab-action-btn" onclick="toggleFab()">
+                <span class="material-symbols-outlined">calendar_month</span>
+                <span class="fab-label">Schedule</span>
+            </a>
+            <a href="index.html#bracket" class="fab-action-btn" onclick="toggleFab()">
+                <span class="material-symbols-outlined">account_tree</span>
+                <span class="fab-label">Bracket</span>
+            </a>
+        </div>
+        <button class="fab-main-btn" onclick="toggleFab()" aria-label="Menu">
+            <span class="material-symbols-outlined fab-icon-open">menu</span>
+            <span class="material-symbols-outlined fab-icon-close">close</span>
+        </button>
+    </div>
+
+    <div class="page-wrapper">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-inner">
+                <div class="header-logo">
+                    <div class="header-logo-icon">
+                        <a href="index.html"><img src="logo.png" alt="HASTMA CUP #3 Logo"></a>
+                    </div>
+                    <h1 class="header-title"><a href="index.html" style="color: inherit; text-decoration: none;">HASTMA
+                            CUP #3 <span style="color: var(--admin-primary);">2026</span></a></h1>
+                </div>
+                <nav class="header-nav">
+                    <a href="index.html#standings">Standings</a>
+                    <a href="index.html#schedule">Schedule</a>
+                    <a href="index.html#bracket">Bracket</a>
+                </nav>
+                <div class="header-actions">
+                    <a href="rundown.html" class="active-nav-link"
+                        style="margin-right: 15px; font-weight: 600; color: var(--primary);">Rundown</a>
+                    <a href="admin.html" class="admin-link">
+                        <span class="material-symbols-outlined" style="font-size: 1.125rem;">admin_panel_settings</span>
+                        Admin
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="container">
+                <!-- Page Header -->
+                <div class="page-header">
+                    <h2 class="page-title">Tournament Rundown</h2>
+                    <p class="page-subtitle">
+                        Schedule of events for HASTMA CUP #3 2026
+                    </p>
+                </div>
+
+                <!-- PDF Section -->
+                <section class="section">
+                    <div class="pdf-container">
+                        <!-- Using object tag for better PDF embedding compatibility -->
+                        <object class="pdf-embed" data="RUNDOWN HASTMA CUP #3 2026.pdf" type="application/pdf">
+                            <div
+                                style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; text-align: center; padding: 2rem;">
+                                <span class="material-symbols-outlined"
+                                    style="font-size: 4rem; color: var(--text-muted); margin-bottom: 1rem;">picture_as_pdf</span>
+                                <p style="margin-bottom: 1rem;">Your browser does not support displaying PDFs directly.
+                                </p>
+                                <a href="RUNDOWN HASTMA CUP #3 2026.pdf" class="btn-download">Download Rundown PDF</a>
+                            </div>
+                        </object>
+                    </div>
+
+                    <div class="download-section">
+                        <a href="RUNDOWN HASTMA CUP #3 2026.pdf" class="btn-download" download>
+                            <span class="material-symbols-outlined">download</span> Download Rundown PDF
+                        </a>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p class="footer-text">© 2026 HASTMA CUP #3 - Mini Soccer Tournament</p>
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <a href="admin.html">Admin Panel</a>
+            </div>
+        </footer>
+
+    </div>
+
+    <script>
+        // Simple FAB toggle script since we don't need the full app.js logic for this static page
+        function toggleFab() {
+            const fabContainer = document.getElementById('fabContainer');
+            fabContainer.classList.toggle('active');
+        }
+    </script>
+</body>
+
+</html>
