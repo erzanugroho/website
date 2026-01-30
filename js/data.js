@@ -3,7 +3,7 @@
  * Default tournament data with teams, players, and matches
  */
 
-const DEFAULT_TOURNAMENT_DATA = {
+window.DEFAULT_TOURNAMENT_DATA = {
   "teams": [
     {
       "id": "2014",

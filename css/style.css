@@ -4656,3 +4656,136 @@ button.fab-action-btn {
   letter-spacing: 0.1em;
   vertical-align: middle;
 }
+
+/* ================================================
+   Tebak Juara Promo (High Contrast Gold)
+   ================================================ */
+.tebak-juara-promo {
+  position: relative;
+  display: block;
+  margin: 1.5rem 0;
+  /* Spacing between Hero and Top Scorers */
+  text-decoration: none;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  isolation: isolate;
+  background: transparent;
+  /* Reset */
+}
+
+.tebak-juara-promo:hover {
+  transform: translateY(-4px);
+}
+
+.tebak-juara-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  background: rgba(255, 215, 0, 0.1);
+  /* Gold tint */
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 215, 0, 0.4);
+  /* Gold border */
+  border-radius: 1.25rem;
+  box-shadow: 0 4px 20px rgba(255, 215, 0, 0.15);
+  /* Gold shadow */
+}
+
+/* High Contrast Gold Theme */
+.tebak-juara-icon {
+  width: 3.5rem;
+  height: 3.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #FFD700, #FDB931);
+  border-radius: 1rem;
+  color: #000;
+  /* Black icon on gold */
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+}
+
+.tebak-juara-icon .material-symbols-outlined {
+  font-size: 2rem;
+}
+
+.tebak-juara-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.tebak-juara-title {
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #FFD700;
+  /* Gold text */
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.tebak-juara-subtitle {
+  font-size: 0.9rem;
+  color: #FFFAFA;
+  /* Bright white */
+  font-weight: 500;
+}
+
+.tebak-juara-action {
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(255, 215, 0, 0.2);
+  color: #FFD700;
+  border: 1px solid rgba(255, 215, 0, 0.4);
+  transition: all 0.3s ease;
+}
+
+.tebak-juara-promo:hover .tebak-juara-action {
+  background: #FFD700;
+  color: #000;
+  transform: translateX(4px);
+}
+
+/* Glow Effect */
+.tebak-juara-glow {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: radial-gradient(circle at 50% 50%, rgba(255, 215, 0, 0.15), transparent 70%);
+  opacity: 0.5;
+  transition: opacity 0.3s ease;
+}
+
+.tebak-juara-promo:hover .tebak-juara-glow {
+  opacity: 1;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 640px) {
+  .tebak-juara-promo {
+    margin: 1rem 0;
+  }
+
+  .tebak-juara-icon {
+    width: 3rem;
+    height: 3rem;
+  }
+
+  .tebak-juara-title {
+    font-size: 1.1rem;
+  }
+
+  .tebak-juara-subtitle {
+    font-size: 0.8rem;
+  }
+}

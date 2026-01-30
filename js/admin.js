@@ -282,6 +282,9 @@ function refreshActiveSection() {
     case 'logs':
       renderAuditLogs();
       break;
+    case 'validator':
+      // No init needed
+      break;
   }
 
   // Always refresh active match editor if it's currently showing in match config

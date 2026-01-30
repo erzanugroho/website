@@ -104,6 +104,10 @@
             <span class="material-symbols-outlined" style="font-size: 1.25rem;">history</span>
             <span>HISTORY</span>
           </a>
+          <a href="#" class="nav-link" data-section="validator" onclick="switchSection(event, 'validator')">
+            <span class="material-symbols-outlined" style="font-size: 1.25rem;">verified_user</span>
+            <span>VALIDATOR</span>
+          </a>
 
           <div style="height: 1px; background: rgba(255,255,255,0.1); margin: 0.5rem 1rem;"></div>
 
@@ -687,6 +691,83 @@
           </div>
         </div>
       </section>
+
+      <!-- Validator Section -->
+      <section class="admin-section" id="section-validator">
+        <div class="admin-glass-card">
+          <h3
+            style="font-size: 1.125rem; font-weight: 800; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+            <span class="material-symbols-outlined text-yellow-500">verified_user</span>
+            PICK'EM VERIFICATION TOOL
+          </h3>
+
+          <div id="qr-reader"
+            style="width: 100%; margin-bottom: 1rem; border-radius: 0.5rem; overflow: hidden; display: none;"></div>
+
+          <div class="admin-input-group" style="margin-bottom: 1.5rem;">
+            <label class="admin-label">Paste User Code / Hash</label>
+            <div style="display: flex; gap: 0.5rem;">
+              <input type="text" id="validatorInput" class="admin-input" placeholder="Paste code (e.g. QlVESSBTA...)"
+                style="flex: 1;">
+              <button class="btn-premium btn-premium-secondary" onclick="startQrScanner()" id="btnScanQr"
+                title="Scan QR Code">
+                <span class="material-symbols-outlined">qr_code_scanner</span>
+              </button>
+              <button class="btn-premium btn-premium-primary" onclick="verifyPickemCode()">Verify</button>
+            </div>
+          </div>
+
+          <div id="validatorResult" style="display: none; animation: fadeIn 0.3s ease;">
+            <div
+              style="padding: 1.5rem; background: rgba(255,255,255,0.05); border-radius: 0.75rem; border: 1px solid var(--admin-card-border);">
+              <div
+                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--admin-card-border); padding-bottom: 0.5rem;">
+                <div>
+                  <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">PREDICTOR
+                    NAME</span>
+                  <div style="font-size: 1.25rem; font-weight: 800; color: white;" id="validName">Budi Santoso</div>
+                </div>
+                <div style="text-align: right;">
+                  <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">STATUS</span>
+                  <div
+                    style="font-weight: 800; color: #4ade80; display: flex; align-items: center; gap: 0.25rem; justify-content: flex-end;">
+                    <span class="material-symbols-outlined" style="font-size: 1rem;">check_circle</span> VALID DECODE
+                  </div>
+                </div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                <div>
+                  <span
+                    style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; display: block; margin-bottom: 0.5rem;">Quarter
+                    Finals Picks</span>
+                  <ul style="list-style: none; padding: 0; font-size: 0.9rem; opacity: 0.9; line-height: 1.6;"
+                    id="validQF"></ul>
+                </div>
+                <div>
+                  <span
+                    style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; display: block; margin-bottom: 0.5rem;">Semi
+                    Finals Picks</span>
+                  <ul style="list-style: none; padding: 0; font-size: 0.9rem; opacity: 0.9; line-height: 1.6;"
+                    id="validSF"></ul>
+                </div>
+                <div
+                  style="grid-column: span 2; margin-top: 0.5rem; padding-top: 1rem; border-top: 1px solid var(--admin-card-border);">
+                  <span
+                    style="font-size: 0.75rem; color: #eab308; text-transform: uppercase; display: block; margin-bottom: 0.25rem; font-weight: 800;">CHAMPION
+                    PREDICTION</span>
+                  <div style="font-size: 2rem; font-weight: 900; color: #eab308; letter-spacing: -0.02em;"
+                    id="validWinner">TEAM NAME</div>
+                </div>
+                
+                <!-- Score Summary -->
+                <div id="validScore" style="grid-column: span 2; display: none;"></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
     </main>
 
     <!-- Modal for Adding Team -->
@@ -753,6 +834,7 @@
   <div class="toast-container" id="toastContainer"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
   <script type="module">
     import { getTournamentData, saveTournamentData, getCachedTournamentData } from './js/api.js';
     window.HastmaApi = { getTournamentData, saveTournamentData, getCachedTournamentData };
@@ -777,6 +859,7 @@
   </div>
 
   <script src="js/data.js"></script>
+  <script src="js/admin_validator.js"></script>
   <script src="js/admin.js"></script>
 </body>
 
