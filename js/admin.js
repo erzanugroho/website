@@ -2604,6 +2604,103 @@ function renderDashboard() {
       `).join('')}
     </div>
   `;
+
+  // Render Pick'em Statistics (async)
+  renderPickemStats().catch(err => console.error('Error rendering pickem stats:', err));
+}
+
+// ================================================
+// Pick'em Statistics
+// ================================================
+
+async function renderPickemStats() {
+  const statTotalPredictions = document.getElementById('stat-total-predictions');
+  const statFavoriteTeam = document.getElementById('stat-favorite-team');
+  const pickemDistribution = document.getElementById('pickemDistribution');
+  
+  if (!statTotalPredictions) return;
+  
+  // Get predictions from localStorage first
+  let predictions = JSON.parse(localStorage.getItem('hastmaPickemPredictions') || '[]');
+  
+  // Try to get from server as well (merge data)
+  try {
+    const response = await fetch('/api/predictions');
+    if (response.ok) {
+      const serverPredictions = await response.json();
+      // Merge server data with local data (avoid duplicates by checking timestamp + name)
+      const localKeys = new Set(predictions.map(p => `${p.timestamp}-${p.predictorName}`));
+      serverPredictions.forEach(sp => {
+        const key = `${sp.timestamp}-${sp.predictorName}`;
+        if (!localKeys.has(key)) {
+          predictions.push(sp);
+        }
+      });
+    }
+  } catch (e) {
+    console.log('Server predictions not available, using local only');
+  }
+  
+  if (predictions.length === 0) {
+    statTotalPredictions.textContent = '0';
+    statFavoriteTeam.textContent = '-';
+    pickemDistribution.innerHTML = '<p class="text-muted" style="text-align: center; padding: 1rem; color: var(--admin-text-muted);">Belum ada data prediksi.</p>';
+    return;
+  }
+  
+  // Count total predictions
+  statTotalPredictions.textContent = predictions.length;
+  
+  // Count winner choices
+  const winnerCounts = {};
+  predictions.forEach(p => {
+    if (p.winner) {
+      winnerCounts[p.winner] = (winnerCounts[p.winner] || 0) + 1;
+    }
+  });
+  
+  // Sort by count (descending)
+  const sortedWinners = Object.entries(winnerCounts)
+    .sort((a, b) => b[1] - a[1]);
+  
+  if (sortedWinners.length === 0) {
+    statFavoriteTeam.textContent = '-';
+    pickemDistribution.innerHTML = '<p class="text-muted" style="text-align: center; padding: 1rem; color: var(--admin-text-muted);">Belum ada data pilihan juara.</p>';
+    return;
+  }
+  
+  // Set favorite team
+  const favoriteTeam = sortedWinners[0];
+  statFavoriteTeam.textContent = favoriteTeam[0];
+  
+  // Calculate max for progress bar
+  const maxCount = sortedWinners[0][1];
+  
+  // Render distribution
+  pickemDistribution.innerHTML = `
+    <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+      ${sortedWinners.map(([team, count], index) => {
+        const percentage = Math.round((count / predictions.length) * 100);
+        const barWidth = Math.round((count / maxCount) * 100);
+        const isTop3 = index < 3;
+        
+        return `
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <div style="width: 2rem; font-weight: 800; color: ${isTop3 ? '#eab308' : 'var(--admin-text-muted)'}; text-align: center;">${index + 1}</div>
+            <div style="flex: 1;">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                <span style="font-weight: 700; color: var(--admin-text-main);">${team}</span>
+                <span style="font-weight: 700; color: ${isTop3 ? '#eab308' : 'var(--admin-text-muted)'};">${count} (${percentage}%)</span>
+              </div>
+              <div style="height: 8px; background: rgba(255,255,255,0.05); border-radius: 4px; overflow: hidden;">
+                <div style="height: 100%; width: ${barWidth}%; background: ${isTop3 ? 'linear-gradient(90deg, #eab308, #f59e0b)' : 'rgba(255,255,255,0.2)'}; border-radius: 4px; transition: width 0.5s ease;"></div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `;
 }
 
 // ================================================

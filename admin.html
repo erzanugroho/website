@@ -155,6 +155,32 @@
           </div>
         </div>
 
+        <!-- Pick'em Statistics -->
+        <div class="admin-glass-card" style="margin-bottom: 2rem; border: 1px solid rgba(234, 179, 8, 0.3);">
+          <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem;">
+            <span class="material-symbols-outlined" style="color: #eab308; font-size: 1.5rem;">emoji_events</span>
+            <h3 style="font-size: 1.125rem; font-weight: 800; color: #eab308;">PICK'EM STATISTICS</h3>
+          </div>
+          
+          <div class="admin-grid-2col" style="margin-bottom: 1.5rem;">
+            <div style="text-align: center; padding: 1.5rem; background: rgba(234, 179, 8, 0.05); border-radius: 0.75rem; border: 1px solid rgba(234, 179, 8, 0.2);">
+              <div class="stat-value" id="stat-total-predictions" style="color: #eab308;">0</div>
+              <div class="stat-label">TOTAL PREDIKSI</div>
+            </div>
+            <div style="text-align: center; padding: 1.5rem; background: rgba(234, 179, 8, 0.05); border-radius: 0.75rem; border: 1px solid rgba(234, 179, 8, 0.2);">
+              <div class="stat-value" id="stat-favorite-team" style="font-size: 1.25rem; color: #eab308;">-</div>
+              <div class="stat-label">TIM FAVORIT (JUARA)</div>
+            </div>
+          </div>
+          
+          <div>
+            <h4 style="font-size: 0.875rem; font-weight: 700; color: var(--admin-text-muted); margin-bottom: 1rem; text-transform: uppercase;">Distribusi Pilihan Juara</h4>
+            <div id="pickemDistribution">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+
         <div class="admin-grid-2col">
           <div class="admin-left-column">
             <div class="admin-glass-card">

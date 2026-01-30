@@ -676,10 +676,47 @@ function closeModal() {
     content.classList.add('scale-95');
 }
 
-function finalizeSubmission(code) {
+async function finalizeSubmission(code) {
     localStorage.setItem('hastmaPickemLock', code);
     isLocked = true;
     closeModal();
+
+    // Track prediction to server
+    try {
+        const name = document.getElementById('predictorName').value.trim();
+        const winner = bracketState.winner;
+        
+        const predictionData = {
+            timestamp: new Date().toISOString(),
+            predictorName: name,
+            winner: winner,
+            code: code,
+            groups: {
+                A: { first: bracketState.groups.A.first, second: bracketState.groups.A.second },
+                B: { first: bracketState.groups.B.first, second: bracketState.groups.B.second }
+            },
+            sf: bracketState.sf.map(m => ({ id: m.id, selected: m.selected })),
+            final: bracketState.final.map(m => ({ id: m.id, selected: m.selected }))
+        };
+        
+        // Save to localStorage for admin tracking
+        const existingPredictions = JSON.parse(localStorage.getItem('hastmaPickemPredictions') || '[]');
+        existingPredictions.push(predictionData);
+        localStorage.setItem('hastmaPickemPredictions', JSON.stringify(existingPredictions));
+        
+        // Try to save to server (optional, requires API endpoint)
+        try {
+            await fetch('/api/predictions', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(predictionData)
+            });
+        } catch (e) {
+            console.log('Server tracking not available, saved locally only');
+        }
+    } catch (e) {
+        console.error('Error tracking prediction:', e);
+    }
 
     // UI Feedback
     const btn = document.getElementById('downloadBtn');
