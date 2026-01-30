@@ -750,7 +750,7 @@ function downloadCard() {
     const qrContainer = document.getElementById('storyQRCode');
     qrContainer.innerHTML = ''; // Clear previous
     new QRCode(qrContainer, {
-        text: `https://hastmacup.com/verify?code=${code}`,
+        text: `https://hastmacup.my.id/verify?code=${code}`,
         width: 140,
         height: 140,
         colorDark: "#000000",

@@ -128,12 +128,15 @@
             const local = localStorage.getItem('hastmaCupData');
             if (local) {
                 try {
-                    return JSON.parse(local);
+                    const data = JSON.parse(local);
+                    console.log('Using data from localStorage');
+                    return data;
                 } catch (e) {
                     console.error('Error parsing local data:', e);
                 }
             }
-            return window.DEFAULT_TOURNAMENT_DATA || {};
+            console.log('Using DEFAULT_TOURNAMENT_DATA or empty');
+            return window.DEFAULT_TOURNAMENT_DATA || { teams: [], matches: [] };
         }
 
         // Calculate group standings
@@ -370,52 +373,72 @@
             const listEl = document.getElementById('predictionsList');
             listEl.innerHTML = '';
             
+            // Build predictions array from result.predictions
+            const preds = result.predictions || {};
+            const predList = [
+                { label: 'Grup A 1st', pred: preds.predA1 },
+                { label: 'Grup A 2nd', pred: preds.predA2 },
+                { label: 'Grup B 1st', pred: preds.predB1 },
+                { label: 'Grup B 2nd', pred: preds.predB2 },
+                { label: 'SF1 Winner', pred: preds.predSF1 },
+                { label: 'SF2 Winner', pred: preds.predSF2 },
+                { label: 'Champion', pred: preds.predWinner }
+            ];
+            
+            // If we have results with actuals
+            const resultsMap = {};
             if (result.results) {
                 result.results.forEach(r => {
-                    const div = document.createElement('div');
-                    
-                    if (result.status === 'waiting') {
-                        div.className = 'prediction-row prediction-pending';
-                        div.innerHTML = `
-                            <span class="text-gray-400">${r.label}</span>
-                            <span class="font-bold">${r.pred}</span>
-                        `;
-                    } else if (result.status === 'partial' && r.checked) {
-                        const isCorrect = r.pred === r.actual;
-                        div.className = `prediction-row ${isCorrect ? 'prediction-correct' : 'prediction-wrong'}`;
-                        div.innerHTML = `
-                            <div>
-                                <div class="text-gray-400 text-xs">${r.label}</div>
-                                <div class="font-bold">Prediksi: ${r.pred}</div>
-                                <div class="text-sm ${isCorrect ? 'text-green-400' : 'text-red-400'}">Hasil: ${r.actual}</div>
-                            </div>
-                            <span class="material-symbols-outlined ${isCorrect ? 'text-green-400' : 'text-red-400'}">
-                                ${isCorrect ? 'check_circle' : 'cancel'}
-                            </span>
-                        `;
-                    } else if (result.isComplete) {
-                        div.className = `prediction-row ${r.correct ? 'prediction-correct' : 'prediction-wrong'}`;
-                        div.innerHTML = `
-                            <div>
-                                <div class="text-gray-400 text-xs">${r.label}</div>
-                                <div class="font-bold">Prediksi: ${r.pred}</div>
-                                <div class="text-sm ${r.correct ? 'text-green-400' : 'text-red-400'}">Hasil: ${r.actual}</div>
-                            </div>
-                            <span class="material-symbols-outlined ${r.correct ? 'text-green-400' : 'text-red-400'}">
-                                ${r.correct ? 'check_circle' : 'cancel'}
-                            </span>
-                        `;
-                    } else {
-                        div.className = 'prediction-row prediction-pending';
-                        div.innerHTML = `
-                            <span class="text-gray-400">${r.label}</span>
-                            <span class="font-bold">${r.pred}</span>
-                        `;
-                    }
-                    
-                    listEl.appendChild(div);
+                    resultsMap[r.label] = r;
                 });
             }
+            
+            predList.forEach(p => {
+                const div = document.createElement('div');
+                const resultItem = resultsMap[p.label];
+                
+                if (result.status === 'waiting') {
+                    // No results yet, show prediction only
+                    div.className = 'prediction-row prediction-pending';
+                    div.innerHTML = `
+                        <span class="text-gray-400">${p.label}</span>
+                        <span class="font-bold text-yellow-400">${p.pred || '-'}</span>
+                    `;
+                } else if (result.status === 'partial' && resultItem) {
+                    // Partial result available
+                    const isCorrect = resultItem.pred === resultItem.actual;
+                    div.className = `prediction-row ${isCorrect ? 'prediction-correct' : 'prediction-wrong'}`;
+                    div.innerHTML = `
+                        <div>
+                            <div class="text-gray-400 text-xs">${p.label}</div>
+                            <div class="font-bold">Prediksi: ${p.pred || '-'}</div>
+                            ${resultItem.actual ? `<div class="text-sm ${isCorrect ? 'text-green-400' : 'text-red-400'}">Hasil: ${resultItem.actual}</div>` : ''}
+                        </div>
+                        ${resultItem.actual ? `<span class="material-symbols-outlined ${isCorrect ? 'text-green-400' : 'text-red-400'}">${isCorrect ? 'check_circle' : 'cancel'}</span>` : '<span class="text-yellow-400 text-sm">⏳</span>'}
+                    `;
+                } else if (result.isComplete && resultItem) {
+                    // Complete results
+                    const isCorrect = resultItem.correct;
+                    div.className = `prediction-row ${isCorrect ? 'prediction-correct' : 'prediction-wrong'}`;
+                    div.innerHTML = `
+                        <div>
+                            <div class="text-gray-400 text-xs">${p.label}</div>
+                            <div class="font-bold">Prediksi: ${p.pred || '-'}</div>
+                            <div class="text-sm ${isCorrect ? 'text-green-400' : 'text-red-400'}">Hasil: ${resultItem.actual || '-'}</div>
+                        </div>
+                        <span class="material-symbols-outlined ${isCorrect ? 'text-green-400' : 'text-red-400'}">${isCorrect ? 'check_circle' : 'cancel'}</span>
+                    `;
+                } else {
+                    // Pending
+                    div.className = 'prediction-row prediction-pending';
+                    div.innerHTML = `
+                        <span class="text-gray-400">${p.label}</span>
+                        <span class="font-bold">${p.pred || '-'}</span>
+                    `;
+                }
+                
+                listEl.appendChild(div);
+            });
             
             // Show score for partial and complete
             if ((result.status === 'partial' || result.isComplete) && result.results) {
@@ -443,11 +466,20 @@
                 return;
             }
             
-            // Small delay for visual effect
-            setTimeout(() => {
-                const result = verifyPrediction(code);
-                renderResult(result);
-            }, 800);
+            // Wait for data.js to load
+            if (!window.DEFAULT_TOURNAMENT_DATA) {
+                console.log('Waiting for data.js...');
+                setTimeout(() => {
+                    const result = verifyPrediction(code);
+                    renderResult(result);
+                }, 500);
+            } else {
+                // Small delay for visual effect
+                setTimeout(() => {
+                    const result = verifyPrediction(code);
+                    renderResult(result);
+                }, 800);
+            }
         });
     </script>
 </body>
