@@ -50,6 +50,20 @@ async function initData() {
     tournamentData = { ...DEFAULT_TOURNAMENT_DATA };
   }
 
+  // --- SEEDING CHECK ---
+  // If stored data has NO events (stale) but Default has events (dummy data for demo),
+  // overwrite stored data with Default so user sees the demo.
+  if (tournamentData && typeof DEFAULT_TOURNAMENT_DATA !== 'undefined') {
+    const hasStoredEvents = tournamentData.matches && tournamentData.matches.some(m => m.events && m.events.length > 0);
+    const hasDefaultEvents = DEFAULT_TOURNAMENT_DATA.matches && DEFAULT_TOURNAMENT_DATA.matches.some(m => m.events && m.events.length > 0);
+
+    if (!hasStoredEvents && hasDefaultEvents) {
+      console.log('Auto-Seeding: Replacing stale stored data with Default Data containing events.');
+      tournamentData = JSON.parse(JSON.stringify(DEFAULT_TOURNAMENT_DATA));
+      saveData(); // Save immediately to sync
+    }
+  }
+
   updateTeamColorVariables();
 }
 
