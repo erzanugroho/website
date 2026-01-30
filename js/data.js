@@ -91,9 +91,13 @@ const DEFAULT_TOURNAMENT_DATA = {
       "endTime": "16:16",
       "venue": "Mini Soccer",
       "status": "scheduled",
-      "homeScore": 0,
-      "awayScore": 0,
-      "events": []
+      "homeScore": 2,
+      "awayScore": 1,
+      "events": [
+        { "type": "goal", "teamId": "2014", "player": "Budi", "playerName": "Budi", "minute": 5 },
+        { "type": "goal", "teamId": "u2011", "player": "Andi", "playerName": "Andi", "minute": 12 },
+        { "type": "goal", "teamId": "2014", "player": "Budi", "playerName": "Budi", "minute": 45 }
+      ]
     },
     {
       "id": "B1",
