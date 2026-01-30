@@ -4536,3 +4536,123 @@ button.fab-action-btn {
     transform: scale(1);
   }
 }
+
+/* ================================================
+   Top Scorers Marquee
+   ================================================ */
+.scorers-marquee-container {
+  background: rgba(17, 24, 39, 0.9);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 0.5rem 0;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.scorers-label {
+  background: var(--primary);
+  color: #000;
+  font-weight: 800;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  border-radius: 4px;
+  white-space: nowrap;
+  z-index: 2;
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+}
+
+.scorers-marquee {
+  flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+}
+
+.scorers-content {
+  display: inline-block;
+  animation: marquee 30s linear infinite;
+  white-space: nowrap;
+}
+
+.scorer-item {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 3rem;
+  color: var(--text-primary);
+  font-family: 'Lexend', sans-serif;
+  font-size: 0.9rem;
+  vertical-align: middle;
+}
+
+.scorer-rank {
+  color: var(--accent-gold);
+  font-weight: 700;
+  margin-right: 0.75rem;
+  font-size: 1rem;
+}
+
+.scorer-info {
+  display: flex;
+  flex-direction: column;
+  margin-right: 0.75rem;
+  line-height: 1.2;
+}
+
+.scorer-name {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.scorer-team {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.scorer-goals {
+  background: rgba(59, 130, 246, 0.2);
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: var(--primary);
+  font-weight: 700;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.scorer-goals strong {
+  color: #fff;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(100%);
+  }
+
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+/* Fix for animation pause on hover if desired */
+.scorers-content:hover {
+  animation-play-state: paused;
+}
+
+.scorer-separator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-right: 3rem;
+  color: var(--primary);
+  font-weight: 800;
+  opacity: 0.5;
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  vertical-align: middle;
+}

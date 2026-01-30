@@ -50,17 +50,18 @@ async function initData() {
     tournamentData = { ...DEFAULT_TOURNAMENT_DATA };
   }
 
-  // --- SEEDING CHECK ---
-  // If stored data has NO events (stale) but Default has events (dummy data for demo),
-  // overwrite stored data with Default so user sees the demo.
-  if (tournamentData && typeof DEFAULT_TOURNAMENT_DATA !== 'undefined') {
-    const hasStoredEvents = tournamentData.matches && tournamentData.matches.some(m => m.events && m.events.length > 0);
-    const hasDefaultEvents = DEFAULT_TOURNAMENT_DATA.matches && DEFAULT_TOURNAMENT_DATA.matches.some(m => m.events && m.events.length > 0);
-
-    if (!hasStoredEvents && hasDefaultEvents) {
-      console.log('Auto-Seeding: Replacing stale stored data with Default Data containing events.');
+  // --- CLEANUP DUMMY DATA ---
+  // If we detect the dummy "Budi" data from previous debugging, force reset to clean default.
+  if (tournamentData && tournamentData.matches) {
+    const hasDummy = tournamentData.matches.some(m =>
+      m.events && m.events.some(e => e.player === 'Budi' || e.playerName === 'Budi')
+    );
+    if (hasDummy) {
+      console.log('Detected dummy data (Budi). Force resetting to clean default.');
+      tournamentData = { ...DEFAULT_TOURNAMENT_DATA };
+      // Ensure we copy a clean version without reference
       tournamentData = JSON.parse(JSON.stringify(DEFAULT_TOURNAMENT_DATA));
-      saveData(); // Save immediately to sync
+      saveData();
     }
   }
 
@@ -715,7 +716,10 @@ function renderTopScorers() {
   const scorers = calculateTopScorers();
 
   if (scorers.length === 0) {
-    container.style.display = 'none';
+    // Empty state: Just show the separator repeating
+    container.style.display = 'flex';
+    const separator = '<div class="scorer-separator"><span class="material-symbols-outlined">dataset</span> HASTMA CUP 2026</div>';
+    content.innerHTML = separator + separator + separator + separator + separator;
     return;
   }
 
@@ -743,7 +747,11 @@ function renderTopScorers() {
   // or just CSS animation handles it. 
   // For standard marquee, we might need enough content to fill width.
   // Let's simple duplicate twice to ensure seamless loop visual
-  content.innerHTML = html + html + html;
+  // Create a separator element
+  const separator = '<div class="scorer-separator"><span class="material-symbols-outlined">dataset</span> HASTMA CUP 2026</div>';
+
+  // Duplicate content for smooth infinite scroll effect
+  content.innerHTML = html + separator + html + separator + html + separator;
 }
 
 /**
