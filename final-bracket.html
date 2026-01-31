@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hasil Akhir - HASTMA CUP #3 2026</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        :root {
+            --bg-primary: #030712;
+            --bg-secondary: #0f172a;
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --accent-gold: #fbbf24;
+            --accent-silver: #c0c0c0;
+            --accent-bronze: #cd7f32;
+            --primary: #3b82f6;
+            --success: #22c55e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lexend', 'Noto Sans', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(251, 191, 36, 0.1));
+            border-radius: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #fff, var(--accent-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .champion-section {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.15), rgba(251, 191, 36, 0.05));
+            border-radius: 2rem;
+            border: 2px solid var(--accent-gold);
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .champion-section::before {
+            content: '🏆';
+            font-size: 5rem;
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            opacity: 0.2;
+        }
+
+        .champion-label {
+            font-size: 1.2rem;
+            color: var(--accent-gold);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            margin-bottom: 1rem;
+        }
+
+        .champion-name {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--accent-gold);
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 30px rgba(251, 191, 36, 0.5);
+        }
+
+        .champion-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .section-title .material-symbols-outlined {
+            color: var(--primary);
+        }
+
+        .groups-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .group-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            padding: 1.5rem;
+        }
+
+        .group-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .standings-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .standings-table th {
+            text-align: left;
+            padding: 0.75rem 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .standings-table td {
+            padding: 0.75rem 0.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .standings-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .team-cell {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .team-rank {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.875rem;
+        }
+
+        .rank-1 { background: var(--accent-gold); color: #000; }
+        .rank-2 { background: var(--accent-silver); color: #000; }
+        .rank-3 { background: var(--accent-bronze); color: #fff; }
+        .rank-other { background: rgba(255, 255, 255, 0.1); color: var(--text-secondary); }
+
+        .team-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .team-name {
+            font-weight: 600;
+        }
+
+        .qualified-badge {
+            font-size: 0.7rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 1rem;
+            margin-left: 0.5rem;
+        }
+
+        .qualified-sf { background: rgba(34, 197, 94, 0.2); color: var(--success); }
+
+        .stats-cell {
+            text-align: center;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .points-cell {
+            text-align: center;
+            font-weight: 800;
+            color: var(--accent-gold);
+        }
+
+        .knockout-section {
+            margin-bottom: 3rem;
+        }
+
+        .knockout-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .match-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        .match-stage {
+            font-size: 0.875rem;
+            color: var(--primary);
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .match-teams {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .team-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 0.75rem;
+            border: 1px solid transparent;
+        }
+
+        .team-row.winner {
+            background: rgba(34, 197, 94, 0.1);
+            border-color: var(--success);
+        }
+
+        .team-row.loser {
+            opacity: 0.6;
+        }
+
+        .team-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .team-score {
+            font-size: 1.5rem;
+            font-weight: 900;
+        }
+
+        .team-row.winner .team-score {
+            color: var(--success);
+        }
+
+        .match-result {
+            text-align: center;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .result-text {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .winner-text {
+            color: var(--success);
+            font-weight: 700;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.75rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s;
+            margin-bottom: 2rem;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .pickem-cta {
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));
+            border-radius: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 3rem;
+        }
+
+        .pickem-cta h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .pickem-cta p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            background: var(--primary);
+            color: white;
+            border-radius: 0.75rem;
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.2s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+        }
+
+        .final-match {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(251, 191, 36, 0.05));
+            border-color: var(--accent-gold);
+        }
+        
+        .third-place-match {
+            background: linear-gradient(135deg, rgba(192, 192, 192, 0.1), rgba(192, 192, 192, 0.05));
+            border-color: var(--accent-silver);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.75rem;
+            }
+            
+            .champion-name {
+                font-size: 2rem;
+            }
+            
+            .groups-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-btn">
+            <span class="material-symbols-outlined">arrow_back</span>
+            Kembali ke Beranda
+        </a>
+
+        <div class="header">
+            <h1>HASIL AKHIR</h1>
+            <p>HASTMA CUP #3 2026 - Mini Soccer Tournament</p>
+        </div>
+
+        <!-- Champion Section -->
+        <div class="champion-section" id="championSection">
+            <div class="champion-label">🏆 Juara Turnamen</div>
+            <div class="champion-name" id="championName">Loading...</div>
+            <div class="champion-subtitle">HASTMA CUP #3 2026 Champion</div>
+        </div>
+
+        <!-- Final Bracket -->
+        <div class="knockout-section">
+            <h2 class="section-title">
+                <span class="material-symbols-outlined">emoji_events</span>
+                Final Bracket
+            </h2>
+            <div class="knockout-grid" id="knockoutGrid">
+                <!-- Rendered by JS -->
+            </div>
+        </div>
+
+        <!-- Group Standings -->
+        <div class="groups-section">
+            <h2 class="section-title">
+                <span class="material-symbols-outlined">groups</span>
+                Klasemen Grup
+            </h2>
+            <div class="groups-grid" id="groupsGrid">
+                <!-- Rendered by JS -->
+            </div>
+        </div>
+
+        <!-- CTA to Pick'em -->
+        <div class="pickem-cta">
+            <h3>Sudah Tebak Juara?</h3>
+            <p>Bandingkan prediksimu dengan hasil akhir turnamen!</p>
+            <a href="pickem.html" class="btn-primary">
+                <span class="material-symbols-outlined">sports_soccer</span>
+                Lihat Prediksi Saya
+            </a>
+        </div>
+    </div>
+
+    <script src="js/data.js"></script>
+    <script>
+        // Load tournament data
+        let tournamentData = window.DEFAULT_TOURNAMENT_DATA || {};
+
+        // Get data from localStorage if available (for updated results)
+        const stored = localStorage.getItem('hastmaCupData');
+        if (stored) {
+            try {
+                tournamentData = JSON.parse(stored);
+            } catch (e) {
+                console.warn('Failed to parse stored data');
+            }
+        }
+
+        function getTeam(teamId) {
+            if (!teamId) return null;
+            return tournamentData.teams?.find(t => t.id === teamId) || null;
+        }
+
+        function getMatch(matchId) {
+            return tournamentData.matches?.find(m => m.id === matchId) || null;
+        }
+
+        function calculateStandings(group) {
+            const teams = tournamentData.teams?.filter(t => t.group === group) || [];
+            const matches = tournamentData.matches?.filter(
+                m => m.stage === 'group' && m.group === group && m.status === 'finished'
+            ) || [];
+
+            const standings = teams.map(team => ({
+                team,
+                played: 0,
+                won: 0,
+                drawn: 0,
+                lost: 0,
+                goalsFor: 0,
+                goalsAgainst: 0,
+                points: 0
+            }));
+
+            matches.forEach(match => {
+                const home = standings.find(s => s.team.id === match.homeTeam);
+                const away = standings.find(s => s.team.id === match.awayTeam);
+                if (!home || !away) return;
+
+                home.played++;
+                away.played++;
+                home.goalsFor += match.homeScore;
+                home.goalsAgainst += match.awayScore;
+                away.goalsFor += match.awayScore;
+                away.goalsAgainst += match.homeScore;
+
+                if (match.homeScore > match.awayScore) {
+                    home.won++;
+                    home.points += 3;
+                    away.lost++;
+                } else if (match.homeScore < match.awayScore) {
+                    away.won++;
+                    away.points += 3;
+                    home.lost++;
+                } else {
+                    home.drawn++;
+                    away.drawn++;
+                    home.points += 1;
+                    away.points += 1;
+                }
+            });
+
+            return standings.sort((a, b) => 
+                b.points - a.points || 
+                (b.goalsFor - b.goalsAgainst) - (a.goalsFor - a.goalsAgainst) ||
+                b.goalsFor - a.goalsFor
+            );
+        }
+
+        function renderGroups() {
+            const container = document.getElementById('groupsGrid');
+            const groups = ['A', 'B'];
+            
+            container.innerHTML = groups.map(group => {
+                const standings = calculateStandings(group);
+                
+                return `
+                    <div class="group-card">
+                        <div class="group-title">Grup ${group}</div>
+                        <table class="standings-table">
+                            <thead>
+                                <tr>
+                                    <th>Tim</th>
+                                    <th class="stats-cell">P</th>
+                                    <th class="stats-cell">W</th>
+                                    <th class="stats-cell">D</th>
+                                    <th class="stats-cell">L</th>
+                                    <th class="stats-cell">GD</th>
+                                    <th class="points-cell">Pts</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${standings.map((s, index) => {
+                                    const gd = s.goalsFor - s.goalsAgainst;
+                                    const gdText = gd > 0 ? `+${gd}` : gd;
+                                    const rankClass = index === 0 ? 'rank-1' : index === 1 ? 'rank-2' : index === 2 ? 'rank-3' : 'rank-other';
+                                    const qualified = index < 2 ? '<span class="qualified-badge qualified-sf">SF</span>' : '';
+                                    
+                                    return `
+                                        <tr>
+                                            <td>
+                                                <div class="team-cell">
+                                                    <span class="team-rank ${rankClass}">${index + 1}</span>
+                                                    <span class="team-color" style="background: ${s.team.color}"></span>
+                                                    <span class="team-name">${s.team.name}</span>
+                                                    ${qualified}
+                                                </div>
+                                            </td>
+                                            <td class="stats-cell">${s.played}</td>
+                                            <td class="stats-cell">${s.won}</td>
+                                            <td class="stats-cell">${s.drawn}</td>
+                                            <td class="stats-cell">${s.lost}</td>
+                                            <td class="stats-cell">${gdText}</td>
+                                            <td class="points-cell">${s.points}</td>
+                                        </tr>
+                                    `;
+                                }).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderKnockout() {
+            const container = document.getElementById('knockoutGrid');
+            
+            const sf1 = getMatch('SF1');
+            const sf2 = getMatch('SF2');
+            const final = getMatch('FINAL') || getMatch('F1');
+            const thirdPlace = getMatch('M3RD');
+
+            const matches = [
+                { match: sf1, label: 'Semi Final 1', id: 'sf1' },
+                { match: sf2, label: 'Semi Final 2', id: 'sf2' },
+                { match: thirdPlace, label: 'Perebutan Tempat Ketiga', id: 'third', specialClass: 'third-place-match' },
+                { match: final, label: 'GRAND FINAL', id: 'final', specialClass: 'final-match' }
+            ];
+
+            container.innerHTML = matches.map(({ match, label, id, specialClass = '' }) => {
+                if (!match) return '';
+                
+                const homeTeam = getTeam(match.homeTeam);
+                const awayTeam = getTeam(match.awayTeam);
+                
+                if (!homeTeam || !awayTeam) return '';
+
+                const isFinished = match.status === 'finished';
+                const homeWinner = isFinished && match.homeScore > match.awayScore;
+                const awayWinner = isFinished && match.awayScore > match.homeScore;
+                const isDraw = isFinished && match.homeScore === match.awayScore;
+
+                let resultText = 'Belum dimainkan';
+                if (isFinished) {
+                    if (homeWinner) resultText = `${homeTeam.name} menang`;
+                    else if (awayWinner) resultText = `${awayTeam.name} menang`;
+                    else if (isDraw) resultText = 'Seri (Adu Penalti)';
+                }
+
+                return `
+                    <div class="match-card ${specialClass}" id="${id}">
+                        <div class="match-stage">
+                            <span class="material-symbols-outlined">sports_soccer</span>
+                            ${label}
+                        </div>
+                        <div class="match-teams">
+                            <div class="team-row ${homeWinner ? 'winner' : isFinished ? 'loser' : ''}">
+                                <div class="team-info">
+                                    <span class="team-color" style="background: ${homeTeam.color}"></span>
+                                    <span class="team-name">${homeTeam.name}</span>
+                                </div>
+                                <span class="team-score">${match.homeScore}</span>
+                            </div>
+                            <div class="team-row ${awayWinner ? 'winner' : isFinished ? 'loser' : ''}">
+                                <div class="team-info">
+                                    <span class="team-color" style="background: ${awayTeam.color}"></span>
+                                    <span class="team-name">${awayTeam.name}</span>
+                                </div>
+                                <span class="team-score">${match.awayScore}</span>
+                            </div>
+                        </div>
+                        ${isFinished ? `
+                            <div class="match-result">
+                                <span class="result-text winner-text">${resultText}</span>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
+
+            // Update champion
+            if (final && final.status === 'finished') {
+                const champion = final.homeScore > final.awayScore 
+                    ? getTeam(final.homeTeam) 
+                    : final.awayScore > final.homeScore 
+                        ? getTeam(final.awayTeam) 
+                        : null;
+                
+                if (champion) {
+                    document.getElementById('championName').textContent = champion.name;
+                    document.getElementById('championName').style.color = champion.color;
+                } else {
+                    document.getElementById('championName').textContent = 'Belum Ditentukan';
+                }
+            } else {
+                document.getElementById('championName').textContent = 'Belum Ditentukan';
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderGroups();
+            renderKnockout();
+        });
+    </script>
+</body>
+</html>
