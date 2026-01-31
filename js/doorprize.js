@@ -108,15 +108,37 @@ async function initLiveDraw() {
  * Load config from API or localStorage
  */
 async function loadConfig() {
+  // Get local data first
+  const saved = localStorage.getItem(STORAGE_KEY);
+  let localConfig = null;
+  if (saved) {
+    try {
+      localConfig = JSON.parse(saved);
+    } catch (e) {
+      console.error('Error parsing local config:', e);
+    }
+  }
+  
   // Try API first
   try {
     const response = await fetch('/api/tournament');
     const data = await response.json();
     
     if (data && data.doorprize) {
-      doorprizeConfig = { ...doorprizeConfig, ...data.doorprize };
-      // Save to localStorage for offline use
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(doorprizeConfig));
+      // Check which is newer: local or server
+      const serverTime = new Date(data.doorprize.lastUpdated || 0).getTime();
+      const localTime = new Date(localConfig?.lastUpdated || 0).getTime();
+      
+      // If local was cleared or is newer, use local
+      if (localConfig?.cleared || localTime > serverTime) {
+        console.log('Using local config (newer or cleared)');
+        doorprizeConfig = { ...doorprizeConfig, ...localConfig };
+      } else {
+        // Use server data
+        doorprizeConfig = { ...doorprizeConfig, ...data.doorprize };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(doorprizeConfig));
+      }
+      
       updateConnectionStatus(true);
       return;
     }
@@ -125,13 +147,8 @@ async function loadConfig() {
   }
   
   // Fallback to localStorage
-  const saved = localStorage.getItem(STORAGE_KEY);
-  if (saved) {
-    try {
-      doorprizeConfig = JSON.parse(saved);
-    } catch (e) {
-      console.error('Error parsing config:', e);
-    }
+  if (localConfig) {
+    doorprizeConfig = localConfig;
   }
   
   // Show as connected even in localhost mode (using localStorage sync)

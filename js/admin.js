@@ -3076,7 +3076,10 @@ function loadDoorprizeConfig() {
   const listEl = document.getElementById('couponListInput');
   
   if (enabledEl) enabledEl.checked = config.enabled !== false;
-  if (listEl) listEl.value = formatCouponList(config.coupons || []);
+  // Only set value if textarea is empty or config was explicitly cleared
+  if (listEl && (listEl.value === '' || config.cleared)) {
+    listEl.value = formatCouponList(config.coupons || []);
+  }
   
   // Update stats display
   updateDoorprizeStats();
@@ -3186,6 +3189,24 @@ function clearCouponList() {
   
   const listEl = document.getElementById('couponListInput');
   if (listEl) listEl.value = '';
+  
+  // Also clear from localStorage and server immediately
+  const config = {
+    enabled: document.getElementById('doorprizeEnabled')?.checked ?? true,
+    coupons: [],
+    winners: getDoorprizeWinners(),
+    lastUpdated: new Date().toISOString(),
+    cleared: true // Flag to indicate this was cleared
+  };
+  
+  localStorage.setItem(DOORPRIZE_STORAGE_KEY, JSON.stringify(config));
+  broadcastToTabs('config_update', config);
+  
+  // Update server
+  if (tournamentData) {
+    tournamentData.doorprize = config;
+    saveData().catch(() => {});
+  }
   
   updateDoorprizeStats();
   showToast('Daftar kupon dibersihkan!', 'success');
