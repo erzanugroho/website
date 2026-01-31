@@ -1284,11 +1284,12 @@ function addResultEvent() {
 
   const type = document.getElementById('resultEventType').value;
   const teamId = document.getElementById('resultEventTeam').value;
-  const playerNumber = parseInt(document.getElementById('resultEventPlayerNumber').value);
-  const playerName = document.getElementById('resultEventPlayerName').value;
-  const minute = parseInt(document.getElementById('resultEventMinute').value);
+  const playerNumberInput = document.getElementById('resultEventPlayerNumber').value;
+  const playerNumber = parseInt(playerNumberInput);
+  const playerName = document.getElementById('resultEventPlayerName').value.trim();
+  const minute = parseInt(document.getElementById('resultEventMinute').value) || 0;
 
-  if (!teamId || !playerNumber) {
+  if (!teamId || !playerNumberInput || isNaN(playerNumber) || !playerName) {
     showToast('Please select team and player!', 'warning');
     return;
   }
@@ -1537,11 +1538,12 @@ function saveEditedResultEvent(matchId, eventIndex) {
 
   const type = document.getElementById('resultEventType').value;
   const teamId = document.getElementById('resultEventTeam').value;
-  const playerNumber = parseInt(document.getElementById('resultEventPlayerNumber').value);
-  const playerName = document.getElementById('resultEventPlayerName').value;
-  const minute = parseInt(document.getElementById('resultEventMinute').value);
+  const playerNumberInput = document.getElementById('resultEventPlayerNumber').value;
+  const playerNumber = parseInt(playerNumberInput);
+  const playerName = document.getElementById('resultEventPlayerName').value.trim();
+  const minute = parseInt(document.getElementById('resultEventMinute').value) || 0;
 
-  if (!teamId || !playerNumber) {
+  if (!teamId || !playerNumberInput || isNaN(playerNumber) || !playerName) {
     showToast('Please select team and player!', 'warning');
     return;
   }
@@ -1971,11 +1973,12 @@ function addEvent() {
 
   const type = document.getElementById('eventType').value;
   const teamId = document.getElementById('eventTeam').value;
-  const playerNumber = parseInt(document.getElementById('eventPlayerNumber').value);
-  const playerName = document.getElementById('eventPlayerName').value;
-  const minute = parseInt(document.getElementById('eventMinute').value);
+  const playerNumberInput = document.getElementById('eventPlayerNumber').value;
+  const playerNumber = parseInt(playerNumberInput);
+  const playerName = document.getElementById('eventPlayerName').value.trim();
+  const minute = parseInt(document.getElementById('eventMinute').value) || 0;
 
-  if (!teamId || !playerNumber) {
+  if (!teamId || !playerNumberInput || isNaN(playerNumber) || !playerName) {
     showToast('Please select team and player!', 'warning');
     return;
   }
