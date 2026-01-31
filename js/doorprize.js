@@ -211,10 +211,16 @@ async function syncWithServer() {
     // Handle draw state from API
     if (data && data.doorprizeDraw) {
       if (JSON.stringify(data.doorprizeDraw) !== JSON.stringify(currentDrawState)) {
+        console.log('New draw state detected:', data.doorprizeDraw.status);
         currentDrawState = data.doorprizeDraw;
         localStorage.setItem(DRAW_STATE_KEY, JSON.stringify(currentDrawState));
         handleDrawState(currentDrawState);
       }
+    } else if (!data.doorprizeDraw && currentDrawState) {
+      // Reset jika tidak ada draw state di server
+      currentDrawState = null;
+      localStorage.removeItem(DRAW_STATE_KEY);
+      showWaitingState();
     }
     
     updateConnectionStatus(true);
@@ -293,7 +299,13 @@ function handleDrawState(state) {
   
   switch (status) {
     case 'waiting':
+      console.log('Reset received: showing waiting state');
       showWaitingState();
+      // Clear any existing countdown
+      if (countdownInterval) {
+        clearInterval(countdownInterval);
+        countdownInterval = null;
+      }
       break;
       
     case 'countdown':
@@ -336,6 +348,12 @@ function handleDrawState(state) {
  * Show waiting state
  */
 function showWaitingState(message) {
+  // Clear winner state content to prevent old data showing
+  const winnerState = document.getElementById('winnerState');
+  if (winnerState) {
+    winnerState.innerHTML = '';
+  }
+  
   hideAllStates();
   const waitingEl = document.getElementById('waitingState');
   waitingEl.classList.remove('hidden');
@@ -637,6 +655,21 @@ function formatTime(timestamp) {
 /**
  * Check my ticket
  */
+/**
+ * Fire confetti
+ */
+/**
+ * Close draw overlay and return to waiting state
+ */
+function closeDrawOverlay() {
+  const winnerState = document.getElementById('winnerState');
+  if (winnerState) {
+    winnerState.innerHTML = '';
+    winnerState.classList.add('hidden');
+  }
+  showWaitingState();
+}
+
 /**
  * Fire confetti
  */

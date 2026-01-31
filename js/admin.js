@@ -3671,6 +3671,11 @@ function resetDraw() {
   
   showToast('Undian direset!', 'success');
   addLog('Reset doorprize draw (winners cleared)');
+  
+  // Force sync to all tabs immediately
+  setTimeout(() => {
+    broadcastToTabs('draw_state', resetState);
+  }, 100);
 }
 
 /**
