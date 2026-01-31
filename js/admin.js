@@ -1294,10 +1294,20 @@ function addResultEvent() {
     return;
   }
 
+  // Validate teamId belongs to this match
+  const teamIdStr = String(teamId);
+  const homeTeamStr = String(match.homeTeam);
+  const awayTeamStr = String(match.awayTeam);
+  
+  if (teamIdStr !== homeTeamStr && teamIdStr !== awayTeamStr) {
+    showToast('Error: Selected team is not playing in this match!', 'error');
+    return;
+  }
+
   if (!match.events) match.events = [];
   match.events.push({
     type,
-    teamId,
+    teamId: teamIdStr,
     playerNumber,
     playerName,
     minute: Number.isFinite(minute) ? minute : 0
@@ -1305,9 +1315,9 @@ function addResultEvent() {
 
   // Auto-update score if it's a goal
   if (type === 'goal') {
-    if (match.homeTeam === teamId) {
+    if (teamIdStr === homeTeamStr) {
       match.homeScore++;
-    } else if (match.awayTeam === teamId) {
+    } else if (teamIdStr === awayTeamStr) {
       match.awayScore++;
     }
   }
@@ -1548,9 +1558,19 @@ function saveEditedResultEvent(matchId, eventIndex) {
     return;
   }
 
+  // Validate teamId belongs to this match
+  const teamIdStr = String(teamId);
+  const homeTeamStr = String(match.homeTeam);
+  const awayTeamStr = String(match.awayTeam);
+  
+  if (teamIdStr !== homeTeamStr && teamIdStr !== awayTeamStr) {
+    showToast('Error: Selected team is not playing in this match!', 'error');
+    return;
+  }
+
   const e = match.events[eventIndex];
   e.type = type;
-  e.teamId = teamId;
+  e.teamId = teamIdStr;
   e.playerNumber = playerNumber;
   e.playerName = playerName;
   e.minute = Number.isFinite(minute) ? minute : 0;
@@ -1577,10 +1597,14 @@ function deleteResultEvent(matchId, eventIndex) {
 
   const event = match.events[eventIndex];
   // Auto-decrement score if it was a goal
+  const eventTeamId = String(event.teamId);
+  const homeTeamStr = String(match.homeTeam);
+  const awayTeamStr = String(match.awayTeam);
+  
   if (event.type === 'goal') {
-    if (match.homeTeam === event.teamId) {
+    if (eventTeamId === homeTeamStr) {
       match.homeScore = Math.max(0, match.homeScore - 1);
-    } else if (match.awayTeam === event.teamId) {
+    } else if (eventTeamId === awayTeamStr) {
       match.awayScore = Math.max(0, match.awayScore - 1);
     }
   }
@@ -1983,13 +2007,23 @@ function addEvent() {
     return;
   }
 
+  // Validate teamId belongs to this match
+  const teamIdStr = String(teamId);
+  const homeTeamStr = String(match.homeTeam);
+  const awayTeamStr = String(match.awayTeam);
+  
+  if (teamIdStr !== homeTeamStr && teamIdStr !== awayTeamStr) {
+    showToast('Error: Selected team is not playing in this match!', 'error');
+    return;
+  }
+
   if (!match.events) {
     match.events = [];
   }
 
   match.events.push({
     type,
-    teamId,
+    teamId: teamIdStr,
     playerNumber,
     playerName,
     minute
@@ -1997,9 +2031,9 @@ function addEvent() {
 
   // Auto-update score if it's a goal
   if (type === 'goal') {
-    if (match.homeTeam === teamId) {
+    if (teamIdStr === homeTeamStr) {
       match.homeScore++;
-    } else if (match.awayTeam === teamId) {
+    } else if (teamIdStr === awayTeamStr) {
       match.awayScore++;
     }
     document.getElementById('homeScoreDisplay').textContent = match.homeScore;
@@ -2028,10 +2062,14 @@ function deleteEvent(eventIndex) {
   const event = match.events[eventIndex];
 
   // Adjust score if it was a goal
+  const eventTeamId = String(event.teamId);
+  const homeTeamStr = String(match.homeTeam);
+  const awayTeamStr = String(match.awayTeam);
+  
   if (event.type === 'goal') {
-    if (match.homeTeam === event.teamId) {
+    if (eventTeamId === homeTeamStr) {
       match.homeScore = Math.max(0, match.homeScore - 1);
-    } else if (match.awayTeam === event.teamId) {
+    } else if (eventTeamId === awayTeamStr) {
       match.awayScore = Math.max(0, match.awayScore - 1);
     }
     document.getElementById('homeScoreDisplay').textContent = match.homeScore;
