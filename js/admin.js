@@ -3435,9 +3435,6 @@ function revealMultipleWinners(winners, prizeName) {
   
   localStorage.setItem(DOORPRIZE_WINNERS_KEY, JSON.stringify(existingWinners));
   
-  // Clean numbers (remove any prefix)
-  const cleanNewWinners = newWinners.map(w => typeof w === 'string' ? w.replace(/[^0-9]/g, '') : String(w));
-  
   // Display winners in admin panel
   if (countdownEl) {
     const isMultiple = cleanNewWinners.length > 1;
