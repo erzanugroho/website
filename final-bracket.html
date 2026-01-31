@@ -366,11 +366,6 @@
             background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(251, 191, 36, 0.05));
             border-color: var(--accent-gold);
         }
-        
-        .third-place-match {
-            background: linear-gradient(135deg, rgba(192, 192, 192, 0.1), rgba(192, 192, 192, 0.05));
-            border-color: var(--accent-silver);
-        }
 
         @media (max-width: 768px) {
             .header h1 {
@@ -576,12 +571,10 @@
             const sf1 = getMatch('SF1');
             const sf2 = getMatch('SF2');
             const final = getMatch('FINAL') || getMatch('F1');
-            const thirdPlace = getMatch('M3RD');
 
             const matches = [
                 { match: sf1, label: 'Semi Final 1', id: 'sf1' },
                 { match: sf2, label: 'Semi Final 2', id: 'sf2' },
-                { match: thirdPlace, label: 'Perebutan Tempat Ketiga', id: 'third', specialClass: 'third-place-match' },
                 { match: final, label: 'GRAND FINAL', id: 'final', specialClass: 'final-match' }
             ];
 
