@@ -240,7 +240,14 @@ window.DEFAULT_TOURNAMENT_DATA = {
     "subtitle": "Mini Soccer Tournament",
     "startDate": "2026-08-01",
     "lastUpdated": new Date().toISOString()
-  }
+  },
+  "doorprize": {
+    "enabled": true,
+    "coupons": [],
+    "winners": [],
+    "lastUpdated": new Date().toISOString()
+  },
+  "doorprizeDraw": null
 };
 
 // Admin configuration
@@ -248,4 +255,12 @@ const ADMIN_CONFIG = {
   "password": "hastma2026",
   "sessionTimeout": 3600000, // 1 hour in milliseconds
   "autoRefreshInterval": 30000 // 30 seconds
+};
+
+// Default Doorprize Configuration (Physical Coupons)
+const DEFAULT_DOORPRIZE_CONFIG = {
+  "enabled": true,
+  "coupons": [],      // Array of physical coupon numbers (e.g., ["HC-001", "HC-002", ...])
+  "winners": [],      // Array of winners
+  "lastUpdated": new Date().toISOString()
 };

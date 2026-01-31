@@ -44,6 +44,10 @@
         <span class="material-symbols-outlined">fact_check</span>
         <span class="fab-label">Result</span>
       </button>
+      <button class="fab-action-btn" onclick="switchSection('doorprize', this); toggleFab()">
+        <span class="material-symbols-outlined">confirmation_number</span>
+        <span class="fab-label">Doorprize</span>
+      </button>
       <button class="fab-action-btn" onclick="switchSection('history', this); toggleFab()">
         <span class="material-symbols-outlined">history</span>
         <span class="fab-label">History</span>
@@ -99,6 +103,10 @@
           <a href="#" class="nav-link" data-section="results" onclick="switchSection(event, 'results')">
             <span class="material-symbols-outlined" style="font-size: 1.25rem;">fact_check</span>
             <span>RESULT</span>
+          </a>
+          <a href="#" class="nav-link" data-section="doorprize" onclick="switchSection(event, 'doorprize')">
+            <span class="material-symbols-outlined" style="font-size: 1.25rem;">confirmation_number</span>
+            <span>DOORPRIZE</span>
           </a>
           <a href="#" class="nav-link" data-section="history" onclick="switchSection(event, 'history')">
             <span class="material-symbols-outlined" style="font-size: 1.25rem;">history</span>
@@ -794,6 +802,214 @@
 
         </div>
       </section>
+
+      <!-- Doorprize Section -->
+      <section class="admin-section" id="section-doorprize">
+        <div class="admin-grid-2col">
+          <!-- Left Column: Coupon List Management -->
+          <div class="admin-left-column">
+            <div class="admin-glass-card" style="margin-bottom: 2rem;">
+              <h3 style="font-size: 1.125rem; font-weight: 800; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                <span class="material-symbols-outlined" style="color: var(--admin-primary);">confirmation_number</span>
+                DAFTAR NOMOR KUPON FISIK
+              </h3>
+              <p style="font-size: 0.75rem; color: var(--admin-text-muted); margin-bottom: 1.5rem;">
+                Masukkan semua nomor kupon yang sudah didistribusikan. Format: HC-001, HC-002, dll (satu per baris atau pisah dengan koma).
+              </p>
+
+              <div class="admin-form-grid" style="grid-template-columns: 1fr; gap: 1.5rem;">
+                <!-- Toggle Enable -->
+                <div class="admin-input-group">
+                  <label class="admin-label" style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer;">
+                    <input type="checkbox" id="doorprizeEnabled" class="admin-checkbox" style="width: 1.25rem; height: 1.25rem; accent-color: var(--admin-primary);">
+                    <span>Aktifkan Live Draw</span>
+                  </label>
+                </div>
+
+                <!-- Coupon List Input -->
+                <div class="admin-input-group">
+                  <label class="admin-label" style="font-size: 0.95rem;">Daftar Nomor Kupon</label>
+                  <textarea class="admin-input" id="couponListInput" rows="15" placeholder="Contoh:
+001
+002
+003
+004
+..." 
+                    style="font-family: monospace; resize: vertical; font-size: 1rem; line-height: 1.6; padding: 1rem;"></textarea>
+                  <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.75rem;">
+                    <span class="material-symbols-outlined" style="font-size: 1rem; vertical-align: middle;">info</span>
+                    Bisa juga pisah dengan koma: 001, 002, 003
+                  </p>
+                </div>
+
+                <!-- Won Coupons Indicator -->
+                <div id="wonCouponsIndicator" class="admin-input-group" style="display: none;">
+                  <label class="admin-label" style="font-size: 0.85rem; color: var(--admin-success);">
+                    <span class="material-symbols-outlined" style="font-size: 1rem; vertical-align: middle;">check_circle</span>
+                    Kupon Sudah Menang
+                  </label>
+                  <div id="wonCouponsList" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 0.5rem; padding: 0.75rem; font-family: monospace; font-size: 0.9rem; color: var(--admin-success); max-height: 100px; overflow-y: auto;"></div>
+                </div>
+
+                <!-- Quick Add Range -->
+                <div style="background: rgba(255,255,255,0.03); padding: 1.25rem; border-radius: 0.75rem; border: 1px solid var(--admin-card-border);">
+                  <label class="admin-label" style="margin-bottom: 1rem; font-size: 0.9rem;">Tambah Rentang Cepat</label>
+                  
+                  <!-- Range Inputs -->
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                    <div class="admin-input-group">
+                      <label class="admin-label" style="font-size: 0.75rem;">Dari Nomor</label>
+                      <input class="admin-input" type="number" id="quickStart" placeholder="1" min="1" 
+                        style="font-size: 1.1rem; padding: 0.75rem 1rem; height: auto;">
+                    </div>
+                    <div class="admin-input-group">
+                      <label class="admin-label" style="font-size: 0.75rem;">Sampai Nomor</label>
+                      <input class="admin-input" type="number" id="quickEnd" placeholder="200" min="1" 
+                        style="font-size: 1.1rem; padding: 0.75rem 1rem; height: auto;">
+                    </div>
+                  </div>
+                  
+                  <!-- Add Button -->
+                  <button class="btn-premium btn-premium-secondary" onclick="addRangeToList()" 
+                    style="width: 100%; padding: 0.75rem; font-size: 1rem;">
+                    <span class="material-symbols-outlined" style="font-size: 1.25rem;">add</span>
+                    TAMBAH KE DAFTAR
+                  </button>
+                </div>
+
+                <!-- Save Button -->
+                <button class="btn-premium btn-premium-primary" onclick="saveDoorprizeConfig()" 
+                  style="margin-top: 1rem; padding: 1rem; font-size: 1.1rem; font-weight: 700;">
+                  <span class="material-symbols-outlined" style="font-size: 1.25rem;">save</span>
+                  SIMPAN DAFTAR KUPON
+                </button>
+
+                <!-- Clear Button -->
+                <button class="btn-premium btn-premium-secondary" onclick="clearCouponList()" 
+                  style="width: 100%; padding: 0.875rem; font-size: 1rem;">
+                  <span class="material-symbols-outlined" style="font-size: 1.25rem;">delete_sweep</span>
+                  BERSIHKAN DAFTAR
+                </button>
+
+                <!-- Info Tambah Kupon -->
+                <div style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 0.75rem; padding: 1rem; margin-top: 1rem;">
+                  <div style="display: flex; align-items: flex-start; gap: 0.75rem;">
+                    <span class="material-symbols-outlined" style="color: var(--admin-primary); font-size: 1.25rem;">lightbulb</span>
+                    <div>
+                      <div style="font-size: 0.875rem; font-weight: 600; color: var(--admin-primary); margin-bottom: 0.25rem;">Tips: Menambah Kupon Saat Acara</div>
+                      <div style="font-size: 0.75rem; color: var(--text-muted); line-height: 1.5;">
+                        Anda BISA menambah kupon kapan saja! Contoh:<br>
+                        • Awal: 001-150 (150 kupon)<br>
+                        • Ada yang datang telat? Tambah 151-160<br>
+                        • Klik SIMPAN, selesai!<br>
+                        <span style="color: var(--admin-success);">✓ Kupon yang sudah diundi tetap aman</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="admin-glass-card">
+              <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 1rem; color: var(--text-muted);">STATISTIK KUPON</h3>
+              <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                <div style="background: rgba(255,255,255,0.03); padding: 1rem; border-radius: 0.75rem; text-align: center;">
+                  <div style="font-size: 2rem; font-weight: 800; color: var(--admin-primary);" id="statTotalCoupons">0</div>
+                  <div style="font-size: 0.75rem; color: var(--text-muted);">Total Kupon</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.03); padding: 1rem; border-radius: 0.75rem; text-align: center;">
+                  <div style="font-size: 2rem; font-weight: 800; color: var(--admin-success);" id="statDrawn">0</div>
+                  <div style="font-size: 0.75rem; color: var(--text-muted);">Sudah Diundi</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.03); padding: 1rem; border-radius: 0.75rem; text-align: center;">
+                  <div style="font-size: 2rem; font-weight: 800; color: var(--admin-warning);" id="statRemaining">0</div>
+                  <div style="font-size: 0.75rem; color: var(--text-muted);">Sisa</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Live Draw Controls -->
+          <div class="admin-right-column">
+            <div class="admin-glass-card" style="position: sticky; top: 6.5rem;">
+              <h3 style="font-size: 1.125rem; font-weight: 800; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                <span class="material-symbols-outlined" style="color: var(--admin-success);">online_prediction</span>
+                KONTROL LIVE DRAW
+              </h3>
+              <p style="font-size: 0.75rem; color: var(--admin-text-muted); margin-bottom: 1.5rem;">
+                Mulai undian doorprize. Semua peserta akan melihat hasil secara real-time.
+              </p>
+
+              <!-- Draw Status -->
+              <div id="drawStatus" style="margin-bottom: 1.5rem;">
+                <div style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 0.75rem; text-align: center;">
+                  <span class="material-symbols-outlined" style="font-size: 3rem; color: var(--text-muted); opacity: 0.5;">casino</span>
+                  <p style="margin-top: 0.5rem; color: var(--text-muted);">Belum ada undian berlangsung</p>
+                </div>
+              </div>
+
+              <!-- Number of Winners Slider -->
+              <div class="admin-input-group" style="margin-bottom: 1.25rem;">
+                <label class="admin-label" style="font-size: 0.9rem;">Jumlah Pemenang</label>
+                <div style="display: flex; align-items: center; gap: 1rem; background: rgba(255,255,255,0.05); padding: 0.75rem 1rem; border-radius: 0.5rem; border: 1px solid var(--admin-card-border);">
+                  <input class="admin-input" type="range" id="winnerCount" min="1" max="10" value="1" 
+                    style="flex: 1; height: 8px;">
+                  <span id="winnerCountValue" style="font-weight: 800; font-size: 1.5rem; color: var(--admin-success); min-width: 2.5rem; text-align: center;">1</span>
+                </div>
+                <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;">
+                  Pilih 1-10 pemenang sekaligus
+                </p>
+              </div>
+
+              <!-- Countdown Duration -->
+              <div class="admin-input-group" style="margin-bottom: 1.5rem;">
+                <label class="admin-label" style="font-size: 0.9rem;">Durasi Countdown (detik)</label>
+                <div style="display: flex; align-items: center; gap: 1rem; background: rgba(255,255,255,0.05); padding: 0.75rem 1rem; border-radius: 0.5rem; border: 1px solid var(--admin-card-border);">
+                  <input class="admin-input" type="range" id="countdownDuration" min="3" max="10" value="5" 
+                    style="flex: 1; height: 8px;">
+                  <span id="countdownValue" style="font-weight: 800; font-size: 1.5rem; color: var(--admin-primary); min-width: 2.5rem; text-align: center;">5</span>
+                </div>
+              </div>
+
+              <!-- Draw Button -->
+              <button class="btn-premium" onclick="startLiveDraw()" id="btnStartDraw" 
+                style="width: 100%; background: linear-gradient(135deg, var(--admin-success), #059669); box-shadow: 0 4px 14px 0 rgba(16, 185, 129, 0.3); padding: 1rem; font-size: 1.1rem; font-weight: 700;">
+                <span class="material-symbols-outlined" style="font-size: 1.5rem;">play_circle</span>
+                MULAI UNDIAN
+              </button>
+
+              <!-- Test Draw Button -->
+              <button class="btn-premium btn-premium-secondary" onclick="testDrawDisplay()" 
+                style="width: 100%; margin-top: 0.75rem; padding: 0.875rem; font-size: 1rem;">
+                <span class="material-symbols-outlined" style="font-size: 1.25rem;">preview</span>
+                TES TAMPILAN
+              </button>
+
+              <!-- Reset Button -->
+              <button class="btn-premium btn-premium-secondary" onclick="resetDraw()" 
+                style="width: 100%; margin-top: 0.75rem; padding: 0.875rem; font-size: 1rem;">
+                <span class="material-symbols-outlined" style="font-size: 1.25rem;">restart_alt</span>
+                RESET SEMUA
+              </button>
+
+              <!-- Winners List -->
+              <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--admin-card-border);">
+                <h4 style="font-size: 0.875rem; font-weight: 700; margin-bottom: 1rem; color: var(--text-muted); display: flex; justify-content: space-between; align-items: center;">
+                  <span>DAFTAR PEMENANG</span>
+                  <button onclick="exportWinners()" class="text-xs text-primary hover:underline" style="background: none; border: none; cursor: pointer;">
+                    Export
+                  </button>
+                </h4>
+                <div id="winnersList" style="max-height: 200px; overflow-y: auto;">
+                  <p style="font-size: 0.75rem; color: var(--text-muted); text-align: center; padding: 1rem;">Belum ada pemenang</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
     </main>
 
     <!-- Modal for Adding Team -->

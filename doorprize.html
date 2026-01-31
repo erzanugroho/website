@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Draw Doorprize - HASTMA CUP 2026</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&display=swap">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Animasi untuk live draw */
+        @keyframes pulse-scale {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+            50% { box-shadow: 0 0 60px rgba(255, 215, 0, 0.8), 0 0 100px rgba(255, 215, 0, 0.4); }
+        }
+        
+        @keyframes number-spin {
+            0% { transform: translateY(-100%); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        
+        .countdown-number {
+            font-size: clamp(8rem, 25vw, 15rem);
+            font-weight: 900;
+            line-height: 1;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: pulse-scale 0.5s ease-in-out;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+        }
+        
+        .winner-number {
+            font-size: clamp(4rem, 15vw, 10rem);
+            font-weight: 900;
+            line-height: 1;
+            font-family: 'Outfit', monospace;
+            color: #fff;
+            text-shadow: 0 0 40px rgba(16, 185, 129, 0.8), 0 0 80px rgba(16, 185, 129, 0.4);
+            animation: glow 1s ease-in-out infinite;
+        }
+        
+        .waiting-state {
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        .ticket-display {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 165, 0, 0.05));
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .winners-history {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .winner-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 1rem;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Scrollbar styling */
+        .winners-history::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .winners-history::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+        }
+        
+        .winners-history::-webkit-scrollbar-thumb {
+            background: rgba(255, 215, 0, 0.3);
+            border-radius: 3px;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-900 text-white font-sans min-h-screen flex flex-col">
+
+    <!-- Fixed Background -->
+    <div class="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
+        <div class="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-yellow-600 rounded-full blur-[120px] opacity-10">
+        </div>
+        <div
+            class="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-orange-600 rounded-full blur-[120px] opacity-10">
+        </div>
+    </div>
+
+    <header class="header relative z-50 glass-effect border-b border-white/10">
+        <div class="header-container max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="logo-container flex items-center gap-3">
+                <img src="logo.png" alt="Logo" class="h-10 w-auto drop-shadow-glow">
+                <div class="logo-text hidden sm:block">
+                    <h1 class="font-display font-black text-xl tracking-tight leading-none text-white">HASTMA<span
+                            class="text-yellow-500">CUP</span></h1>
+                    <p class="text-[0.65rem] font-bold tracking-[0.2em] text-yellow-300 uppercase">Live Draw Doorprize</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <div id="connectionStatus" class="flex items-center gap-2 text-xs text-gray-400">
+                    <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                    Live
+                </div>
+                <a href="index.html"
+                    class="flex items-center gap-2 text-sm font-semibold text-gray-400 hover:text-white transition-colors">
+                    <span class="material-symbols-outlined">arrow_back</span> Kembali
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow flex flex-col items-center justify-center p-4">
+
+        <!-- LIVE DRAW DISPLAY -->
+        <div class="w-full max-w-4xl mx-auto">
+            
+            <!-- Status Header -->
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center gap-2 px-4 py-2 bg-white/5 rounded-full border border-white/10 mb-4">
+                    <span class="material-symbols-outlined text-yellow-500">confirmation_number</span>
+                    <span class="text-sm text-gray-300">SIAPKAN KUPON ANDA</span>
+                </div>
+                <h2 class="text-2xl md:text-3xl font-bold text-white mb-2">🎁 Live Draw Doorprize</h2>
+                <p class="text-gray-400">Pantau undian secara real-time. Jika nomor Anda keluar, segera hubungi panitia!</p>
+            </div>
+
+            <!-- Main Draw Display -->
+            <div id="drawDisplay" class="ticket-display min-h-[400px] flex flex-col items-center justify-center relative overflow-hidden">
+                
+                <!-- Background Animation -->
+                <div class="absolute inset-0 opacity-20">
+                    <div class="absolute top-10 left-10 w-32 h-32 bg-yellow-500 rounded-full blur-3xl animate-pulse"></div>
+                    <div class="absolute bottom-10 right-10 w-32 h-32 bg-orange-500 rounded-full blur-3xl animate-pulse" style="animation-delay: 0.5s;"></div>
+                </div>
+
+                <!-- Waiting State -->
+                <div id="waitingState" class="text-center waiting-state">
+                    <span class="material-symbols-outlined text-8xl text-yellow-500/50 mb-4">hourglass_empty</span>
+                    <h3 class="text-2xl font-bold text-white mb-2">Menunggu Undian</h3>
+                    <p class="text-gray-400">Host akan memulai undian segera...</p>
+                    <div class="mt-6 flex items-center gap-2 justify-center text-sm text-gray-500">
+                        <span class="w-2 h-2 bg-yellow-500 rounded-full animate-ping"></span>
+                        Terhubung ke server
+                    </div>
+                </div>
+
+                <!-- Countdown State (Hidden by default) -->
+                <div id="countdownState" class="hidden text-center relative z-10">
+                    <div class="text-yellow-400 text-xl mb-4 font-bold tracking-wider" id="countdownPrizeName">HADIAH</div>
+                    <div class="countdown-number" id="countdownNumber" style="animation: pulse-scale 0.5s ease-in-out;">5</div>
+                    <div class="text-gray-400 mt-4 text-lg">Hitung bersama dengan host!</div>
+                    <div class="mt-6 w-72 h-3 bg-white/10 rounded-full mx-auto overflow-hidden border border-white/20">
+                        <div id="countdownProgress" class="h-full bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 transition-all duration-100" style="width: 100%;"></div>
+                    </div>
+                    <div class="mt-4 text-sm text-yellow-500/70 animate-pulse">Menunggu hasil...</div>
+                </div>
+
+                <!-- Winner State (Hidden by default) -->
+                <div id="winnerState" class="hidden text-center relative z-10">
+                    <!-- Content will be dynamically inserted by JS -->
+                </div>
+
+                <!-- Spinning State (Hidden by default) -->
+                <div id="spinningState" class="hidden text-center relative z-10">
+                    <div class="text-yellow-400 text-xl mb-4 font-bold">MENGIAC...</div>
+                    <div class="text-8xl font-black text-white/80 font-mono" id="spinningNumber">000</div>
+                </div>
+            </div>
+
+            <!-- Info Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                <div class="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
+                    <div class="text-yellow-500 text-2xl mb-1">
+                        <span class="material-symbols-outlined">numbers</span>
+                    </div>
+                    <div class="text-2xl font-bold text-white" id="totalCoupons">-</div>
+                    <div class="text-xs text-gray-400">Total Kupon</div>
+                </div>
+                <div class="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
+                    <div class="text-green-500 text-2xl mb-1">
+                        <span class="material-symbols-outlined">check_circle</span>
+                    </div>
+                    <div class="text-2xl font-bold text-white" id="drawnCount">-</div>
+                    <div class="text-xs text-gray-400">Sudah Diundi</div>
+                </div>
+                <div class="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
+                    <div class="text-blue-500 text-2xl mb-1">
+                        <span class="material-symbols-outlined">schedule</span>
+                    </div>
+                    <div class="text-2xl font-bold text-white" id="remainingCount">-</div>
+                    <div class="text-xs text-gray-400">Sisa Kupon</div>
+                </div>
+            </div>
+
+            <!-- Winners History -->
+            <div class="mt-8 bg-white/5 border border-white/10 rounded-xl p-6">
+                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-yellow-500">emoji_events</span>
+                    Daftar Pemenang
+                </h3>
+                <div id="winnersList" class="winners-history">
+                    <p class="text-gray-500 text-center py-4">Belum ada pemenang</p>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/10 py-6 mt-8">
+        <div class="max-w-7xl mx-auto px-4 text-center text-gray-500 text-sm">
+            <p>© 2026 HASTMA CUP #3 - Doorprize Live Draw System</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script type="module" src="js/doorprize.js"></script>
+</body>
+
+</html>

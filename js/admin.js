@@ -279,6 +279,9 @@ function refreshActiveSection() {
     case 'teams':
       loadTeamColors();
       break;
+    case 'doorprize':
+      initDoorprizeSection();
+      break;
     case 'logs':
       renderAuditLogs();
       break;
@@ -2948,4 +2951,691 @@ function autoCalculateEndTime(startTime, stage) {
   const endH = String(date.getHours()).padStart(2, '0');
   const endM = String(date.getMinutes()).padStart(2, '0');
   return `${endH}:${endM}`;
+}
+
+// ================================================
+// Doorprize Management - Physical Coupons
+// ================================================
+
+const DOORPRIZE_STORAGE_KEY = 'hastma_doorprize_config';
+const DOORPRIZE_WINNERS_KEY = 'hastma_doorprize_winners';
+const DOORPRIZE_DRAW_KEY = 'hastma_doorprize_draw_state';
+
+// BroadcastChannel for cross-tab sync
+let adminBroadcastChannel = null;
+
+/**
+ * Initialize BroadcastChannel for admin
+ */
+function initAdminBroadcastChannel() {
+  if ('BroadcastChannel' in window) {
+    adminBroadcastChannel = new BroadcastChannel('hastma_doorprize');
+  }
+}
+
+/**
+ * Broadcast update to other tabs
+ */
+function broadcastToTabs(type, data) {
+  if (adminBroadcastChannel) {
+    adminBroadcastChannel.postMessage({ type, data });
+  }
+}
+
+/**
+ * Parse coupon list from input text
+ */
+function parseCouponList(text) {
+  if (!text || !text.trim()) return [];
+  
+  // Split by newlines or commas
+  const lines = text.split(/[\n,]+/);
+  
+  // Clean up each entry
+  const coupons = lines
+    .map(line => line.trim().toUpperCase())
+    .filter(line => line.length > 0)
+    .filter((value, index, self) => self.indexOf(value) === index); // Remove duplicates
+  
+  return coupons;
+}
+
+/**
+ * Format coupon list for display
+ */
+function formatCouponList(coupons) {
+  return coupons.join('\n');
+}
+
+/**
+ * Get doorprize configuration
+ */
+function getDoorprizeConfig() {
+  // Try to get from tournament data first (synced)
+  if (tournamentData && tournamentData.doorprize) {
+    return tournamentData.doorprize;
+  }
+  
+  // Fallback to localStorage
+  const saved = localStorage.getItem(DOORPRIZE_STORAGE_KEY);
+  if (saved) {
+    try {
+      return JSON.parse(saved);
+    } catch (e) {
+      console.error('Error parsing doorprize config:', e);
+    }
+  }
+  
+  // Return default
+  return {
+    enabled: true,
+    coupons: [],
+    drawnNumbers: [],
+    winners: [],
+    lastUpdated: new Date().toISOString()
+  };
+}
+
+/**
+ * Get doorprize winners
+ */
+function getDoorprizeWinners() {
+  const winners = localStorage.getItem(DOORPRIZE_WINNERS_KEY);
+  if (winners) {
+    try {
+      return JSON.parse(winners);
+    } catch (e) {
+      return [];
+    }
+  }
+  return [];
+}
+
+/**
+ * Load doorprize config into admin form
+ */
+function loadDoorprizeConfig() {
+  const config = getDoorprizeConfig();
+  
+  // Set form values
+  const enabledEl = document.getElementById('doorprizeEnabled');
+  const listEl = document.getElementById('couponListInput');
+  
+  if (enabledEl) enabledEl.checked = config.enabled !== false;
+  if (listEl) listEl.value = formatCouponList(config.coupons || []);
+  
+  // Update stats display
+  updateDoorprizeStats();
+  
+  // Setup range slider listener
+  const durationSlider = document.getElementById('countdownDuration');
+  const durationValue = document.getElementById('countdownValue');
+  if (durationSlider && durationValue) {
+    durationSlider.addEventListener('input', (e) => {
+      durationValue.textContent = e.target.value;
+    });
+  }
+  
+  // Setup winner count slider
+  const winnerSlider = document.getElementById('winnerCount');
+  const winnerValue = document.getElementById('winnerCountValue');
+  if (winnerSlider && winnerValue) {
+    winnerSlider.addEventListener('input', (e) => {
+      winnerValue.textContent = e.target.value;
+    });
+  }
+  
+  // Setup live stats update on input
+  const couponInput = document.getElementById('couponListInput');
+  if (couponInput) {
+    couponInput.addEventListener('input', updateDoorprizeStats);
+  }
+}
+
+/**
+ * Update doorprize stats display
+ */
+function updateDoorprizeStats() {
+  const listEl = document.getElementById('couponListInput');
+  const coupons = listEl ? parseCouponList(listEl.value) : [];
+  
+  const total = coupons.length;
+  const winners = getDoorprizeWinners();
+  const drawn = winners.length;
+  const remaining = total - drawn;
+  
+  // Update display
+  const totalEl = document.getElementById('statTotalCoupons');
+  const drawnEl = document.getElementById('statDrawn');
+  const remainingEl = document.getElementById('statRemaining');
+  
+  if (totalEl) totalEl.textContent = total;
+  if (drawnEl) drawnEl.textContent = drawn;
+  if (remainingEl) remainingEl.textContent = Math.max(0, remaining);
+  
+  // Show won coupons indicator
+  const wonIndicator = document.getElementById('wonCouponsIndicator');
+  const wonList = document.getElementById('wonCouponsList');
+  
+  if (wonIndicator && wonList && winners.length > 0) {
+    wonIndicator.style.display = 'block';
+    wonList.innerHTML = winners.map(w => `
+      <span style="display: inline-block; margin: 0.25rem; padding: 0.25rem 0.5rem; background: rgba(16, 185, 129, 0.2); border-radius: 0.25rem;">${w.number}</span>
+    `).join('');
+  } else if (wonIndicator) {
+    wonIndicator.style.display = 'none';
+  }
+}
+
+/**
+ * Add range to coupon list
+ */
+function addRangeToList() {
+  const start = parseInt(document.getElementById('quickStart')?.value) || 1;
+  const end = parseInt(document.getElementById('quickEnd')?.value) || start;
+  
+  if (start > end) {
+    showToast('Nomor awal harus lebih kecil dari akhir!', 'error');
+    return;
+  }
+  
+  if (end - start > 1000) {
+    showToast('Maksimal 1000 kupon sekaligus!', 'warning');
+    return;
+  }
+  
+  const listEl = document.getElementById('couponListInput');
+  const existing = parseCouponList(listEl.value);
+  
+  // Generate new coupons (angka saja, tanpa prefix)
+  const digits = Math.max(String(end).length, 3); // Minimal 3 digit
+  const newCoupons = [];
+  for (let i = start; i <= end; i++) {
+    const num = String(i).padStart(digits, '0');
+    newCoupons.push(num);
+  }
+  
+  // Merge and remove duplicates
+  const allCoupons = [...existing, ...newCoupons].filter((v, i, a) => a.indexOf(v) === i);
+  
+  listEl.value = formatCouponList(allCoupons);
+  updateDoorprizeStats();
+  
+  showToast(`${newCoupons.length} kupon ditambahkan!`, 'success');
+}
+
+/**
+ * Clear coupon list
+ */
+function clearCouponList() {
+  if (!confirm('Hapus semua daftar kupon?')) return;
+  
+  const listEl = document.getElementById('couponListInput');
+  if (listEl) listEl.value = '';
+  
+  updateDoorprizeStats();
+  showToast('Daftar kupon dibersihkan!', 'success');
+}
+
+/**
+ * Save doorprize configuration
+ */
+async function saveDoorprizeConfig() {
+  const listEl = document.getElementById('couponListInput');
+  const coupons = listEl ? parseCouponList(listEl.value) : [];
+  
+  if (coupons.length === 0) {
+    showToast('Daftar kupon kosong!', 'warning');
+    return;
+  }
+  
+  const config = {
+    enabled: document.getElementById('doorprizeEnabled').checked,
+    coupons: coupons,
+    winners: getDoorprizeWinners(),
+    lastUpdated: new Date().toISOString()
+  };
+  
+  // Save to localStorage FIRST (for localhost mode)
+  localStorage.setItem(DOORPRIZE_STORAGE_KEY, JSON.stringify(config));
+  
+  // Broadcast to other tabs
+  broadcastToTabs('config_update', config);
+  
+  // Also save to tournament data for API sync (production)
+  if (tournamentData) {
+    tournamentData.doorprize = config;
+    try {
+      await saveData();
+    } catch (e) {
+      console.log('API save failed, using localStorage mode');
+    }
+  }
+  
+  updateDoorprizeStats();
+  showToast(`${coupons.length} kupon tersimpan!`, 'success');
+  
+  // Log action
+  addLog(`Saved ${coupons.length} physical coupons for draw`);
+}
+
+/**
+ * Start live draw - support multiple winners
+ */
+function startLiveDraw() {
+  // Init broadcast channel if not already
+  if (!adminBroadcastChannel) {
+    initAdminBroadcastChannel();
+  }
+  
+  const config = getDoorprizeConfig();
+  const prizeName = 'Doorprize';
+  const duration = parseInt(document.getElementById('countdownDuration')?.value || 5);
+  const winnerCount = parseInt(document.getElementById('winnerCount')?.value || 1);
+  
+  // Get available coupons
+  const allCoupons = config.coupons || [];
+  const winners = getDoorprizeWinners();
+  const drawnNumbers = winners.map(w => w.number);
+  
+  const availableCoupons = allCoupons.filter(c => !drawnNumbers.includes(c));
+  
+  if (availableCoupons.length === 0) {
+    showToast('Semua kupon sudah diundi!', 'error');
+    return;
+  }
+  
+  if (availableCoupons.length < winnerCount) {
+    showToast(`Hanya tersisa ${availableCoupons.length} kupon!`, 'warning');
+    return;
+  }
+  
+  // Pick multiple winners randomly
+  const selectedWinners = [];
+  const tempAvailable = [...availableCoupons];
+  
+  for (let i = 0; i < winnerCount; i++) {
+    const winnerIndex = Math.floor(Math.random() * tempAvailable.length);
+    const selected = tempAvailable[winnerIndex];
+    
+    // Double-check: make sure this coupon hasn't won before
+    const alreadyWon = winners.some(w => w.number === selected);
+    if (alreadyWon) {
+      console.error('ERROR: Coupon already won!', selected);
+      continue; // Skip this one
+    }
+    
+    selectedWinners.push(selected);
+    tempAvailable.splice(winnerIndex, 1); // Remove selected to avoid duplicates
+  }
+  
+  // Set reveal time
+  const startAt = Date.now() + 2000; // 2 second buffer for sync
+  const revealAt = startAt + (duration * 1000);
+  
+  // Save draw state
+  const drawState = {
+    status: 'countdown',
+    prizeName: prizeName,
+    startAt: startAt,
+    revealAt: revealAt,
+    winners: selectedWinners, // Array of winners
+    winnerCount: winnerCount,
+    duration: duration,
+    timestamp: new Date().toISOString()
+  };
+  
+  // Save to localStorage FIRST (for localhost sync)
+  localStorage.setItem(DOORPRIZE_DRAW_KEY, JSON.stringify(drawState));
+  console.log('Draw state saved:', drawState);
+  
+  // Broadcast to other tabs immediately
+  broadcastToTabs('draw_state', drawState);
+  console.log('Broadcast sent to tabs');
+  
+  // Also save to tournament data for API sync (production)
+  if (tournamentData) {
+    tournamentData.doorprizeDraw = drawState;
+    tournamentData.doorprize = config;
+    saveData().catch(() => {
+      console.log('API save failed, using localStorage broadcast mode');
+    });
+  }
+  
+  // Update UI
+  updateDrawStatus('countdown', 'Doorprize', duration, winnerCount);
+  
+  // Start countdown
+  startAdminCountdown(drawState);
+  
+  const winnerText = winnerCount === 1 ? '1 pemenang' : `${winnerCount} pemenang`;
+  showToast(`Undian dimulai! ${winnerText} - Countdown ${duration} detik...`, 'success');
+  addLog(`Started draw - ${winnerText}`);
+}
+
+/**
+ * Test draw display
+ */
+function testDrawDisplay() {
+  const testState = {
+    status: 'countdown',
+    prizeName: 'Doorprize',
+    startAt: Date.now() + 500,
+    revealAt: Date.now() + 5500,
+    winners: ['999'],
+    winnerCount: 1,
+    duration: 5
+  };
+  
+  updateDrawStatus('countdown', testState.prizeName, 5, 1);
+  startAdminCountdown(testState);
+  
+  showToast('Mode tes: Menampilkan simulasi undian...', 'info');
+}
+
+/**
+ * Admin countdown with voice cue
+ */
+function startAdminCountdown(drawState) {
+  const { startAt, revealAt, winners, winnerCount, prizeName } = drawState;
+  
+  const countdownEl = document.getElementById('drawStatus');
+  let lastNumber = null;
+  
+  const interval = setInterval(() => {
+    const now = Date.now();
+    const remaining = Math.ceil((revealAt - now) / 1000);
+    
+    if (now < startAt) {
+      return; // Waiting to start
+    }
+    
+    if (remaining > 0 && remaining !== lastNumber) {
+      if (countdownEl) {
+        const winnerText = winnerCount > 1 ? `${winnerCount} PEMENANG` : '1 PEMENANG';
+        countdownEl.innerHTML = `
+          <div style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2)); 
+                      padding: 2rem; border-radius: 1rem; text-align: center; border: 2px solid var(--admin-primary);">
+            <div style="font-size: 0.875rem; color: var(--admin-primary); margin-bottom: 0.5rem; font-weight: 700;">${prizeName}</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.5rem;">${winnerText}</div>
+            <div style="font-size: 5rem; font-weight: 900; color: white; line-height: 1; animation: pulse 0.5s;">${remaining}</div>
+            <div style="font-size: 0.875rem; color: var(--text-muted); margin-top: 0.5rem;">Hitung bersama!</div>
+          </div>
+        `;
+      }
+      lastNumber = remaining;
+    }
+    
+    if (remaining <= 0) {
+      clearInterval(interval);
+      revealMultipleWinners(winners, prizeName);
+    }
+  }, 100);
+}
+
+/**
+ * Reveal multiple winners
+ */
+function revealMultipleWinners(winners, prizeName) {
+  const countdownEl = document.getElementById('drawStatus');
+  const existingWinners = getDoorprizeWinners();
+  
+  // Add new winners to list
+  const newWinners = Array.isArray(winners) ? winners : [winners];
+  newWinners.forEach(number => {
+    existingWinners.push({
+      number: number,
+      prize: prizeName,
+      timestamp: new Date().toISOString()
+    });
+  });
+  
+  localStorage.setItem(DOORPRIZE_WINNERS_KEY, JSON.stringify(existingWinners));
+  
+  // Display winners in admin panel
+  if (countdownEl) {
+    const isMultiple = newWinners.length > 1;
+    const winnersHtml = newWinners.map((w, i) => `
+      <div style="display: inline-block; margin: 0.5rem; padding: 1rem 1.5rem; 
+                  background: rgba(16, 185, 129, 0.3); border-radius: 0.75rem; border: 2px solid var(--admin-success);">
+        <div style="font-size: 0.75rem; color: var(--admin-success); margin-bottom: 0.25rem;">PEMENANG #${i + 1}</div>
+        <div style="font-size: 2.5rem; font-weight: 900; color: white; font-family: 'Outfit', monospace;">${w}</div>
+      </div>
+    `).join('');
+    
+    countdownEl.innerHTML = `
+      <div style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(234, 179, 8, 0.2)); 
+                  padding: 2rem; border-radius: 1rem; text-align: center; border: 2px solid var(--admin-success);
+                  animation: fadeIn 0.5s;">
+        <div style="font-size: 1.25rem; color: var(--admin-success); margin-bottom: 1rem; font-weight: 700;">
+          🎉 ${isMultiple ? newWinners.length + ' PEMENANG' : 'PEMENANG'} 🎉
+        </div>
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem;">
+          ${winnersHtml}
+        </div>
+        <div style="font-size: 1rem; color: var(--text-muted); margin-top: 1rem;">${prizeName}</div>
+      </div>
+    `;
+  }
+  
+  // Prepare revealed state
+  const revealedState = {
+    status: 'revealed',
+    prizeName: prizeName,
+    winners: newWinners,
+    revealedAt: new Date().toISOString(),
+    timestamp: new Date().toISOString(),
+    allWinners: existingWinners
+  };
+  
+  // Save to localStorage
+  localStorage.setItem(DOORPRIZE_DRAW_KEY, JSON.stringify(revealedState));
+  
+  // Broadcast to other tabs
+  broadcastToTabs('draw_state', revealedState);
+  broadcastToTabs('config_update', { ...getDoorprizeConfig(), winners: existingWinners });
+  
+  // Update draw state in tournament data (API)
+  if (tournamentData) {
+    tournamentData.doorprizeDraw = revealedState;
+    if (tournamentData.doorprize) {
+      tournamentData.doorprize.winners = existingWinners;
+    }
+    saveData().catch(() => {
+      console.log('API save failed, using localStorage mode');
+    });
+  }
+  
+  // Update UI
+  updateDoorprizeStats();
+  renderWinnersList();
+  
+  const winnerText = newWinners.join(', ');
+  showToast(`Pemenang: ${winnerText}!`, 'success');
+  addLog(`Draw winners: ${winnerText}`);
+}
+
+/**
+ * Reveal single winner (backward compatibility)
+ */
+function revealWinner(number, prizeName) {
+  revealMultipleWinners([number], prizeName);
+}
+
+/**
+ * Update draw status UI
+ */
+function updateDrawStatus(status, prizeName, duration, winnerCount = 1) {
+  const statusEl = document.getElementById('drawStatus');
+  if (!statusEl) return;
+  
+  if (status === 'waiting') {
+    statusEl.innerHTML = `
+      <div style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 0.75rem; text-align: center;">
+        <span class="material-symbols-outlined" style="font-size: 3rem; color: var(--text-muted); opacity: 0.5;">casino</span>
+        <p style="margin-top: 0.5rem; color: var(--text-muted);">Belum ada undian berlangsung</p>
+      </div>
+    `;
+  }
+}
+
+/**
+ * Render winners list
+ */
+function renderWinnersList() {
+  const container = document.getElementById('winnersList');
+  if (!container) return;
+  
+  const winners = getDoorprizeWinners();
+  
+  if (winners.length === 0) {
+    container.innerHTML = '<p style="font-size: 0.75rem; color: var(--text-muted); text-align: center; padding: 1rem;">Belum ada pemenang</p>';
+    return;
+  }
+  
+  // Group winners by draw session (within 5 minutes)
+  const grouped = [];
+  let currentGroup = [];
+  
+  winners.forEach((w, i) => {
+    if (i === 0) {
+      currentGroup.push(w);
+    } else {
+      const prevTime = new Date(winners[i - 1].timestamp).getTime();
+      const currTime = new Date(w.timestamp).getTime();
+      if (currTime - prevTime < 300000) { // 5 minutes
+        currentGroup.push(w);
+      } else {
+        grouped.push([...currentGroup]);
+        currentGroup = [w];
+      }
+    }
+  });
+  if (currentGroup.length > 0) {
+    grouped.push(currentGroup);
+  }
+  
+  // Render grouped winners
+  container.innerHTML = grouped.slice().reverse().map((group, groupIdx) => {
+    const isMulti = group.length > 1;
+    const groupTime = new Date(group[0].timestamp).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+    const prizeName = group[0].prize;
+    
+    return `
+      <div style="background: rgba(255,255,255,0.03); border-radius: 0.75rem; padding: 0.75rem; margin-bottom: 0.75rem; border: 1px solid var(--admin-card-border);">
+        <div style="margin-bottom: 0.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--admin-card-border);">
+          <span style="font-size: 0.7rem; color: var(--text-muted);">${groupTime}</span>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+          ${group.filter(w => w && (w.number || typeof w === 'string')).map(w => `
+            <div style="background: rgba(16, 185, 129, 0.2); border: 1px solid rgba(16, 185, 129, 0.4); border-radius: 0.375rem; padding: 0.375rem 0.75rem;">
+              <span style="font-family: 'Outfit', monospace; font-weight: 700; color: white;">${w.number || w}</span>
+            </div>
+          `).join('')}
+        </div>
+        ${isMulti ? `<div style="font-size: 0.7rem; color: var(--admin-success); margin-top: 0.5rem;">${group.length} pemenang</div>` : ''}
+      </div>
+    `;
+  }).join('');
+}
+
+/**
+ * Export winners list
+ */
+function exportWinners() {
+  const winners = getDoorprizeWinners();
+  
+  if (winners.length === 0) {
+    showToast('Belum ada pemenang untuk di-export!', 'warning');
+    return;
+  }
+  
+  // Group by draw session
+  const grouped = [];
+  let currentGroup = [];
+  
+  winners.forEach((w, i) => {
+    if (i === 0) {
+      currentGroup.push(w);
+    } else {
+      const prevTime = new Date(winners[i - 1].timestamp).getTime();
+      const currTime = new Date(w.timestamp).getTime();
+      if (currTime - prevTime < 300000) {
+        currentGroup.push(w);
+      } else {
+        grouped.push([...currentGroup]);
+        currentGroup = [w];
+      }
+    }
+  });
+  if (currentGroup.length > 0) {
+    grouped.push(currentGroup);
+  }
+  
+  let csv = 'No,Nomor Kupon,Hadiah,Waktu,Batch\n';
+  grouped.forEach((group, groupIdx) => {
+    group.forEach((w, i) => {
+      const time = new Date(w.timestamp).toLocaleString('id-ID');
+      const batchInfo = group.length > 1 ? `Batch ${groupIdx + 1} (${group.length} winners)` : `Batch ${groupIdx + 1}`;
+      csv += `${i + 1},${w.number},"${w.prize}",${time},${batchInfo}\n`;
+    });
+  });
+  
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `doorprize-winners-${new Date().toISOString().split('T')[0]}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  
+  showToast('Daftar pemenang di-export!', 'success');
+}
+
+/**
+ * Reset draw
+ */
+function resetDraw() {
+  if (!confirm('Reset semua undian? Semua pemenang akan dihapus tapi daftar kupon tetap tersimpan.')) return;
+  
+  // Clear all draw-related data
+  localStorage.removeItem(DOORPRIZE_WINNERS_KEY);
+  localStorage.removeItem(DOORPRIZE_DRAW_KEY);
+  
+  // Create reset state to broadcast to all tabs
+  const resetState = {
+    status: 'waiting',
+    timestamp: new Date().toISOString()
+  };
+  
+  // Save reset state to localStorage so doorprize page knows to reset
+  localStorage.setItem(DOORPRIZE_DRAW_KEY, JSON.stringify(resetState));
+  
+  // Broadcast to other tabs
+  broadcastToTabs('draw_state', resetState);
+  
+  if (tournamentData) {
+    delete tournamentData.doorprizeDraw;
+    if (tournamentData.doorprize) {
+      tournamentData.doorprize.winners = [];
+    }
+    saveData().catch(() => {});
+  }
+  
+  updateDrawStatus('waiting');
+  renderWinnersList();
+  updateDoorprizeStats();
+  
+  showToast('Undian direset!', 'success');
+  addLog('Reset doorprize draw (winners cleared)');
+}
+
+/**
+ * Initialize doorprize on section load
+ */
+function initDoorprizeSection() {
+  initAdminBroadcastChannel();
+  loadDoorprizeConfig();
+  renderWinnersList();
+  updateDoorprizeStats();
 }

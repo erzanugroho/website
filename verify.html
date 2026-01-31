@@ -96,9 +96,16 @@
 
             <!-- Score Summary -->
             <div id="scoreSummary" class="status-card p-4 mb-6 hidden">
-                <div class="flex justify-between items-center">
+                <div class="flex justify-between items-center mb-2">
                     <span class="text-gray-400">Skor Prediksi</span>
                     <span id="scoreText" class="text-2xl font-bold text-yellow-400">-</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-400 text-sm">Akurasi</span>
+                    <span id="percentageText" class="text-lg font-bold text-white">-</span>
+                </div>
+                <div style="margin-top: 12px; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden;">
+                    <div id="percentageBar" style="height: 100%; width: 0%; background: linear-gradient(90deg, #eab308, #f59e0b); border-radius: 4px; transition: width 0.8s ease;"></div>
                 </div>
             </div>
 
@@ -444,14 +451,30 @@
             if ((result.status === 'partial' || result.isComplete) && result.results) {
                 const scoreDiv = document.getElementById('scoreSummary');
                 const scoreText = document.getElementById('scoreText');
+                const percentageText = document.getElementById('percentageText');
+                const percentageBar = document.getElementById('percentageBar');
+                
                 const correct = result.results.filter(r => {
                     if (result.status === 'partial') return r.pred === r.actual;
                     return r.correct;
                 }).length;
                 const total = result.results.length;
+                const percentage = total > 0 ? Math.round((correct / total) * 100) : 0;
                 
                 scoreDiv.classList.remove('hidden');
                 scoreText.textContent = `${correct}/${total}`;
+                percentageText.textContent = `${percentage}%`;
+                percentageText.className = `text-lg font-bold ${percentage >= 70 ? 'text-green-400' : percentage >= 40 ? 'text-yellow-400' : 'text-red-400'}`;
+                
+                // Animate progress bar
+                setTimeout(() => {
+                    percentageBar.style.width = `${percentage}%`;
+                    percentageBar.style.background = percentage >= 70 
+                        ? 'linear-gradient(90deg, #22c55e, #16a34a)' 
+                        : percentage >= 40 
+                            ? 'linear-gradient(90deg, #eab308, #f59e0b)' 
+                            : 'linear-gradient(90deg, #ef4444, #dc2626)';
+                }, 100);
             }
         }
 
