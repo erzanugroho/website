@@ -23,8 +23,8 @@ let bracketState = {
     predictorName: ''
 };
 
-// Tournament start time: 31 Januari 2026, 16:00 WIB (UTC+7)
-const TOURNAMENT_START_TIME = new Date('2026-01-31T16:00:00+07:00').getTime();
+// Tournament start time: 31 Januari 2026, 16:30 WIB (UTC+7)
+const TOURNAMENT_START_TIME = new Date('2026-01-31T16:30:00+07:00').getTime();
 
 let isLocked = false;
 let isTimeLocked = false;
@@ -61,7 +61,7 @@ function showTimeLockOverlay() {
                 <span class="material-symbols-outlined text-4xl text-red-500">lock</span>
             </div>
             <h2 class="text-2xl font-bold text-white mb-2">Prediksi Ditutup</h2>
-            <p class="text-gray-400 mb-6">Waktu prediksi telah berakhir. Turnamen HASTMA CUP 2026 sudah dimulai pada <strong class="text-yellow-400">31 Januari 2026 pukul 16:00 WIB</strong>.</p>
+            <p class="text-gray-400 mb-6">Waktu prediksi telah berakhir. Turnamen HASTMA CUP 2026 sudah dimulai pada <strong class="text-yellow-400">31 Januari 2026 pukul 16:30 WIB</strong>.</p>
             <div class="bg-slate-800/50 rounded-xl p-4 border border-white/10">
                 <p class="text-sm text-gray-500 mb-1">Status</p>
                 <p class="text-red-400 font-bold">⛔ Prediksi Ditutup</p>
