@@ -66,6 +66,26 @@ function broadcastUpdate(type, data) {
  */
 async function initLiveDraw() {
   await loadConfig();
+  
+  // Clean old data format
+  if (doorprizeConfig.coupons) {
+    const hasOldFormat = doorprizeConfig.coupons.some(c => typeof c === 'string' && c.includes('-'));
+    if (hasOldFormat) {
+      doorprizeConfig.coupons = doorprizeConfig.coupons.map(c => cleanNumber(c));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(doorprizeConfig));
+    }
+  }
+  if (doorprizeConfig.winners) {
+    const hasOldFormat = doorprizeConfig.winners.some(w => w.number && w.number.includes('-'));
+    if (hasOldFormat) {
+      doorprizeConfig.winners = doorprizeConfig.winners.map(w => ({
+        ...w,
+        number: cleanNumber(w.number)
+      }));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(doorprizeConfig));
+    }
+  }
+  
   updateStats();
   renderWinners();
   
@@ -166,13 +186,20 @@ function startSync() {
  * Sync with server or localStorage
  */
 async function syncWithServer() {
-  // Try API first
+  // Try API first (PRODUCTION MODE)
   try {
     const response = await fetch('/api/tournament');
     const data = await response.json();
     
     // Update config
     if (data && data.doorprize) {
+      // Clean old format
+      if (data.doorprize.coupons) {
+        data.doorprize.coupons = data.doorprize.coupons.map(c => 
+          typeof c === 'string' ? c.replace(/[^0-9]/g, '') : c
+        ).filter(c => c);
+      }
+      
       if (JSON.stringify(data.doorprize) !== JSON.stringify(doorprizeConfig)) {
         doorprizeConfig = { ...doorprizeConfig, ...data.doorprize };
         localStorage.setItem(STORAGE_KEY, JSON.stringify(doorprizeConfig));
@@ -193,10 +220,10 @@ async function syncWithServer() {
     updateConnectionStatus(true);
     return;
   } catch (e) {
-    // API not available, use localStorage
+    console.log('API fetch failed:', e);
   }
   
-  // Fallback: Check localStorage for updates (localhost mode)
+  // Fallback: Check localStorage for updates (LOCALHOST MODE)
   const savedState = localStorage.getItem(DRAW_STATE_KEY);
   if (savedState) {
     try {
@@ -225,7 +252,7 @@ async function syncWithServer() {
     }
   }
   
-  // Show as connected in local mode
+  // Show as local mode
   updateConnectionStatus(true, 'local');
 }
 
@@ -420,13 +447,23 @@ function showSpinningState() {
 }
 
 /**
+ * Clean number format - remove any prefix
+ */
+function cleanNumber(num) {
+  if (typeof num === 'string') {
+    return num.replace(/[^0-9]/g, '');
+  }
+  return String(num);
+}
+
+/**
  * Generate random number for display
  */
 function generateRandomDisplayNumber() {
   const config = doorprizeConfig;
   if (config.coupons && config.coupons.length > 0) {
     const idx = Math.floor(Math.random() * config.coupons.length);
-    return config.coupons[idx];
+    return cleanNumber(config.coupons[idx]);
   }
   // Fallback - angka saja tanpa prefix
   return String(Math.floor(Math.random() * 999)).padStart(3, '0');
@@ -466,13 +503,16 @@ function showMultipleWinners(winners, prizeName) {
     container = document.getElementById('winnersDisplay');
   }
   
-  // Display winners
-  container.innerHTML = winnerList.map((winner, i) => `
-    <div class="bg-green-500/20 border-2 border-green-500 rounded-xl p-4 text-center animate-pulse" style="animation-delay: ${i * 0.1}s;">
-      ${isMultiple ? `<div class="text-xs text-green-400 mb-1">#${i + 1}</div>` : ''}
-      <div class="text-4xl md:text-6xl font-black text-white font-mono" style="text-shadow: 0 0 30px rgba(16,185,129,0.8);">${winner}</div>
-    </div>
-  `).join('');
+  // Display winners - clean format (no prefix)
+  container.innerHTML = winnerList.map((winner, i) => {
+    const cleanNum = cleanNumber(winner);
+    return `
+      <div class="bg-green-500/20 border-2 border-green-500 rounded-xl p-4 text-center animate-pulse" style="animation-delay: ${i * 0.1}s;">
+        ${isMultiple ? `<div class="text-xs text-green-400 mb-1">#${i + 1}</div>` : ''}
+        <div class="text-4xl md:text-6xl font-black text-white font-mono" style="text-shadow: 0 0 30px rgba(16,185,129,0.8);">${cleanNum}</div>
+      </div>
+    `;
+  }).join('');
   
   // Hide prize name display (not used)
   const prizeDisplay = document.getElementById('winnerPrizeDisplay');
@@ -570,11 +610,14 @@ function renderWinners() {
           <div class="text-xs text-gray-400">${groupTime}</div>
         </div>
         <div class="flex flex-wrap gap-2">
-          ${group.filter(w => w && (w.number || typeof w === 'string')).map(w => `
-            <div class="bg-green-500/20 border border-green-500/40 rounded-lg px-3 py-2">
-              <span class="font-mono font-bold text-white">${w.number || w}</span>
-            </div>
-          `).join('')}
+          ${group.filter(w => w && (w.number || typeof w === 'string')).map(w => {
+            const num = cleanNumber(w.number || w);
+            return `
+              <div class="bg-green-500/20 border border-green-500/40 rounded-lg px-3 py-2">
+                <span class="font-mono font-bold text-white">${num}</span>
+              </div>
+            `;
+          }).join('')}
         </div>
         ${isMulti ? `<div class="text-xs text-green-400 mt-2">${group.length} pemenang sekaligus</div>` : ''}
       </div>

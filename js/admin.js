@@ -2983,7 +2983,7 @@ function broadcastToTabs(type, data) {
 }
 
 /**
- * Parse coupon list from input text
+ * Parse coupon list from input text - angka saja
  */
 function parseCouponList(text) {
   if (!text || !text.trim()) return [];
@@ -2991,9 +2991,9 @@ function parseCouponList(text) {
   // Split by newlines or commas
   const lines = text.split(/[\n,]+/);
   
-  // Clean up each entry
+  // Clean up each entry - hanya angka
   const coupons = lines
-    .map(line => line.trim().toUpperCase())
+    .map(line => line.trim().replace(/[^0-9]/g, '')) // Hapus semua non-angka
     .filter(line => line.length > 0)
     .filter((value, index, self) => self.indexOf(value) === index); // Remove duplicates
   
@@ -3056,6 +3056,20 @@ function getDoorprizeWinners() {
  */
 function loadDoorprizeConfig() {
   const config = getDoorprizeConfig();
+  
+  // Clear old data format (with prefix) - convert to numbers only
+  if (config.coupons && config.coupons.length > 0) {
+    const hasPrefix = config.coupons.some(c => c.includes('-') || c.includes('HC'));
+    if (hasPrefix) {
+      config.coupons = config.coupons.map(c => c.replace(/[^0-9]/g, '')).filter(c => c);
+      // Save cleaned data
+      localStorage.setItem(DOORPRIZE_STORAGE_KEY, JSON.stringify(config));
+      if (tournamentData) {
+        tournamentData.doorprize = config;
+        saveData();
+      }
+    }
+  }
   
   // Set form values
   const enabledEl = document.getElementById('doorprizeEnabled');
@@ -3120,7 +3134,7 @@ function updateDoorprizeStats() {
   if (wonIndicator && wonList && winners.length > 0) {
     wonIndicator.style.display = 'block';
     wonList.innerHTML = winners.map(w => `
-      <span style="display: inline-block; margin: 0.25rem; padding: 0.25rem 0.5rem; background: rgba(16, 185, 129, 0.2); border-radius: 0.25rem;">${w.number}</span>
+      <span style="display: inline-block; margin: 0.25rem; padding: 0.25rem 0.5rem; background: rgba(16, 185, 129, 0.2); border-radius: 0.25rem;">${w.number ? w.number.replace(/[^0-9]/g, '') : ''}</span>
     `).join('');
   } else if (wonIndicator) {
     wonIndicator.style.display = 'none';
@@ -3175,6 +3189,33 @@ function clearCouponList() {
   
   updateDoorprizeStats();
   showToast('Daftar kupon dibersihkan!', 'success');
+}
+
+/**
+ * Clear old data format (HC-XXX) and convert to numbers only
+ */
+function clearOldDataFormat() {
+  if (!confirm('BERSIHKAN SEMUA DATA LAMA?\n\nIni akan:\n1. Hapus semua data kupon lama (HC-XXX)\n2. Hapus semua pemenang lama\n3. Reset semua undian\n\nPastikan Anda sudah backup data jika perlu.')) return;
+  
+  // Clear all doorprize data
+  localStorage.removeItem(DOORPRIZE_STORAGE_KEY);
+  localStorage.removeItem(DOORPRIZE_WINNERS_KEY);
+  localStorage.removeItem(DOORPRIZE_DRAW_KEY);
+  
+  // Reset tournament data
+  if (tournamentData) {
+    delete tournamentData.doorprize;
+    delete tournamentData.doorprizeDraw;
+    saveData().then(() => {
+      showToast('Data lama berhasil dihapus! Format baru: angka saja', 'success');
+      // Reload page
+      setTimeout(() => location.reload(), 1500);
+    }).catch(() => {
+      showToast('Data dihapus secara lokal. Refresh halaman.', 'success');
+    });
+  } else {
+    showToast('Data lama berhasil dihapus! Refresh halaman.', 'success');
+  }
 }
 
 /**
@@ -3380,9 +3421,11 @@ function revealMultipleWinners(winners, prizeName) {
   const countdownEl = document.getElementById('drawStatus');
   const existingWinners = getDoorprizeWinners();
   
-  // Add new winners to list
+  // Add new winners to list (clean format - numbers only)
   const newWinners = Array.isArray(winners) ? winners : [winners];
-  newWinners.forEach(number => {
+  const cleanNewWinners = newWinners.map(n => typeof n === 'string' ? n.replace(/[^0-9]/g, '') : String(n));
+  
+  cleanNewWinners.forEach(number => {
     existingWinners.push({
       number: number,
       prize: prizeName,
@@ -3392,10 +3435,13 @@ function revealMultipleWinners(winners, prizeName) {
   
   localStorage.setItem(DOORPRIZE_WINNERS_KEY, JSON.stringify(existingWinners));
   
+  // Clean numbers (remove any prefix)
+  const cleanNewWinners = newWinners.map(w => typeof w === 'string' ? w.replace(/[^0-9]/g, '') : String(w));
+  
   // Display winners in admin panel
   if (countdownEl) {
-    const isMultiple = newWinners.length > 1;
-    const winnersHtml = newWinners.map((w, i) => `
+    const isMultiple = cleanNewWinners.length > 1;
+    const winnersHtml = cleanNewWinners.map((w, i) => `
       <div style="display: inline-block; margin: 0.5rem; padding: 1rem 1.5rem; 
                   background: rgba(16, 185, 129, 0.3); border-radius: 0.75rem; border: 2px solid var(--admin-success);">
         <div style="font-size: 0.75rem; color: var(--admin-success); margin-bottom: 0.25rem;">PEMENANG #${i + 1}</div>
@@ -3529,7 +3575,7 @@ function renderWinnersList() {
         <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
           ${group.filter(w => w && (w.number || typeof w === 'string')).map(w => `
             <div style="background: rgba(16, 185, 129, 0.2); border: 1px solid rgba(16, 185, 129, 0.4); border-radius: 0.375rem; padding: 0.375rem 0.75rem;">
-              <span style="font-family: 'Outfit', monospace; font-weight: 700; color: white;">${w.number || w}</span>
+              <span style="font-family: 'Outfit', monospace; font-weight: 700; color: white;">${w.number ? w.number.replace(/[^0-9]/g, '') : (typeof w === 'string' ? w.replace(/[^0-9]/g, '') : w)}</span>
             </div>
           `).join('')}
         </div>
@@ -3577,7 +3623,7 @@ function exportWinners() {
     group.forEach((w, i) => {
       const time = new Date(w.timestamp).toLocaleString('id-ID');
       const batchInfo = group.length > 1 ? `Batch ${groupIdx + 1} (${group.length} winners)` : `Batch ${groupIdx + 1}`;
-      csv += `${i + 1},${w.number},"${w.prize}",${time},${batchInfo}\n`;
+      csv += `${i + 1},${w.number ? w.number.replace(/[^0-9]/g, '') : ''},"${w.prize}",${time},${batchInfo}\n`;
     });
   });
   
