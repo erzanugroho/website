@@ -1317,8 +1317,12 @@ function addResultEvent() {
   if (type === 'goal') {
     if (teamIdStr === homeTeamStr) {
       match.homeScore++;
+      console.log(`[Goal] ${teamIdStr} (HOME) scored. New score: ${match.homeScore} - ${match.awayScore}`);
     } else if (teamIdStr === awayTeamStr) {
       match.awayScore++;
+      console.log(`[Goal] ${teamIdStr} (AWAY) scored. New score: ${match.homeScore} - ${match.awayScore}`);
+    } else {
+      console.error(`[Goal Error] Team ${teamIdStr} not found in match! Home: ${homeTeamStr}, Away: ${awayTeamStr}`);
     }
   }
 
@@ -1470,11 +1474,15 @@ function renderResultEventList(matchId) {
   const sorted = [...events].map((e, i) => ({ ...e, idx: i })).sort((a, b) => (a.minute ?? 0) - (b.minute ?? 0));
 
   container.innerHTML = sorted.map(e => {
+    const eventTeam = getTeam(e.teamId);
+    const eventTeamName = eventTeam?.name || e.teamId || '-';
+    const isHomeTeam = String(e.teamId) === String(match.homeTeam);
+    const teamIndicator = isHomeTeam ? '(H)' : '(A)';
     return `
       <div style="display:flex; align-items:center; justify-content: space-between; gap: 0.75rem; padding: 0.75rem; border: 1px solid var(--admin-card-border); border-radius: 0.875rem; background: rgba(255,255,255,0.02); margin-bottom: 0.5rem;">
         <div style="display:flex; flex-direction: column; gap: 0.15rem;">
           <div style="font-weight: 800;">${e.minute}' • ${e.type?.toUpperCase()}</div>
-          <div style="font-size: 0.75rem; color: var(--admin-text-muted);">${e.playerName || '-'} (${e.teamId || '-'})</div>
+          <div style="font-size: 0.75rem; color: var(--admin-text-muted);">${e.playerName || '-'} • ${eventTeamName} ${teamIndicator}</div>
         </div>
         <div style="display:flex; gap: 0.5rem;">
           <button class="btn-premium btn-premium-secondary" style="padding: 0.5rem;" onclick="editResultEvent('${matchId}', ${e.idx})">
