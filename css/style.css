@@ -4789,3 +4789,172 @@ button.fab-action-btn {
     font-size: 0.8rem;
   }
 }
+
+/* ================================================
+   Champions Section - Tournament Winners
+   ================================================ */
+
+.champions-section {
+  position: relative;
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.15) 0%, rgba(255, 165, 0, 0.1) 50%, rgba(255, 215, 0, 0.15) 100%);
+  border: 2px solid rgba(255, 215, 0, 0.4);
+  border-radius: 1.5rem;
+  padding: 2.5rem 2rem;
+  margin: 1.5rem 0;
+  text-align: center;
+  overflow: hidden;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 
+    0 8px 32px rgba(255, 215, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.champions-section::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
+  animation: championsGlow 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes championsGlow {
+  0%, 100% {
+    transform: rotate(0deg);
+    opacity: 0.5;
+  }
+  50% {
+    transform: rotate(180deg);
+    opacity: 0.8;
+  }
+}
+
+.champions-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #ffd700 0%, #ffb700 100%);
+  color: #1a1a1a;
+  padding: 0.5rem 1rem;
+  border-radius: 2rem;
+  font-weight: 700;
+  font-size: 0.875rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+}
+
+.champions-badge .material-symbols-outlined {
+  font-size: 1.25rem;
+}
+
+.champions-team {
+  position: relative;
+  z-index: 1;
+}
+
+.champions-trophy {
+  font-size: 4rem;
+  margin-bottom: 0.5rem;
+  filter: drop-shadow(0 4px 20px rgba(255, 215, 0, 0.6));
+  animation: trophyBounce 2s ease-in-out infinite;
+}
+
+@keyframes trophyBounce {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-10px) scale(1.05);
+  }
+}
+
+.champions-name {
+  font-size: 2.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #ffd700 0%, #ffb700 50%, #ff8c00 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0 0 0.5rem;
+  text-shadow: 0 2px 20px rgba(255, 215, 0, 0.3);
+}
+
+.champions-subtitle {
+  font-size: 1rem;
+  color: var(--admin-text-muted);
+  margin: 0;
+  font-weight: 500;
+}
+
+.champions-confetti {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.champions-confetti::before,
+.champions-confetti::after {
+  content: '🎉';
+  position: absolute;
+  font-size: 2rem;
+  opacity: 0.6;
+  animation: confettiFloat 3s ease-in-out infinite;
+}
+
+.champions-confetti::before {
+  top: 10%;
+  left: 10%;
+  animation-delay: 0s;
+}
+
+.champions-confetti::after {
+  top: 15%;
+  right: 10%;
+  animation-delay: 1.5s;
+}
+
+@keyframes confettiFloat {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateY(-20px) rotate(10deg);
+    opacity: 1;
+  }
+}
+
+/* Responsive Champions Section */
+@media (max-width: 768px) {
+  .champions-section {
+    padding: 2rem 1.5rem;
+    margin: 1rem 0;
+  }
+
+  .champions-trophy {
+    font-size: 3rem;
+  }
+
+  .champions-name {
+    font-size: 1.75rem;
+  }
+
+  .champions-subtitle {
+    font-size: 0.875rem;
+  }
+
+  .champions-badge {
+    font-size: 0.75rem;
+    padding: 0.4rem 0.875rem;
+  }
+}

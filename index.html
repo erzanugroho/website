@@ -100,6 +100,20 @@
           </p>
         </div>
 
+        <!-- Champions Section -->
+        <div class="champions-section">
+          <div class="champions-badge">
+            <span class="material-symbols-outlined">emoji_events</span>
+            <span class="champions-label">CHAMPIONS</span>
+          </div>
+          <div class="champions-team">
+            <div class="champions-trophy">🏆</div>
+            <h2 class="champions-name" id="championTeamName">Tim Juara</h2>
+            <p class="champions-subtitle">HASTMA CUP #3 2026 Winners</p>
+          </div>
+          <div class="champions-confetti"></div>
+        </div>
+
         <!-- Hero Live Match -->
         <div id="heroMatch">
           <!-- The goal overlay will be injected here during match rendering if needed, 
@@ -388,6 +402,48 @@
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script src="js/data.js"></script>
   <script src="js/app.js"></script>
+  <script>
+    // Update Champions Section with winner data
+    function updateChampionsSection() {
+      if (typeof tournamentData !== 'undefined' && tournamentData.matches) {
+        // Find the final match
+        const finalMatch = tournamentData.matches.find(m => m.stage === 'final' && m.status === 'finished');
+        
+        if (finalMatch && finalMatch.homeTeam && finalMatch.awayTeam) {
+          const homeScore = finalMatch.homeScore || 0;
+          const awayScore = finalMatch.awayScore || 0;
+          let winnerTeamId = null;
+          
+          if (homeScore > awayScore) {
+            winnerTeamId = finalMatch.homeTeam;
+          } else if (awayScore > homeScore) {
+            winnerTeamId = finalMatch.awayTeam;
+          }
+          // If draw, no winner (could handle penalties if needed)
+          
+          if (winnerTeamId && tournamentData.teams) {
+            const winnerTeam = tournamentData.teams.find(t => t.id === winnerTeamId);
+            if (winnerTeam) {
+              document.getElementById('championTeamName').textContent = winnerTeam.name;
+            }
+          }
+        }
+      }
+    }
+    
+    // Call when data is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+      // Wait a bit for tournamentData to be loaded
+      setTimeout(updateChampionsSection, 1000);
+    });
+    
+    // Also update when data changes
+    window.addEventListener('storage', function(e) {
+      if (e.key === 'hastmaCupData') {
+        setTimeout(updateChampionsSection, 500);
+      }
+    });
+  </script>
 </body>
 
 </html>
