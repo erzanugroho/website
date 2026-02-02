@@ -62,7 +62,7 @@
 
     .form-iframe-container {
       width: 100%;
-      min-height: 3800px;
+      min-height: 3600px;
       position: relative;
     }
 
@@ -71,7 +71,7 @@
       top: 0;
       left: 0;
       width: 100%;
-      height: 3800px;
+      height: 3600px;
       border: none;
       display: block;
       overflow: visible;
@@ -229,9 +229,9 @@
           <a href="doorprize.html">Doorprize</a>
         </nav>
         <div class="header-actions">
-          <a href="admin.html" class="admin-link">
-            <span class="material-symbols-outlined" style="font-size: 1.125rem;">admin_panel_settings</span>
-            Admin
+          <a href="index.html" class="admin-link">
+            <span class="material-symbols-outlined" style="font-size: 1.125rem;">home</span>
+            Home
           </a>
         </div>
       </div>
@@ -265,7 +265,7 @@
               <iframe
                 id="googleForm"
                 src="https://docs.google.com/forms/d/e/1FAIpQLScY27tllY430LHZlmEvVtInmJDLdUBspnBQBwmq9-yVtv6cBQ/viewform?embedded=true"
-                width="100%" height="3800" frameborder="0" marginheight="0" marginwidth="0" scrolling="no">
+                width="100%" height="3600" frameborder="0" marginheight="0" marginwidth="0" scrolling="no">
                 Memuat…
               </iframe>
             </div>
@@ -306,8 +306,8 @@
         // Try to access iframe content height (may be blocked by CORS)
         try {
           const resizeIframe = function() {
-            iframe.style.height = '3800px';
-            iframe.parentElement.style.height = '3800px';
+            iframe.style.height = '3600px';
+            iframe.parentElement.style.height = '3600px';
           };
           resizeIframe();
           
