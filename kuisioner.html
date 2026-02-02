@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html class="dark" lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Kuisioner HASTMA CUP #3 2026">
+  <title>Kuisioner - HASTMA CUP #3 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800;900&family=Noto+Sans:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* Form Page Specific Styles */
+    .form-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+
+    .form-wrapper {
+      background: var(--admin-card-bg);
+      backdrop-filter: var(--admin-glass);
+      -webkit-backdrop-filter: var(--admin-glass);
+      border: 1px solid var(--admin-card-border);
+      border-radius: 1.25rem;
+      overflow: hidden;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    }
+
+    .form-header {
+      background: linear-gradient(135deg, var(--admin-primary) 0%, #1d4ed8 100%);
+      padding: 2rem;
+      text-align: center;
+      color: white;
+    }
+
+    .form-header h2 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+    }
+
+    .form-header p {
+      margin: 0.75rem 0 0;
+      opacity: 0.9;
+      font-size: 1rem;
+    }
+
+    .form-content {
+      padding: 0;
+    }
+
+    .form-content iframe {
+      width: 100%;
+      border: none;
+      display: block;
+    }
+
+    .form-notice {
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 0.75rem;
+      padding: 1rem 1.25rem;
+      margin: 1.5rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+
+    .form-notice .material-symbols-outlined {
+      color: var(--admin-primary);
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .form-notice p {
+      margin: 0;
+      font-size: 0.875rem;
+      color: var(--admin-text-muted);
+      line-height: 1.6;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--admin-text-muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      margin-bottom: 1.5rem;
+      transition: color 0.2s ease;
+    }
+
+    .back-link:hover {
+      color: var(--admin-primary);
+    }
+
+    /* Loading state */
+    .form-loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 4rem 2rem;
+      color: var(--admin-text-muted);
+    }
+
+    .form-loading .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(59, 130, 246, 0.2);
+      border-top-color: var(--admin-primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-bottom: 1rem;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .form-container {
+        padding: 1rem 0.75rem;
+      }
+
+      .form-header {
+        padding: 1.5rem 1rem;
+      }
+
+      .form-header h2 {
+        font-size: 1.25rem;
+      }
+
+      .form-header p {
+        font-size: 0.875rem;
+      }
+
+      .form-notice {
+        margin: 1rem;
+        padding: 0.875rem 1rem;
+      }
+    }
+  </style>
+</head>
+
+<body class="dark">
+  <!-- Mobile Floating Action Button (FAB) -->
+  <div class="fab-container" id="fabContainer"
+    style="position: fixed !important; bottom: 2rem !important; right: 1.5rem !important; z-index: 9999 !important;">
+    <div class="fab-menu" id="fabMenu">
+      <a href="index.html#standings" class="fab-action-btn" onclick="toggleFab()">
+        <span class="material-symbols-outlined">leaderboard</span>
+        <span class="fab-label">Standings</span>
+      </a>
+      <a href="index.html#schedule" class="fab-action-btn" onclick="toggleFab()">
+        <span class="material-symbols-outlined">calendar_month</span>
+        <span class="fab-label">Schedule</span>
+      </a>
+      <a href="index.html#bracket" class="fab-action-btn" onclick="toggleFab()">
+        <span class="material-symbols-outlined">account_tree</span>
+        <span class="fab-label">Bracket</span>
+      </a>
+      <a href="final-bracket.html" class="fab-action-btn" onclick="toggleFab()">
+        <span class="material-symbols-outlined">emoji_events</span>
+        <span class="fab-label">Hasil Akhir</span>
+      </a>
+      <a href="rundown.html" class="fab-action-btn" onclick="toggleFab()">
+        <span class="material-symbols-outlined">description</span>
+        <span class="fab-label">Rundown</span>
+      </a>
+      <a href="rules.html" class="fab-action-btn" onclick="toggleFab()">
+        <span class="material-symbols-outlined">gavel</span>
+        <span class="fab-label">Rules</span>
+      </a>
+      <a href="doorprize.html" class="fab-action-btn" onclick="toggleFab()">
+        <span class="material-symbols-outlined">confirmation_number</span>
+        <span class="fab-label">Doorprize</span>
+      </a>
+    </div>
+    <button class="fab-main-btn" onclick="toggleFab()" aria-label="Menu">
+      <span class="material-symbols-outlined fab-icon-open">menu</span>
+      <span class="material-symbols-outlined fab-icon-close">close</span>
+    </button>
+  </div>
+
+  <div class="page-wrapper">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-inner">
+        <div class="header-logo">
+          <div class="header-logo-icon">
+            <img src="logo.png" alt="HASTMA CUP #3 Logo">
+          </div>
+          <h1 class="header-title">HASTMA CUP #3 <span style="color: var(--admin-primary);">2026</span></h1>
+        </div>
+        <nav class="header-nav">
+          <a href="index.html">Home</a>
+          <a href="index.html#standings">Standings</a>
+          <a href="index.html#schedule">Schedule</a>
+          <a href="index.html#bracket">Bracket</a>
+          <a href="rundown.html">Rundown</a>
+          <a href="rules.html">Rules</a>
+          <a href="gallery.html">Gallery</a>
+          <a href="doorprize.html">Doorprize</a>
+        </nav>
+        <div class="header-actions">
+          <a href="admin.html" class="admin-link">
+            <span class="material-symbols-outlined" style="font-size: 1.125rem;">admin_panel_settings</span>
+            Admin
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="form-container">
+        <a href="index.html" class="back-link">
+          <span class="material-symbols-outlined">arrow_back</span>
+          Kembali ke Beranda
+        </a>
+
+        <div class="form-wrapper">
+          <div class="form-header">
+            <h2>
+              <span class="material-symbols-outlined">quiz</span>
+              Kuisioner
+            </h2>
+            <p>Silakan isi kuisioner di bawah ini</p>
+          </div>
+
+          <div class="form-notice">
+            <span class="material-symbols-outlined">info</span>
+            <p>Pastikan jawaban yang Anda berikan sudah sesuai sebelum mengirimkan kuisioner. Hubungi panitia jika ada
+              pertanyaan atau kendala.</p>
+          </div>
+
+          <div class="form-content">
+            <iframe
+              src="https://docs.google.com/forms/d/e/1FAIpQLScY27tllY430LHZlmEvVtInmJDLdUBspnBQBwmq9-yVtv6cBQ/viewform?embedded=true"
+              width="640" height="2282" frameborder="0" marginheight="0" marginwidth="0">
+              Memuat…
+            </iframe>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <p>&copy; 2026 HASTMA CUP #3. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // FAB Toggle
+    function toggleFab() {
+      const fabContainer = document.getElementById('fabContainer');
+      fabContainer.classList.toggle('active');
+    }
+
+    // Close FAB when clicking outside
+    document.addEventListener('click', function (e) {
+      const fabContainer = document.getElementById('fabContainer');
+      if (!fabContainer.contains(e.target) && fabContainer.classList.contains('active')) {
+        fabContainer.classList.remove('active');
+      }
+    });
+  </script>
+</body>
+
+</html>
