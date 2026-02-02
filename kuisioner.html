@@ -62,7 +62,7 @@
 
     .form-iframe-container {
       width: 100%;
-      min-height: 4500px;
+      min-height: 3800px;
       position: relative;
     }
 
@@ -71,7 +71,7 @@
       top: 0;
       left: 0;
       width: 100%;
-      height: 4500px;
+      height: 3800px;
       border: none;
       display: block;
       overflow: visible;
@@ -114,36 +114,6 @@
 
     .back-link:hover {
       color: var(--admin-primary);
-    }
-
-    .form-external-link {
-      padding: 1rem 1.5rem 0;
-      text-align: center;
-    }
-
-    .form-external-link .btn-premium {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.875rem 1.5rem;
-      background: var(--admin-primary);
-      color: white;
-      text-decoration: none;
-      border-radius: 0.875rem;
-      font-weight: 600;
-      transition: all 0.2s ease;
-    }
-
-    .form-external-link .btn-premium:hover {
-      background: #2563eb;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
-    }
-
-    .form-hint {
-      margin-top: 0.75rem;
-      font-size: 0.8rem;
-      color: var(--admin-text-muted);
     }
 
     /* Loading state */
@@ -290,21 +260,12 @@
               pertanyaan atau kendala.</p>
           </div>
 
-          <div class="form-external-link">
-            <a href="https://docs.google.com/forms/d/e/1FAIpQLScY27tllY430LHZlmEvVtInmJDLdUBspnBQBwmq9-yVtv6cBQ/viewform" 
-               target="_blank" class="btn-premium">
-              <span class="material-symbols-outlined">open_in_new</span>
-              Buka Kuisioner di Tab Baru
-            </a>
-            <p class="form-hint">Klik tombol di atas jika form di bawah tidak bisa di-scroll</p>
-          </div>
-
           <div class="form-content">
             <div class="form-iframe-container">
               <iframe
                 id="googleForm"
                 src="https://docs.google.com/forms/d/e/1FAIpQLScY27tllY430LHZlmEvVtInmJDLdUBspnBQBwmq9-yVtv6cBQ/viewform?embedded=true"
-                width="100%" height="4500" frameborder="0" marginheight="0" marginwidth="0" scrolling="no">
+                width="100%" height="3800" frameborder="0" marginheight="0" marginwidth="0" scrolling="no">
                 Memuat…
               </iframe>
             </div>
@@ -345,8 +306,8 @@
         // Try to access iframe content height (may be blocked by CORS)
         try {
           const resizeIframe = function() {
-            iframe.style.height = '4500px';
-            iframe.parentElement.style.height = '4500px';
+            iframe.style.height = '3800px';
+            iframe.parentElement.style.height = '3800px';
           };
           resizeIframe();
           
