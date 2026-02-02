@@ -62,7 +62,7 @@
 
     .form-iframe-container {
       width: 100%;
-      min-height: 6000px;
+      min-height: 4500px;
       position: relative;
     }
 
@@ -71,7 +71,7 @@
       top: 0;
       left: 0;
       width: 100%;
-      height: 6000px;
+      height: 4500px;
       border: none;
       display: block;
       overflow: visible;
@@ -304,7 +304,7 @@
               <iframe
                 id="googleForm"
                 src="https://docs.google.com/forms/d/e/1FAIpQLScY27tllY430LHZlmEvVtInmJDLdUBspnBQBwmq9-yVtv6cBQ/viewform?embedded=true"
-                width="100%" height="6000" frameborder="0" marginheight="0" marginwidth="0" scrolling="no">
+                width="100%" height="4500" frameborder="0" marginheight="0" marginwidth="0" scrolling="no">
                 Memuat…
               </iframe>
             </div>
@@ -345,8 +345,8 @@
         // Try to access iframe content height (may be blocked by CORS)
         try {
           const resizeIframe = function() {
-            iframe.style.height = '6000px';
-            iframe.parentElement.style.height = '6000px';
+            iframe.style.height = '4500px';
+            iframe.parentElement.style.height = '4500px';
           };
           resizeIframe();
           
